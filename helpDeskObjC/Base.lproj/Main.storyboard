@@ -1,24 +1,147 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6211" systemVersion="14A298i" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6245" systemVersion="14A361c" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6204"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6238"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
         <!--View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModuleProvider="" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="ViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
                     </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC" customClass="UIScrollView">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="800"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Oez-2e-hFY">
+                                <rect key="frame" x="36" y="30" width="528" height="528"/>
+                                <subviews>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="FYd-e8-Pyv">
+                                        <rect key="frame" x="0.0" y="0.0" width="528" height="528"/>
+                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" secondItem="FYd-e8-Pyv" secondAttribute="height" multiplier="1:1" id="dvP-ei-eb1"/>
+                                        </constraints>
+                                        <variation key="default">
+                                            <mask key="constraints">
+                                                <exclude reference="dvP-ei-eb1"/>
+                                            </mask>
+                                        </variation>
+                                    </imageView>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="p6n-5l-oqb">
+                                        <rect key="frame" x="0.0" y="0.0" width="528" height="528"/>
+                                        <state key="normal" title="Take photo">
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="takePhoto:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Ult-Ol-Umb"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="FYd-e8-Pyv" firstAttribute="height" secondItem="Oez-2e-hFY" secondAttribute="height" id="1mL-8q-7rH"/>
+                                    <constraint firstAttribute="width" secondItem="Oez-2e-hFY" secondAttribute="height" multiplier="1:1" id="8nC-2T-wq2"/>
+                                    <constraint firstAttribute="centerY" secondItem="FYd-e8-Pyv" secondAttribute="centerY" id="91P-0f-dFj"/>
+                                    <constraint firstAttribute="width" secondItem="p6n-5l-oqb" secondAttribute="width" id="AAn-gf-tiK"/>
+                                    <constraint firstAttribute="centerX" secondItem="p6n-5l-oqb" secondAttribute="centerX" id="B3n-Dj-X1X"/>
+                                    <constraint firstItem="FYd-e8-Pyv" firstAttribute="width" secondItem="Oez-2e-hFY" secondAttribute="width" id="GZu-e0-Sim"/>
+                                    <constraint firstAttribute="height" secondItem="p6n-5l-oqb" secondAttribute="height" id="JsX-T9-PT5"/>
+                                    <constraint firstAttribute="centerY" secondItem="p6n-5l-oqb" secondAttribute="centerY" id="xay-T7-E0h"/>
+                                    <constraint firstAttribute="centerX" secondItem="FYd-e8-Pyv" secondAttribute="centerX" id="zzB-M8-62S"/>
+                                </constraints>
+                            </view>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Description" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Gr0-o3-mKZ">
+                                <rect key="frame" x="36" y="628" width="528" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                                <connections>
+                                    <action selector="textFieldGotFocus:" destination="BYZ-38-t0r" eventType="editingDidBegin" id="0wN-16-30q"/>
+                                </connections>
+                            </textField>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SuU-Hf-aYo">
+                                <rect key="frame" x="262" y="678" width="76" height="30"/>
+                                <state key="normal" title="Send issue">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="sendIssueToServer:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Six-Jx-7r7"/>
+                                </connections>
+                            </button>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="w28-zs-tRN">
+                                <rect key="frame" x="36" y="578" width="528" height="30"/>
+                                <subviews>
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Location" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="zE0-gw-VXE">
+                                        <rect key="frame" x="0.0" y="0.0" width="462" height="30"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits" returnKeyType="next"/>
+                                        <connections>
+                                            <action selector="textFieldGotFocus:" destination="BYZ-38-t0r" eventType="editingDidBegin" id="mLN-a1-Fj2"/>
+                                        </connections>
+                                    </textField>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DyL-7F-JEz">
+                                        <rect key="frame" x="472" y="-1" width="46" height="30"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="46" id="oOo-aq-HFi"/>
+                                        </constraints>
+                                        <state key="normal" title="QR">
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="scanQr:" destination="BYZ-38-t0r" eventType="touchUpInside" id="zG5-ss-g4A"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstAttribute="centerY" secondItem="zE0-gw-VXE" secondAttribute="centerY" id="GcG-Gh-qeM"/>
+                                    <constraint firstAttribute="trailing" secondItem="DyL-7F-JEz" secondAttribute="trailing" constant="10" id="LaG-8i-zZQ"/>
+                                    <constraint firstItem="zE0-gw-VXE" firstAttribute="leading" secondItem="w28-zs-tRN" secondAttribute="leading" id="ews-S8-tkg"/>
+                                    <constraint firstItem="DyL-7F-JEz" firstAttribute="leading" secondItem="zE0-gw-VXE" secondAttribute="trailing" constant="10" id="fpM-ak-9x7"/>
+                                    <constraint firstAttribute="centerY" secondItem="DyL-7F-JEz" secondAttribute="centerY" constant="1" id="ntb-yM-h40"/>
+                                </constraints>
+                            </view>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <gestureRecognizers/>
+                        <constraints>
+                            <constraint firstItem="Oez-2e-hFY" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="20" id="4af-eW-g7J"/>
+                            <constraint firstAttribute="centerX" secondItem="Gr0-o3-mKZ" secondAttribute="centerX" id="5M5-0G-LAP"/>
+                            <constraint firstAttribute="centerX" secondItem="Oez-2e-hFY" secondAttribute="centerX" id="6Dq-Ep-aEB"/>
+                            <constraint firstAttribute="centerX" secondItem="SuU-Hf-aYo" secondAttribute="centerX" id="Ags-Wc-5Ll"/>
+                            <constraint firstItem="Gr0-o3-mKZ" firstAttribute="height" secondItem="w28-zs-tRN" secondAttribute="height" id="G6E-q7-Y6d"/>
+                            <constraint firstItem="p6n-5l-oqb" firstAttribute="width" secondItem="w28-zs-tRN" secondAttribute="width" id="J5a-BU-4lj"/>
+                            <constraint firstItem="Gr0-o3-mKZ" firstAttribute="width" secondItem="w28-zs-tRN" secondAttribute="width" id="R5r-26-hcl"/>
+                            <constraint firstItem="Gr0-o3-mKZ" firstAttribute="top" secondItem="w28-zs-tRN" secondAttribute="bottom" constant="20" id="VOx-13-1FJ"/>
+                            <constraint firstItem="SuU-Hf-aYo" firstAttribute="top" secondItem="Gr0-o3-mKZ" secondAttribute="bottom" constant="20" id="aXp-sC-JER"/>
+                            <constraint firstItem="Oez-2e-hFY" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="10" id="ed2-q0-h9K"/>
+                            <constraint firstItem="w28-zs-tRN" firstAttribute="top" secondItem="p6n-5l-oqb" secondAttribute="bottom" constant="20" id="fO5-R3-JsG"/>
+                            <constraint firstAttribute="centerX" secondItem="w28-zs-tRN" secondAttribute="centerX" id="w7i-P1-Cxa"/>
+                        </constraints>
+                        <connections>
+                            <outletCollection property="gestureRecognizers" destination="gMZ-YR-GJH" appends="YES" id="wrW-A4-7LF"/>
+                        </connections>
                     </view>
+                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <size key="freeformSize" width="600" height="800"/>
+                    <connections>
+                        <outlet property="issueDescription" destination="Gr0-o3-mKZ" id="9xi-iP-82p"/>
+                        <outlet property="issueLocation" destination="zE0-gw-VXE" id="eJI-3P-DZ3"/>
+                        <outlet property="photo" destination="FYd-e8-Pyv" id="bYQ-QN-omd"/>
+                        <outlet property="qr" destination="DyL-7F-JEz" id="GRg-KV-yni"/>
+                        <outlet property="sendIssue" destination="SuU-Hf-aYo" id="Yrn-yF-faZ"/>
+                        <outlet property="takePhoto" destination="p6n-5l-oqb" id="IvW-3M-X9a"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer id="gMZ-YR-GJH">
+                    <connections>
+                        <action selector="hideKeyboard:" destination="BYZ-38-t0r" id="SPL-9I-o0A"/>
+                    </connections>
+                </tapGestureRecognizer>
             </objects>
         </scene>
     </scenes>
