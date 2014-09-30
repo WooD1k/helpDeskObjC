@@ -31,6 +31,45 @@
 }
 
 - (IBAction)scanQr:(UIButton *)sender {
+	self.scanditPicker = [[ScanditSDKBarcodePicker alloc] initWithAppKey:@"mHbeTgp5EeSKsmLJfKEh7Cg56poI/nKQw2Hb8HRrI/U"];
+	[self.scanditPicker.overlayController setTorchEnabled:false];
+	
+	self.pickerSubviewButton = [[UIButton alloc] init];
+	[self.pickerSubviewButton setTranslatesAutoresizingMaskIntoConstraints:false];
+	
+	self.pickerSubviewButton.layer.borderColor = [UIColor redColor].CGColor;
+	self.pickerSubviewButton.layer.borderWidth = 2;
+	
+	[self.pickerSubviewButton addTarget:self
+								 action:@selector(closePickerSubView)
+					   forControlEvents:UIControlEventTouchUpInside];
+	
+	
+	[self.qrView addSubview:self.scanditPicker.view];
+	[self.qrView addSubview:self.pickerSubviewButton];
+	
+	self.scanditPicker.overlayController.delegate = self;
+	
+	[self.scanditPicker startScanning];
+	self.mainView.alpha = 0.0;
+	
+	NSLayoutConstraint *closeBtnTrailingSpace = [NSLayoutConstraint constraintWithItem:self.qrView
+																		 attribute:NSLayoutAttributeTrailing
+																		 relatedBy:NSLayoutRelationEqual
+																			toItem:_pickerSubviewButton
+																		 attribute:NSLayoutAttributeTrailing
+																		multiplier:1.0
+																		  constant:10];
+	
+	NSLayoutConstraint *closeBtnTopSpace = [NSLayoutConstraint constraintWithItem:_pickerSubviewButton
+																		attribute:NSLayoutAttributeTop
+																		relatedBy:NSLayoutRelationEqual
+																		   toItem:self.qrView
+																		attribute:NSLayoutAttributeTop
+																	   multiplier:1.0
+																		 constant:20];
+	[self.qrView addConstraint:closeBtnTrailingSpace];
+	[self.qrView addConstraint:closeBtnTopSpace];
 }
 
 - (IBAction)textFieldGotFocus:(UITextField *)sender {
@@ -51,6 +90,35 @@
 		[_issueDescription resignFirstResponder];
 	}
 	return YES;
+}
+
+- (void)closePickerSubView {
+	[self.pickerSubviewButton removeFromSuperview];
+	[self.scanditPicker.view removeFromSuperview];
+	self.scanditPicker = nil;
+	
+	self.mainView.alpha = 1.0;
+}
+
+- (void)scanditSDKOverlayController:(ScanditSDKOverlayController *)overlayController didCancelWithStatus:(NSDictionary *)status {
+	NSLog(@"didCancelWithStatus");
+	[self closePickerSubView];
+}
+
+- (void)scanditSDKOverlayController:(ScanditSDKOverlayController *)overlayController didManualSearch:(NSString *)text {
+	NSLog(@"didManualSearch");
+}
+
+- (void)scanditSDKOverlayController:(ScanditSDKOverlayController *)overlayController didScanBarcode:(NSDictionary *)barcode {
+	if (self.scanditPicker) {
+		NSString *barcodeValue = [barcode objectForKey:@"barcode"];
+		
+		if (barcodeValue) {
+			self.issueLocation.text = barcodeValue;
+		}
+		
+		[self closePickerSubView];
+	}
 }
 
 @end

@@ -7,8 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "ScanditSDKOverlayController.h"
 
-@interface ViewController : UIViewController <UITextFieldDelegate>
+@interface ViewController : UIViewController <UITextFieldDelegate, ScanditSDKOverlayControllerDelegate>
+@property (weak, nonatomic) IBOutlet UIView *mainView;
+@property (weak, nonatomic) IBOutlet UIView *qrView;
+
 @property (weak, nonatomic) IBOutlet UIImageView *photo;
 @property (weak, nonatomic) IBOutlet UIButton *takePhoto;
 @property (weak, nonatomic) IBOutlet UIButton *qr;
@@ -17,7 +21,10 @@
 @property (weak, nonatomic) IBOutlet UITextField *issueDescription;
 @property (weak, nonatomic) IBOutlet UIButton *sendIssue;
 
-@property(weak, weak) IBOutlet UITextField *activeTextField;
+@property(weak, nonatomic) IBOutlet UITextField *activeTextField;
+
+@property(nonatomic) ScanditSDKBarcodePicker *scanditPicker;
+@property(nonatomic) UIButton *pickerSubviewButton;
 
 - (IBAction)takePhoto:(UIButton *)sender;
 - (IBAction)sendIssueToServer:(UIButton *)sender;
