@@ -27,7 +27,7 @@
 @property(nonatomic) UIButton *pickerSubviewButton;
 
 - (IBAction)takePhoto:(UIButton *)sender;
-- (IBAction)sendIssueToServer:(UIButton *)sender;
+- (IBAction)sendIssueToServer;
 - (IBAction)scanQr:(UIButton *)sender;
 - (IBAction)textFieldGotFocus:(UITextField *)sender;
 - (IBAction)hideKeyboard:(UITapGestureRecognizer *)sender;

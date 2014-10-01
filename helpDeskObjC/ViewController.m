@@ -27,33 +27,34 @@
 - (IBAction)takePhoto:(UIButton *)sender {
 }
 
-- (IBAction)sendIssueToServer:(UIButton *)sender {
+- (IBAction)sendIssueToServer {
+	NSLog(@"send issue");
 }
 
 - (IBAction)scanQr:(UIButton *)sender {
-	self.scanditPicker = [[ScanditSDKBarcodePicker alloc] initWithAppKey:@"mHbeTgp5EeSKsmLJfKEh7Cg56poI/nKQw2Hb8HRrI/U"];
-	[self.scanditPicker.overlayController setTorchEnabled:false];
+	_scanditPicker = [[ScanditSDKBarcodePicker alloc] initWithAppKey:@"mHbeTgp5EeSKsmLJfKEh7Cg56poI/nKQw2Hb8HRrI/U"];
+	[_scanditPicker.overlayController setTorchEnabled:false];
 	
-	self.pickerSubviewButton = [[UIButton alloc] init];
-	[self.pickerSubviewButton setTranslatesAutoresizingMaskIntoConstraints:false];
+	_pickerSubviewButton = [[UIButton alloc] init];
+	[_pickerSubviewButton setTranslatesAutoresizingMaskIntoConstraints:false];
 	
-	self.pickerSubviewButton.layer.borderColor = [UIColor redColor].CGColor;
-	self.pickerSubviewButton.layer.borderWidth = 2;
+	_pickerSubviewButton.layer.borderColor = [UIColor redColor].CGColor;
+	_pickerSubviewButton.layer.borderWidth = 2;
 	
-	[self.pickerSubviewButton addTarget:self
+	[_pickerSubviewButton addTarget:self
 								 action:@selector(closePickerSubView)
 					   forControlEvents:UIControlEventTouchUpInside];
 	
 	
-	[self.qrView addSubview:self.scanditPicker.view];
-	[self.qrView addSubview:self.pickerSubviewButton];
+	[_qrView addSubview:_scanditPicker.view];
+	[_qrView addSubview:_pickerSubviewButton];
 	
-	self.scanditPicker.overlayController.delegate = self;
+	_scanditPicker.overlayController.delegate = self;
 	
-	[self.scanditPicker startScanning];
-	self.mainView.alpha = 0.0;
+	[_scanditPicker startScanning];
+	_mainView.alpha = 0.0;
 	
-	NSLayoutConstraint *closeBtnTrailingSpace = [NSLayoutConstraint constraintWithItem:self.qrView
+	NSLayoutConstraint *closeBtnTrailingSpace = [NSLayoutConstraint constraintWithItem:_qrView
 																		 attribute:NSLayoutAttributeTrailing
 																		 relatedBy:NSLayoutRelationEqual
 																			toItem:_pickerSubviewButton
@@ -64,22 +65,22 @@
 	NSLayoutConstraint *closeBtnTopSpace = [NSLayoutConstraint constraintWithItem:_pickerSubviewButton
 																		attribute:NSLayoutAttributeTop
 																		relatedBy:NSLayoutRelationEqual
-																		   toItem:self.qrView
+																		   toItem:_qrView
 																		attribute:NSLayoutAttributeTop
 																	   multiplier:1.0
 																		 constant:20];
-	[self.qrView addConstraint:closeBtnTrailingSpace];
-	[self.qrView addConstraint:closeBtnTopSpace];
+	[_qrView addConstraint:closeBtnTrailingSpace];
+	[_qrView addConstraint:closeBtnTopSpace];
 }
 
 - (IBAction)textFieldGotFocus:(UITextField *)sender {
-	self.activeTextField = sender;
-	self.activeTextField.delegate = self;
+	_activeTextField = sender;
+	_activeTextField.delegate = self;
 }
 
 - (IBAction)hideKeyboard:(UITapGestureRecognizer *)sender {
-	if (self.activeTextField) {
-		[self.activeTextField resignFirstResponder];
+	if (_activeTextField) {
+		[_activeTextField resignFirstResponder];
 	}
 }
 
@@ -88,16 +89,17 @@
 		[_issueDescription becomeFirstResponder];
 	} else if (textField == _issueDescription) {
 		[_issueDescription resignFirstResponder];
+		[self sendIssueToServer];
 	}
 	return YES;
 }
 
 - (void)closePickerSubView {
-	[self.pickerSubviewButton removeFromSuperview];
-	[self.scanditPicker.view removeFromSuperview];
-	self.scanditPicker = nil;
+	[_pickerSubviewButton removeFromSuperview];
+	[_scanditPicker.view removeFromSuperview];
+	_scanditPicker = nil;
 	
-	self.mainView.alpha = 1.0;
+	_mainView.alpha = 1.0;
 }
 
 - (void)scanditSDKOverlayController:(ScanditSDKOverlayController *)overlayController didCancelWithStatus:(NSDictionary *)status {
@@ -110,11 +112,11 @@
 }
 
 - (void)scanditSDKOverlayController:(ScanditSDKOverlayController *)overlayController didScanBarcode:(NSDictionary *)barcode {
-	if (self.scanditPicker) {
+	if (_scanditPicker) {
 		NSString *barcodeValue = [barcode objectForKey:@"barcode"];
 		
 		if (barcodeValue) {
-			self.issueLocation.text = barcodeValue;
+			_issueLocation.text = barcodeValue;
 		}
 		
 		[self closePickerSubView];

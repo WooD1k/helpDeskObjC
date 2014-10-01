@@ -58,7 +58,7 @@
                                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Location" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="429-Hg-yCw">
                                                 <rect key="frame" x="0.0" y="0.0" width="475" height="30"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                <textInputTraits key="textInputTraits"/>
+                                                <textInputTraits key="textInputTraits" returnKeyType="next"/>
                                                 <connections>
                                                     <action selector="textFieldGotFocus:" destination="BYZ-38-t0r" eventType="editingDidBegin" id="U4N-IK-BH0"/>
                                                 </connections>
@@ -90,7 +90,7 @@
                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Description" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="GGZ-Uy-La1">
                                         <rect key="frame" x="40" y="600" width="520" height="30"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                        <textInputTraits key="textInputTraits"/>
+                                        <textInputTraits key="textInputTraits" returnKeyType="go"/>
                                         <connections>
                                             <action selector="textFieldGotFocus:" destination="BYZ-38-t0r" eventType="editingDidBegin" id="5Es-oI-W7C"/>
                                         </connections>
@@ -101,7 +101,7 @@
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                         <connections>
-                                            <action selector="sendIssueToServer:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ACa-Kw-HIo"/>
+                                            <action selector="sendIssueToServer" destination="BYZ-38-t0r" eventType="touchUpInside" id="tO8-lw-iIZ"/>
                                         </connections>
                                     </button>
                                 </subviews>
