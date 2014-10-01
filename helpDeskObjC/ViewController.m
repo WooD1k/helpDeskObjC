@@ -13,7 +13,7 @@
 @end
 
 @implementation ViewController
-
+#pragma mark - view lifecycle
 - (void)viewDidLoad {
 	[super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
@@ -24,22 +24,35 @@
 	// Dispose of any resources that can be recreated.
 }
 
-- (IBAction)takePhoto:(UIButton *)sender {
-	_imagePicker = [[UIImagePickerController alloc] init];
-	_imagePicker.delegate = self;
-	
-	if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
-		_imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
-		_imagePicker.allowsEditing = true;
-		[_qrView addSubview:_imagePicker.view];
-		_mainView.alpha = 0.0;
-	}
-}
-
+#pragma mark - IBActions
 - (IBAction)sendIssueToServer {
 	NSLog(@"send issue");
 }
 
+- (IBAction)textFieldGotFocus:(UITextField *)sender {
+	_activeTextField = sender;
+	_activeTextField.delegate = self;
+}
+
+- (IBAction)hideKeyboard:(UITapGestureRecognizer *)sender {
+	if (_activeTextField) {
+		[_activeTextField resignFirstResponder];
+	}
+}
+
+#pragma mark - UITextFieldDelegate method
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+	if (textField == _issueLocationTextField) {
+		[_issueDescriptionTextField becomeFirstResponder];
+	} else if (textField == _issueDescriptionTextField) {
+		[_issueDescriptionTextField resignFirstResponder];
+		[self sendIssueToServer];
+	}
+	
+	return YES;
+}
+
+#pragma mark - QR scanner functionality
 - (IBAction)scanQr:(UIButton *)sender {
 	_scanditPicker = [[ScanditSDKBarcodePicker alloc] initWithAppKey:@"mHbeTgp5EeSKsmLJfKEh7Cg56poI/nKQw2Hb8HRrI/U"];
 	[_scanditPicker.overlayController setTorchEnabled:false];
@@ -51,8 +64,8 @@
 	_closePickerButton.layer.borderWidth = 2;
 	
 	[_closePickerButton addTarget:self
-								 action:@selector(closePickerSubView)
-					   forControlEvents:UIControlEventTouchUpInside];
+						   action:@selector(closePickerSubView)
+				 forControlEvents:UIControlEventTouchUpInside];
 	
 	
 	[_qrView addSubview:_scanditPicker.view];
@@ -82,40 +95,7 @@
 	[_qrView addConstraint:closeBtnTopSpace];
 }
 
-- (IBAction)textFieldGotFocus:(UITextField *)sender {
-	_activeTextField = sender;
-	_activeTextField.delegate = self;
-}
-
-- (IBAction)hideKeyboard:(UITapGestureRecognizer *)sender {
-	if (_activeTextField) {
-		[_activeTextField resignFirstResponder];
-	}
-}
-
-- (BOOL)textFieldShouldReturn:(UITextField *)textField {
-	if (textField == _issueLocationTextField) {
-		[_issueDescriptionTextField becomeFirstResponder];
-	} else if (textField == _issueDescriptionTextField) {
-		[_issueDescriptionTextField resignFirstResponder];
-		[self sendIssueToServer];
-	}
-	return YES;
-}
-
-- (void)closePickerSubView {
-	if (_scanditPicker) {
-		[_closePickerButton removeFromSuperview];
-		[_scanditPicker.view removeFromSuperview];
-		_scanditPicker = nil;
-	} else if (_imagePicker) {
-		[_imagePicker.view removeFromSuperview];
-		_imagePicker = nil;
-	}
-	
-	_mainView.alpha = 1.0;
-}
-
+#pragma mark - ScanditSDKOverlayControllerDelegate methods
 - (void)scanditSDKOverlayController:(ScanditSDKOverlayController *)overlayController didCancelWithStatus:(NSDictionary *)status {
 	[self closePickerSubView];
 }
@@ -135,6 +115,20 @@
 	}
 }
 
+#pragma mark - takePhoto functionality
+- (IBAction)takePhoto:(UIButton *)sender {
+	_imagePicker = [[UIImagePickerController alloc] init];
+	_imagePicker.delegate = self;
+	
+	if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+		_imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
+		_imagePicker.allowsEditing = true;
+		[_qrView addSubview:_imagePicker.view];
+		_mainView.alpha = 0.0;
+	}
+}
+
+#pragma mark - UIImagePickerControllerDelegate methods
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info{
 	UIImage *photo = [info objectForKey:@"UIImagePickerControllerEditedImage"];
 	
@@ -147,6 +141,20 @@
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
 	[self closePickerSubView];
+}
+
+#pragma mark - hide QR\Photo
+- (void)closePickerSubView {
+	if (_scanditPicker) {
+		[_closePickerButton removeFromSuperview];
+		[_scanditPicker.view removeFromSuperview];
+		_scanditPicker = nil;
+	} else if (_imagePicker) {
+		[_imagePicker.view removeFromSuperview];
+		_imagePicker = nil;
+	}
+	
+	_mainView.alpha = 1.0;
 }
 
 @end
