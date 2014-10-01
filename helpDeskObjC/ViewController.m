@@ -25,6 +25,15 @@
 }
 
 - (IBAction)takePhoto:(UIButton *)sender {
+	_imagePicker = [[UIImagePickerController alloc] init];
+	_imagePicker.delegate = self;
+	
+	if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+		_imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
+		_imagePicker.allowsEditing = true;
+		[_qrView addSubview:_imagePicker.view];
+		_mainView.alpha = 0.0;
+	}
 }
 
 - (IBAction)sendIssueToServer {
@@ -108,12 +117,10 @@
 }
 
 - (void)scanditSDKOverlayController:(ScanditSDKOverlayController *)overlayController didCancelWithStatus:(NSDictionary *)status {
-	NSLog(@"didCancelWithStatus");
 	[self closePickerSubView];
 }
 
 - (void)scanditSDKOverlayController:(ScanditSDKOverlayController *)overlayController didManualSearch:(NSString *)text {
-	NSLog(@"didManualSearch");
 }
 
 - (void)scanditSDKOverlayController:(ScanditSDKOverlayController *)overlayController didScanBarcode:(NSDictionary *)barcode {
@@ -129,12 +136,16 @@
 }
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info{
-	NSLog(@"didFinishPickingMediaWithInfo: %@", info);
-//	[self closePickerSubView];
+	UIImage *photo = [info objectForKey:@"UIImagePickerControllerEditedImage"];
+	
+	if (photo) {
+		_photoImageView.image = photo;
+	}
+	
+	[self closePickerSubView];
 }
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
-	NSLog(@"imagePickerControllerDidCancel");
 	[self closePickerSubView];
 }
 
