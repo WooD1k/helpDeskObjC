@@ -9,22 +9,23 @@
 #import <UIKit/UIKit.h>
 #import "ScanditSDKOverlayController.h"
 
-@interface ViewController : UIViewController <UITextFieldDelegate, ScanditSDKOverlayControllerDelegate>
+@interface ViewController : UIViewController <UITextFieldDelegate, ScanditSDKOverlayControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 @property (weak, nonatomic) IBOutlet UIView *mainView;
 @property (weak, nonatomic) IBOutlet UIView *qrView;
 
-@property (weak, nonatomic) IBOutlet UIImageView *photo;
-@property (weak, nonatomic) IBOutlet UIButton *takePhoto;
-@property (weak, nonatomic) IBOutlet UIButton *qr;
+@property (weak, nonatomic) IBOutlet UIImageView *photoImageView;
+@property (weak, nonatomic) IBOutlet UIButton *takePhotoButton;
+@property (weak, nonatomic) IBOutlet UIButton *qrButton;
 
-@property (weak, nonatomic) IBOutlet UITextField *issueLocation;
-@property (weak, nonatomic) IBOutlet UITextField *issueDescription;
-@property (weak, nonatomic) IBOutlet UIButton *sendIssue;
+@property (weak, nonatomic) IBOutlet UITextField *issueLocationTextField;
+@property (weak, nonatomic) IBOutlet UITextField *issueDescriptionTextField;
+@property (weak, nonatomic) IBOutlet UIButton *sendIssueButton;
 
-@property(weak, nonatomic) IBOutlet UITextField *activeTextField;
+@property (weak, nonatomic) UITextField *activeTextField;
 
-@property(nonatomic) ScanditSDKBarcodePicker *scanditPicker;
-@property(nonatomic) UIButton *pickerSubviewButton;
+@property (nonatomic) ScanditSDKBarcodePicker *scanditPicker;
+@property (nonatomic) UIButton *closePickerButton;
+@property (nonatomic) UIImagePickerController *imagePicker;
 
 - (IBAction)takePhoto:(UIButton *)sender;
 - (IBAction)sendIssueToServer;

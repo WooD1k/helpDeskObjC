@@ -35,19 +35,19 @@
 	_scanditPicker = [[ScanditSDKBarcodePicker alloc] initWithAppKey:@"mHbeTgp5EeSKsmLJfKEh7Cg56poI/nKQw2Hb8HRrI/U"];
 	[_scanditPicker.overlayController setTorchEnabled:false];
 	
-	_pickerSubviewButton = [[UIButton alloc] init];
-	[_pickerSubviewButton setTranslatesAutoresizingMaskIntoConstraints:false];
+	_closePickerButton = [[UIButton alloc] init];
+	[_closePickerButton setTranslatesAutoresizingMaskIntoConstraints:false];
 	
-	_pickerSubviewButton.layer.borderColor = [UIColor redColor].CGColor;
-	_pickerSubviewButton.layer.borderWidth = 2;
+	_closePickerButton.layer.borderColor = [UIColor redColor].CGColor;
+	_closePickerButton.layer.borderWidth = 2;
 	
-	[_pickerSubviewButton addTarget:self
+	[_closePickerButton addTarget:self
 								 action:@selector(closePickerSubView)
 					   forControlEvents:UIControlEventTouchUpInside];
 	
 	
 	[_qrView addSubview:_scanditPicker.view];
-	[_qrView addSubview:_pickerSubviewButton];
+	[_qrView addSubview:_closePickerButton];
 	
 	_scanditPicker.overlayController.delegate = self;
 	
@@ -55,14 +55,14 @@
 	_mainView.alpha = 0.0;
 	
 	NSLayoutConstraint *closeBtnTrailingSpace = [NSLayoutConstraint constraintWithItem:_qrView
-																		 attribute:NSLayoutAttributeTrailing
-																		 relatedBy:NSLayoutRelationEqual
-																			toItem:_pickerSubviewButton
-																		 attribute:NSLayoutAttributeTrailing
-																		multiplier:1.0
-																		  constant:10];
+																			 attribute:NSLayoutAttributeTrailing
+																			 relatedBy:NSLayoutRelationEqual
+																				toItem:_closePickerButton
+																			 attribute:NSLayoutAttributeTrailing
+																			multiplier:1.0
+																			  constant:10];
 	
-	NSLayoutConstraint *closeBtnTopSpace = [NSLayoutConstraint constraintWithItem:_pickerSubviewButton
+	NSLayoutConstraint *closeBtnTopSpace = [NSLayoutConstraint constraintWithItem:_closePickerButton
 																		attribute:NSLayoutAttributeTop
 																		relatedBy:NSLayoutRelationEqual
 																		   toItem:_qrView
@@ -85,19 +85,24 @@
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
-	if (textField == _issueLocation) {
-		[_issueDescription becomeFirstResponder];
-	} else if (textField == _issueDescription) {
-		[_issueDescription resignFirstResponder];
+	if (textField == _issueLocationTextField) {
+		[_issueDescriptionTextField becomeFirstResponder];
+	} else if (textField == _issueDescriptionTextField) {
+		[_issueDescriptionTextField resignFirstResponder];
 		[self sendIssueToServer];
 	}
 	return YES;
 }
 
 - (void)closePickerSubView {
-	[_pickerSubviewButton removeFromSuperview];
-	[_scanditPicker.view removeFromSuperview];
-	_scanditPicker = nil;
+	if (_scanditPicker) {
+		[_closePickerButton removeFromSuperview];
+		[_scanditPicker.view removeFromSuperview];
+		_scanditPicker = nil;
+	} else if (_imagePicker) {
+		[_imagePicker.view removeFromSuperview];
+		_imagePicker = nil;
+	}
 	
 	_mainView.alpha = 1.0;
 }
@@ -116,11 +121,21 @@
 		NSString *barcodeValue = [barcode objectForKey:@"barcode"];
 		
 		if (barcodeValue) {
-			_issueLocation.text = barcodeValue;
+			_issueLocationTextField.text = barcodeValue;
 		}
 		
 		[self closePickerSubView];
 	}
+}
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info{
+	NSLog(@"didFinishPickingMediaWithInfo: %@", info);
+//	[self closePickerSubView];
+}
+
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
+	NSLog(@"imagePickerControllerDidCancel");
+	[self closePickerSubView];
 }
 
 @end

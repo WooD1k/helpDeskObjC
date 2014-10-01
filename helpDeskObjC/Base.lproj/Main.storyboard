@@ -105,6 +105,7 @@
                                         </connections>
                                     </button>
                                 </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="centerX" secondItem="mpl-ck-VMC" secondAttribute="centerX" id="46j-lZ-oZV"/>
                                     <constraint firstItem="KNN-eg-r14" firstAttribute="width" secondItem="uhb-MC-3dE" secondAttribute="width" id="BwP-cm-EaP"/>
@@ -139,14 +140,14 @@
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <size key="freeformSize" width="600" height="800"/>
                     <connections>
-                        <outlet property="issueDescription" destination="GGZ-Uy-La1" id="iem-o5-c7e"/>
-                        <outlet property="issueLocation" destination="429-Hg-yCw" id="AHK-3Q-JNa"/>
+                        <outlet property="issueDescriptionTextField" destination="GGZ-Uy-La1" id="c4T-PB-apf"/>
+                        <outlet property="issueLocationTextField" destination="429-Hg-yCw" id="Omp-7o-V6A"/>
                         <outlet property="mainView" destination="NQ0-HM-6oe" id="gPY-EO-enA"/>
-                        <outlet property="photo" destination="qpx-C9-Ggb" id="LGF-hU-7aM"/>
-                        <outlet property="qr" destination="yEP-s8-lpA" id="pJi-24-9Z8"/>
+                        <outlet property="photoImageView" destination="qpx-C9-Ggb" id="YyH-St-EhN"/>
+                        <outlet property="qrButton" destination="yEP-s8-lpA" id="7Vc-Ma-gnk"/>
                         <outlet property="qrView" destination="OOB-Na-5B3" id="pKJ-1S-IVi"/>
-                        <outlet property="sendIssue" destination="mpl-ck-VMC" id="owy-uH-FSA"/>
-                        <outlet property="takePhoto" destination="uhb-MC-3dE" id="2PL-p5-nD5"/>
+                        <outlet property="sendIssueButton" destination="mpl-ck-VMC" id="BBF-Jg-r04"/>
+                        <outlet property="takePhotoButton" destination="uhb-MC-3dE" id="nIc-SC-nFX"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
