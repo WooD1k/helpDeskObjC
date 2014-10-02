@@ -56,6 +56,7 @@
 		CB7D390219DABB18006182EC /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB7D390119DABB18006182EC /* QuartzCore.framework */; };
 		CB7D390419DABB20006182EC /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB7D390319DABB20006182EC /* CoreLocation.framework */; };
 		CB7D390619DABB2A006182EC /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB7D390519DABB2A006182EC /* SystemConfiguration.framework */; };
+		CB8823EB19DD464C00E41F21 /* issuesListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CB8823EA19DD464C00E41F21 /* issuesListViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -129,6 +130,8 @@
 		CB7D390119DABB18006182EC /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		CB7D390319DABB20006182EC /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		CB7D390519DABB2A006182EC /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		CB8823E919DD464C00E41F21 /* issuesListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = issuesListViewController.h; sourceTree = "<group>"; };
+		CB8823EA19DD464C00E41F21 /* issuesListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = issuesListViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -230,6 +233,8 @@
 				CB7D389F19DA8F8F006182EC /* AppDelegate.m */,
 				CB7D38A119DA8F8F006182EC /* ViewController.h */,
 				CB7D38A219DA8F8F006182EC /* ViewController.m */,
+				CB8823E919DD464C00E41F21 /* issuesListViewController.h */,
+				CB8823EA19DD464C00E41F21 /* issuesListViewController.m */,
 				CB7D38A419DA8F8F006182EC /* Main.storyboard */,
 				CB7D38A719DA8F8F006182EC /* Images.xcassets */,
 				CB7D38A919DA8F8F006182EC /* LaunchScreen.xib */,
@@ -415,6 +420,7 @@
 				CB7D38A319DA8F8F006182EC /* ViewController.m in Sources */,
 				CB7D38E019DABA58006182EC /* empty.cpp in Sources */,
 				CB7D38A019DA8F8F006182EC /* AppDelegate.m in Sources */,
+				CB8823EB19DD464C00E41F21 /* issuesListViewController.m in Sources */,
 				CB7D389D19DA8F8F006182EC /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
