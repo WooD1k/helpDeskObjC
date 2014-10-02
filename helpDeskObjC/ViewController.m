@@ -7,6 +7,7 @@
 //
 
 #import "ViewController.h"
+#import "SWRevealViewController.h"
 #import <Parse/Parse.h>
 
 @interface ViewController ()
@@ -18,6 +19,11 @@
 - (void)viewDidLoad {
 	[super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
+	
+	_sidebarButton.target = self.revealViewController;
+	_sidebarButton.action = @selector(revealToggle:);
+	
+	[self.view addGestureRecognizer:self.revealViewController.panGestureRecognizer];
 }
 
 - (void)didReceiveMemoryWarning {

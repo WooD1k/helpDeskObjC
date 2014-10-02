@@ -26,6 +26,7 @@
 @property (nonatomic) ScanditSDKBarcodePicker *scanditPicker;
 @property (nonatomic) UIButton *closePickerButton;
 @property (nonatomic) UIImagePickerController *imagePicker;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *sidebarButton;
 
 - (IBAction)takePhoto:(UIButton *)sender;
 - (IBAction)sendIssueToServer;

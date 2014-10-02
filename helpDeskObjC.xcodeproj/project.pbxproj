@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CB0C65D219DDACC50046837A /* SWRevealViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CB0C65D019DDACC50046837A /* SWRevealViewController.m */; };
 		CB243F2519DC2C1000E73DF4 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB243F2419DC2C1000E73DF4 /* CFNetwork.framework */; };
 		CB243F2719DC2C2000E73DF4 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB243F2619DC2C2000E73DF4 /* MobileCoreServices.framework */; };
 		CB243FA419DC4A0900E73DF4 /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB243FA119DC4A0900E73DF4 /* Parse.framework */; };
@@ -70,6 +71,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		CB0C65D019DDACC50046837A /* SWRevealViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SWRevealViewController.m; sourceTree = "<group>"; };
+		CB0C65D119DDACC50046837A /* SWRevealViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SWRevealViewController.h; sourceTree = "<group>"; };
 		CB243F2419DC2C1000E73DF4 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		CB243F2619DC2C2000E73DF4 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		CB243FA019DC4A0900E73DF4 /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Bolts.framework; sourceTree = "<group>"; };
@@ -207,6 +210,15 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		CB0C65CF19DDACA40046837A /* Library */ = {
+			isa = PBXGroup;
+			children = (
+				CB0C65D019DDACC50046837A /* SWRevealViewController.m */,
+				CB0C65D119DDACC50046837A /* SWRevealViewController.h */,
+			);
+			name = Library;
+			sourceTree = "<group>";
+		};
 		CB7D388E19DA8F8F006182EC = {
 			isa = PBXGroup;
 			children = (
@@ -230,6 +242,7 @@
 			isa = PBXGroup;
 			children = (
 				CB7D389E19DA8F8F006182EC /* AppDelegate.h */,
+				CB0C65CF19DDACA40046837A /* Library */,
 				CB7D389F19DA8F8F006182EC /* AppDelegate.m */,
 				CB7D38A119DA8F8F006182EC /* ViewController.h */,
 				CB7D38A219DA8F8F006182EC /* ViewController.m */,
@@ -422,6 +435,7 @@
 				CB7D38A019DA8F8F006182EC /* AppDelegate.m in Sources */,
 				CB8823EB19DD464C00E41F21 /* issuesListViewController.m in Sources */,
 				CB7D389D19DA8F8F006182EC /* main.m in Sources */,
+				CB0C65D219DDACC50046837A /* SWRevealViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
