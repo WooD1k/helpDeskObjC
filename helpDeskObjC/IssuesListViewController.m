@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 Alexey Chulochnikov. All rights reserved.
 //
 
-#import "issuesListViewController.h"
+#import "IssuesListViewController.h"
 #import <Parse/Parse.h>
 
 @interface IssuesListViewController ()
