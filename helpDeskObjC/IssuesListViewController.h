@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface issuesListViewController : UIViewController <UICollectionViewDelegate, UICollectionViewDataSource>
+@interface IssuesListViewController : UIViewController <UICollectionViewDelegate, UICollectionViewDataSource>
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
 
 @property (nonatomic) NSUInteger issuesQty;

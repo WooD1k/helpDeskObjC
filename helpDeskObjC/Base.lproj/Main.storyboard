@@ -253,10 +253,10 @@
             </objects>
             <point key="canvasLocation" x="131" y="696"/>
         </scene>
-        <!--issuesListViewController-->
+        <!--IssuesListViewController-->
         <scene sceneID="Ozf-AL-qya">
             <objects>
-                <viewController id="dni-3Z-gNn" userLabel="issuesListViewController" customClass="IssuesListViewController" sceneMemberID="viewController">
+                <viewController id="dni-3Z-gNn" userLabel="IssuesListViewController" customClass="IssuesListViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="OBF-zy-wrj"/>
                         <viewControllerLayoutGuide type="bottom" id="FIB-15-Ua2"/>

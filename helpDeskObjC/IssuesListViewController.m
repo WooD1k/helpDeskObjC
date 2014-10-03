@@ -9,11 +9,11 @@
 #import "issuesListViewController.h"
 #import <Parse/Parse.h>
 
-@interface issuesListViewController ()
+@interface IssuesListViewController ()
 
 @end
 
-@implementation issuesListViewController
+@implementation IssuesListViewController
 
 - (void)viewWillAppear:(BOOL)animated {
 	PFQuery* issuesQuery = [PFQuery queryWithClassName:@"issues"];
