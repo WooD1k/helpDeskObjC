@@ -6,15 +6,15 @@
 //  Copyright (c) 2014 Alexey Chulochnikov. All rights reserved.
 //
 
-#import "ViewController.h"
+#import "MainViewController.h"
 #import "SWRevealViewController.h"
 #import <Parse/Parse.h>
 
-@interface ViewController ()
+@interface MainViewController ()
 
 @end
 
-@implementation ViewController
+@implementation MainViewController
 #pragma mark - view lifecycle
 - (void)viewDidLoad {
 	[super viewDidLoad];
@@ -160,6 +160,7 @@
 	[_qrView addConstraint:closeBtnTopSpace];
 	
 	[self hideKeyboard];
+	[self hideNavigationBar];
 }
 
 #pragma mark - ScanditSDKOverlayControllerDelegate methods
@@ -193,8 +194,7 @@
 		[_qrView addSubview:_imagePicker.view];
 		_mainView.alpha = 0.0;
 		
-		[[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
-		[[self navigationController] setNavigationBarHidden:YES animated:YES];
+		[self hideNavigationBar];
 		[self hideKeyboard];
 	}
 }
@@ -216,13 +216,14 @@
 
 #pragma mark - hide QR\Photo
 - (void)closePickerSubView {
+	[[self navigationController] setNavigationBarHidden:NO animated:YES];
+	[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationSlide];
+	
 	if (_scanditPicker) {
 		[_closePickerButton removeFromSuperview];
 		[_scanditPicker.view removeFromSuperview];
 		_scanditPicker = nil;
 	} else if (_imagePicker) {
-		[[self navigationController] setNavigationBarHidden:NO animated:YES];
-		
 		[_imagePicker.view removeFromSuperview];
 		_imagePicker = nil;
 	}
@@ -230,10 +231,16 @@
 	_mainView.alpha = 1.0;
 }
 
+#pragma mark - hide system UI elements
 - (void)hideKeyboard{
 	if (_activeTextField) {
 		[_activeTextField resignFirstResponder];
 	}
+}
+
+- (void)hideNavigationBar {
+	[[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
+	[[self navigationController] setNavigationBarHidden:YES animated:YES];
 }
 
 @end

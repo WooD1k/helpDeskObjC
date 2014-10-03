@@ -8,13 +8,15 @@
 
 #import "IssuesListViewController.h"
 #import <Parse/Parse.h>
+#import "SWRevealViewController.h"
 
 @interface IssuesListViewController ()
-
+@property (nonatomic) IBOutlet UIBarButtonItem* revealButtonItem;
 @end
 
 @implementation IssuesListViewController
 
+#pragma mark - View lifecycle
 - (void)viewWillAppear:(BOOL)animated {
 	PFQuery* issuesQuery = [PFQuery queryWithClassName:@"issues"];
 	
@@ -33,6 +35,14 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+	
+	SWRevealViewController *revealViewController = self.revealViewController;
+	if ( revealViewController )
+	{
+		[self.revealButtonItem setTarget: revealViewController];
+		[self.revealButtonItem setAction: @selector( revealToggle: )];
+		[self.view addGestureRecognizer:revealViewController.panGestureRecognizer];
+	}
 }
 
 - (void)didReceiveMemoryWarning {
@@ -59,16 +69,7 @@
 	return cell;
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
-
+#pragma mark - IBAction's
 - (IBAction)closeResentIssues:(UIButton *)sender {
 	[self dismissViewControllerAnimated:true completion:nil];
 }

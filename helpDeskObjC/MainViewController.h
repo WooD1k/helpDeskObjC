@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "ScanditSDKOverlayController.h"
 
-@interface ViewController : UIViewController <UITextFieldDelegate, ScanditSDKOverlayControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
+@interface MainViewController : UIViewController <UITextFieldDelegate, ScanditSDKOverlayControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 @property (weak, nonatomic) IBOutlet UIView *mainView;
 @property (weak, nonatomic) IBOutlet UIView *qrView;
 
@@ -19,7 +19,6 @@
 
 @property (weak, nonatomic) IBOutlet UITextField *issueLocationTextField;
 @property (weak, nonatomic) IBOutlet UITextField *issueDescriptionTextField;
-@property (weak, nonatomic) IBOutlet UIButton *sendIssueButton;
 
 @property (weak, nonatomic) UITextField *activeTextField;
 
