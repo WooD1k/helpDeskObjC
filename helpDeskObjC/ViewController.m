@@ -193,6 +193,8 @@
 		[_qrView addSubview:_imagePicker.view];
 		_mainView.alpha = 0.0;
 		
+		[[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
+		[[self navigationController] setNavigationBarHidden:YES animated:YES];
 		[self hideKeyboard];
 	}
 }
@@ -219,6 +221,8 @@
 		[_scanditPicker.view removeFromSuperview];
 		_scanditPicker = nil;
 	} else if (_imagePicker) {
+		[[self navigationController] setNavigationBarHidden:NO animated:YES];
+		
 		[_imagePicker.view removeFromSuperview];
 		_imagePicker = nil;
 	}

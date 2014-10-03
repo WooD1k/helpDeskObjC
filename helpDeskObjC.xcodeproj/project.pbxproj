@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		CB0C65D219DDACC50046837A /* SWRevealViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CB0C65D019DDACC50046837A /* SWRevealViewController.m */; };
+		CB0C65D819DEA49D0046837A /* LeftMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CB0C65D719DEA49D0046837A /* LeftMenuViewController.m */; };
 		CB243F2519DC2C1000E73DF4 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB243F2419DC2C1000E73DF4 /* CFNetwork.framework */; };
 		CB243F2719DC2C2000E73DF4 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB243F2619DC2C2000E73DF4 /* MobileCoreServices.framework */; };
 		CB243FA419DC4A0900E73DF4 /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB243FA119DC4A0900E73DF4 /* Parse.framework */; };
@@ -57,7 +58,7 @@
 		CB7D390219DABB18006182EC /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB7D390119DABB18006182EC /* QuartzCore.framework */; };
 		CB7D390419DABB20006182EC /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB7D390319DABB20006182EC /* CoreLocation.framework */; };
 		CB7D390619DABB2A006182EC /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB7D390519DABB2A006182EC /* SystemConfiguration.framework */; };
-		CB8823EB19DD464C00E41F21 /* issuesListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CB8823EA19DD464C00E41F21 /* issuesListViewController.m */; };
+		CB8823EB19DD464C00E41F21 /* IssuesListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CB8823EA19DD464C00E41F21 /* IssuesListViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -73,6 +74,8 @@
 /* Begin PBXFileReference section */
 		CB0C65D019DDACC50046837A /* SWRevealViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SWRevealViewController.m; sourceTree = "<group>"; };
 		CB0C65D119DDACC50046837A /* SWRevealViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SWRevealViewController.h; sourceTree = "<group>"; };
+		CB0C65D619DEA49D0046837A /* LeftMenuViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LeftMenuViewController.h; sourceTree = "<group>"; };
+		CB0C65D719DEA49D0046837A /* LeftMenuViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LeftMenuViewController.m; sourceTree = "<group>"; };
 		CB243F2419DC2C1000E73DF4 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		CB243F2619DC2C2000E73DF4 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		CB243FA019DC4A0900E73DF4 /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Bolts.framework; sourceTree = "<group>"; };
@@ -133,8 +136,8 @@
 		CB7D390119DABB18006182EC /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		CB7D390319DABB20006182EC /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		CB7D390519DABB2A006182EC /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
-		CB8823E919DD464C00E41F21 /* issuesListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = issuesListViewController.h; sourceTree = "<group>"; };
-		CB8823EA19DD464C00E41F21 /* issuesListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = issuesListViewController.m; sourceTree = "<group>"; };
+		CB8823E919DD464C00E41F21 /* IssuesListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IssuesListViewController.h; sourceTree = "<group>"; };
+		CB8823EA19DD464C00E41F21 /* IssuesListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IssuesListViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -246,8 +249,10 @@
 				CB7D389F19DA8F8F006182EC /* AppDelegate.m */,
 				CB7D38A119DA8F8F006182EC /* ViewController.h */,
 				CB7D38A219DA8F8F006182EC /* ViewController.m */,
-				CB8823E919DD464C00E41F21 /* issuesListViewController.h */,
-				CB8823EA19DD464C00E41F21 /* issuesListViewController.m */,
+				CB0C65D619DEA49D0046837A /* LeftMenuViewController.h */,
+				CB0C65D719DEA49D0046837A /* LeftMenuViewController.m */,
+				CB8823E919DD464C00E41F21 /* IssuesListViewController.h */,
+				CB8823EA19DD464C00E41F21 /* IssuesListViewController.m */,
 				CB7D38A419DA8F8F006182EC /* Main.storyboard */,
 				CB7D38A719DA8F8F006182EC /* Images.xcassets */,
 				CB7D38A919DA8F8F006182EC /* LaunchScreen.xib */,
@@ -433,7 +438,8 @@
 				CB7D38A319DA8F8F006182EC /* ViewController.m in Sources */,
 				CB7D38E019DABA58006182EC /* empty.cpp in Sources */,
 				CB7D38A019DA8F8F006182EC /* AppDelegate.m in Sources */,
-				CB8823EB19DD464C00E41F21 /* issuesListViewController.m in Sources */,
+				CB8823EB19DD464C00E41F21 /* IssuesListViewController.m in Sources */,
+				CB0C65D819DEA49D0046837A /* LeftMenuViewController.m in Sources */,
 				CB7D389D19DA8F8F006182EC /* main.m in Sources */,
 				CB0C65D219DDACC50046837A /* SWRevealViewController.m in Sources */,
 			);

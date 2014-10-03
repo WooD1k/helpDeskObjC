@@ -3,7 +3,6 @@
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6238"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
-        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
         <!--Reveal View Controller-->
@@ -28,10 +27,10 @@
             </objects>
             <point key="canvasLocation" x="-1077" y="-234"/>
         </scene>
-        <!--View Controller-->
+        <!--Left Menu View Controller-->
         <scene sceneID="0dA-Kc-wFD">
             <objects>
-                <viewController id="dXj-oq-1UC" sceneMemberID="viewController">
+                <viewController id="dXj-oq-1UC" customClass="LeftMenuViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="KQq-rP-7D3"/>
                         <viewControllerLayoutGuide type="bottom" id="ycO-QG-eaA"/>
@@ -39,7 +38,28 @@
                     <view key="view" contentMode="scaleToFill" id="mas-GB-mQx">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="50U-tI-jhn">
+                                <rect key="frame" x="0.0" y="20" width="600" height="580"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <prototypes>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="menuCell" id="qgg-ui-k7H">
+                                        <rect key="frame" x="0.0" y="0.0" width="600" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="qgg-ui-k7H" id="bew-fT-E2y">
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </prototypes>
+                            </tableView>
+                        </subviews>
                         <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="50U-tI-jhn" secondAttribute="trailing" id="1dX-zw-iuC"/>
+                            <constraint firstItem="ycO-QG-eaA" firstAttribute="top" secondItem="50U-tI-jhn" secondAttribute="bottom" id="HZg-N1-2rF"/>
+                            <constraint firstItem="50U-tI-jhn" firstAttribute="top" secondItem="KQq-rP-7D3" secondAttribute="bottom" id="tYk-mL-C58"/>
+                            <constraint firstItem="50U-tI-jhn" firstAttribute="leading" secondItem="mas-GB-mQx" secondAttribute="leading" id="w61-PY-182"/>
+                        </constraints>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ZAO-X4-KQ8" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -236,7 +256,7 @@
         <!--issuesListViewController-->
         <scene sceneID="Ozf-AL-qya">
             <objects>
-                <viewController id="dni-3Z-gNn" userLabel="issuesListViewController" customClass="issuesListViewController" sceneMemberID="viewController">
+                <viewController id="dni-3Z-gNn" userLabel="issuesListViewController" customClass="IssuesListViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="OBF-zy-wrj"/>
                         <viewControllerLayoutGuide type="bottom" id="FIB-15-Ua2"/>
@@ -245,17 +265,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="800"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ChU-9q-aCs">
-                                <rect key="frame" x="544" y="28" width="40" height="30"/>
-                                <state key="normal" title="Close">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="closeResentIssues:" destination="dni-3Z-gNn" eventType="touchUpInside" id="eBz-BZ-yzJ"/>
-                                </connections>
-                            </button>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" indicatorStyle="white" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="DO3-qN-gnE">
-                                <rect key="frame" x="0.0" y="66" width="600" height="734"/>
+                                <rect key="frame" x="0.0" y="69" width="600" height="731"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="gdg-2a-zsZ">
                                     <size key="itemSize" width="100" height="100"/>
@@ -270,28 +281,9 @@
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                             <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
                                             <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="7rn-cb-v17">
-                                                    <rect key="frame" x="8" y="8" width="84" height="84"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="width" constant="200" id="Llr-5L-SIJ"/>
-                                                    </constraints>
-                                                    <variation key="default">
-                                                        <mask key="constraints">
-                                                            <exclude reference="Llr-5L-SIJ"/>
-                                                        </mask>
-                                                    </variation>
-                                                </imageView>
-                                            </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </view>
                                         <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
-                                        <constraints>
-                                            <constraint firstItem="7rn-cb-v17" firstAttribute="leading" secondItem="oPi-5I-3ho" secondAttribute="leadingMargin" id="5oK-kB-1y7"/>
-                                            <constraint firstAttribute="bottomMargin" secondItem="7rn-cb-v17" secondAttribute="bottom" id="Czg-Mq-erk"/>
-                                            <constraint firstAttribute="trailingMargin" secondItem="7rn-cb-v17" secondAttribute="trailing" id="fiH-0x-pDF"/>
-                                            <constraint firstItem="7rn-cb-v17" firstAttribute="top" secondItem="oPi-5I-3ho" secondAttribute="topMargin" id="tcq-Jb-92J"/>
-                                        </constraints>
                                     </collectionViewCell>
                                 </cells>
                                 <connections>
@@ -302,12 +294,10 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="DO3-qN-gnE" firstAttribute="leading" secondItem="r1C-rg-w72" secondAttribute="leading" id="1gI-mg-RLG"/>
-                            <constraint firstAttribute="trailing" secondItem="DO3-qN-gnE" secondAttribute="trailing" id="AmG-1L-ozf"/>
-                            <constraint firstItem="DO3-qN-gnE" firstAttribute="top" secondItem="ChU-9q-aCs" secondAttribute="bottom" constant="8" id="VpS-aI-PdZ"/>
-                            <constraint firstItem="ChU-9q-aCs" firstAttribute="trailing" secondItem="r1C-rg-w72" secondAttribute="trailingMargin" id="Wyf-QO-aN6"/>
-                            <constraint firstItem="FIB-15-Ua2" firstAttribute="top" secondItem="DO3-qN-gnE" secondAttribute="bottom" id="Yu4-Hw-ikn"/>
-                            <constraint firstItem="ChU-9q-aCs" firstAttribute="top" secondItem="OBF-zy-wrj" secondAttribute="bottom" constant="8" id="oas-Sw-XtY"/>
+                            <constraint firstItem="FIB-15-Ua2" firstAttribute="top" secondItem="DO3-qN-gnE" secondAttribute="bottom" id="C8i-No-ejW"/>
+                            <constraint firstItem="DO3-qN-gnE" firstAttribute="leading" secondItem="r1C-rg-w72" secondAttribute="leading" id="Guq-6g-n3c"/>
+                            <constraint firstAttribute="trailing" secondItem="DO3-qN-gnE" secondAttribute="trailing" id="OAT-7Y-nrQ"/>
+                            <constraint firstItem="DO3-qN-gnE" firstAttribute="top" secondItem="OBF-zy-wrj" secondAttribute="top" constant="5" id="Y1M-4B-Sgx"/>
                         </constraints>
                     </view>
                     <connections>
