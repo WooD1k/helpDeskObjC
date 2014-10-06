@@ -18,6 +18,7 @@
 		CB243FB119DC4DBC00E73DF4 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB243FB019DC4DBC00E73DF4 /* Social.framework */; };
 		CB243FB319DC4DF100E73DF4 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB243FB219DC4DF100E73DF4 /* Accounts.framework */; };
 		CB243FB519DC4EAF00E73DF4 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB243FB419DC4EAF00E73DF4 /* FacebookSDK.framework */; };
+		CB6274D819E2D95500A9C4BB /* PTC75F.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CB6274D719E2D93E00A9C4BB /* PTC75F.ttf */; };
 		CB7D389D19DA8F8F006182EC /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = CB7D389C19DA8F8F006182EC /* main.m */; };
 		CB7D38A019DA8F8F006182EC /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = CB7D389F19DA8F8F006182EC /* AppDelegate.m */; };
 		CB7D38A319DA8F8F006182EC /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CB7D38A219DA8F8F006182EC /* MainViewController.m */; };
@@ -87,6 +88,7 @@
 		CB243FB019DC4DBC00E73DF4 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		CB243FB219DC4DF100E73DF4 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		CB243FB419DC4EAF00E73DF4 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
+		CB6274D719E2D93E00A9C4BB /* PTC75F.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = PTC75F.ttf; sourceTree = "<group>"; };
 		CB7D389719DA8F8F006182EC /* helpDeskObjC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = helpDeskObjC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CB7D389B19DA8F8F006182EC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CB7D389C19DA8F8F006182EC /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -222,6 +224,22 @@
 			name = Library;
 			sourceTree = "<group>";
 		};
+		CB6274D519E2D91A00A9C4BB /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				CB6274D619E2D92200A9C4BB /* Fonts */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		CB6274D619E2D92200A9C4BB /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				CB6274D719E2D93E00A9C4BB /* PTC75F.ttf */,
+			);
+			name = Fonts;
+			sourceTree = "<group>";
+		};
 		CB7D388E19DA8F8F006182EC = {
 			isa = PBXGroup;
 			children = (
@@ -245,6 +263,7 @@
 			isa = PBXGroup;
 			children = (
 				CB7D389E19DA8F8F006182EC /* AppDelegate.h */,
+				CB6274D519E2D91A00A9C4BB /* Resources */,
 				CB0C65CF19DDACA40046837A /* Library */,
 				CB7D389F19DA8F8F006182EC /* AppDelegate.m */,
 				CB7D38A119DA8F8F006182EC /* MainViewController.h */,
@@ -408,6 +427,7 @@
 				CB7D38A619DA8F8F006182EC /* Main.storyboard in Resources */,
 				CB7D38DD19DABA58006182EC /* camera-swap-icon@2x.png in Resources */,
 				CB7D38E219DABA58006182EC /* flashlight-turn-off-icon-pressed@2x.png in Resources */,
+				CB6274D819E2D95500A9C4BB /* PTC75F.ttf in Resources */,
 				CB7D38DE19DABA58006182EC /* CHANGELOG.txt in Resources */,
 				CB7D38E319DABA58006182EC /* flashlight-turn-off-icon.png in Resources */,
 				CB7D38DC19DABA58006182EC /* camera-swap-icon.png in Resources */,
@@ -585,6 +605,7 @@
 					"$(PROJECT_DIR)/ScanditSDK",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -603,6 +624,7 @@
 					"$(PROJECT_DIR)/ScanditSDK",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

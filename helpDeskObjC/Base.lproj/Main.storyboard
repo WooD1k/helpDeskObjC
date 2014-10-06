@@ -4,6 +4,11 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6238"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
     </dependencies>
+    <customFonts key="customFonts">
+        <mutableArray key="PTC75F.ttf">
+            <string>PTSans-CaptionBold</string>
+        </mutableArray>
+    </customFonts>
     <scenes>
         <!--Reveal View Controller-->
         <scene sceneID="mp3-fe-vR9">
@@ -139,7 +144,7 @@
             </objects>
             <point key="canvasLocation" x="579" y="-430"/>
         </scene>
-        <!--Main View Controller-->
+        <!--Reporter-->
         <scene sceneID="tne-QT-ifu">
             <objects>
                 <viewController id="BYZ-38-t0r" customClass="MainViewController" sceneMemberID="viewController">
@@ -223,7 +228,7 @@
                                     </view>
                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Description" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="GGZ-Uy-La1">
                                         <rect key="frame" x="40" y="600" width="520" height="30"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <fontDescription key="fontDescription" name="PTSans-CaptionBold" family="PT Sans Caption" pointSize="18"/>
                                         <textInputTraits key="textInputTraits" returnKeyType="go"/>
                                         <connections>
                                             <action selector="textFieldGotFocus:" destination="BYZ-38-t0r" eventType="editingDidBegin" id="5Es-oI-W7C"/>
@@ -271,7 +276,7 @@
                             <outletCollection property="gestureRecognizers" destination="gMZ-YR-GJH" appends="YES" id="wrW-A4-7LF"/>
                         </connections>
                     </view>
-                    <navigationItem key="navigationItem" id="DNY-vt-DSh">
+                    <navigationItem key="navigationItem" title="Reporter" id="DNY-vt-DSh">
                         <barButtonItem key="leftBarButtonItem" title="Menu" id="j7U-wj-rb5">
                             <color key="tintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                         </barButtonItem>
@@ -282,6 +287,8 @@
                         <outlet property="issueDescriptionTextField" destination="GGZ-Uy-La1" id="c4T-PB-apf"/>
                         <outlet property="issueLocationTextField" destination="429-Hg-yCw" id="Omp-7o-V6A"/>
                         <outlet property="mainView" destination="NQ0-HM-6oe" id="gPY-EO-enA"/>
+                        <outlet property="navigation" destination="8bC-Xf-vdC" id="ne2-2a-hUX"/>
+                        <outlet property="photoContainerView" destination="buP-Zj-mkG" id="cJM-Ar-Rx0"/>
                         <outlet property="photoImageView" destination="qpx-C9-Ggb" id="YyH-St-EhN"/>
                         <outlet property="qrButton" destination="yEP-s8-lpA" id="7Vc-Ma-gnk"/>
                         <outlet property="qrView" destination="OOB-Na-5B3" id="pKJ-1S-IVi"/>
@@ -359,6 +366,6 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="wuf-YK-oO1"/>
+        <segue reference="WO4-T4-nYt"/>
     </inferredMetricsTieBreakers>
 </document>
