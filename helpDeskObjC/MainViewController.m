@@ -183,7 +183,65 @@
 	}
 }
 
+#pragma mark - takePhotoBtn animation
+- (IBAction)takePhotoTouchDown:(UIControl *)sender {
+	[self moveShadow:_takePhotoBtnShadowImageView up:YES];
+	[self setMainImage:_takePhotoBtnImageView invisible:YES];
+}
+
+- (IBAction)takePhotoTouchUpInside:(UIControl *)sender {
+	[self moveShadow:_takePhotoBtnShadowImageView up:NO];
+	[self setMainImage:_takePhotoBtnImageView invisible:NO];
+	[self showPicker];
+}
+
+- (void)moveShadow:(UIImageView *) shadowToMove up:(BOOL)isMoveUp {
+	[UIView animateWithDuration:0.5 animations:^{
+		if (isMoveUp) {
+			shadowToMove.center = CGPointMake(shadowToMove.center.x, shadowToMove.center.y - shadowToMove.frame.size.height);
+		} else {
+			shadowToMove.center = CGPointMake(shadowToMove.center.x, shadowToMove.center.y + shadowToMove.frame.size.height);
+		}
+	}];
+}
+
+- (void)setMainImage:(UIImageView *) imageView invisible:(BOOL) isSetInvisible {
+	if (isSetInvisible) {
+		[UIView animateWithDuration:0.2 animations:^{
+			[imageView setAlpha:0.0];
+		}];
+	} else {
+		[UIView animateWithDuration:0.2 animations:^{
+			[imageView setAlpha:1.0];
+		}];
+	}
+}
+
 #pragma mark - takePhoto functionality
+- (void)preparePhotoPicker {
+	_imagePicker = [[UIImagePickerController alloc] init];
+	_imagePicker.delegate = self;
+	
+	if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+		_imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
+		_imagePicker.allowsEditing = true;
+		
+		[_qrView addSubview:_imagePicker.view];
+	}
+}
+
+-(void)showPicker {
+	CGRect screenRect = [[UIScreen mainScreen] bounds];
+
+	[self hideNavigationBar];
+	[self hideKeyboard];
+	
+	[UIView animateWithDuration:1.0 animations:^{
+		_topContainer.center = CGPointMake(_topContainer.center.x, 0 - (_topContainer.center.y + _takePhotoBtnShadowImageView.frame.size.height));
+		_bottomContainer.center = CGPointMake(_bottomContainer.center.x, (_bottomContainer.frame.size.height + screenRect.size.height));
+	}];
+}
+
 - (IBAction)takePhoto:(UIButton *)sender {
 	_imagePicker = [[UIImagePickerController alloc] init];
 	_imagePicker.delegate = self;
@@ -191,8 +249,6 @@
 	if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
 		_imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
 		_imagePicker.allowsEditing = true;
-		[_qrView addSubview:_imagePicker.view];
-		_mainView.alpha = 0.0;
 		
 		[self hideNavigationBar];
 		[self hideKeyboard];

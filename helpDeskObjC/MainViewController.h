@@ -13,6 +13,16 @@
 @property (weak, nonatomic) IBOutlet UIView *mainView;
 @property (weak, nonatomic) IBOutlet UIView *qrView;
 
+#pragma mark - takePhotoBtn elements
+@property (weak, nonatomic) IBOutlet UIButton *takePhotoBtn;
+@property (weak, nonatomic) IBOutlet UIImageView *takePhotoBtnImageView;
+@property (weak, nonatomic) IBOutlet UIImageView *takePhotoBtnSelectedImageView;
+@property (weak, nonatomic) IBOutlet UIImageView *takePhotoBtnShadowImageView;
+
+#pragma makr - elements for slideIn\slideOut animation
+@property (weak, nonatomic) IBOutlet UIView *topContainer;
+@property (weak, nonatomic) IBOutlet UIView *bottomContainer;
+
 @property (weak, nonatomic) IBOutlet UIImageView *photoImageView;
 @property (weak, nonatomic) IBOutlet UIButton *takePhotoButton;
 @property (weak, nonatomic) IBOutlet UIButton *qrButton;
@@ -32,6 +42,10 @@
 - (IBAction)scanQr:(UIButton *)sender;
 - (IBAction)textFieldGotFocus:(UITextField *)sender;
 - (IBAction)hideKeyboard:(UITapGestureRecognizer *)sender;
+
+#pragma mark - takePhotoBtn events
+- (IBAction)takePhotoTouchDown:(UIControl *)sender;
+- (IBAction)takePhotoTouchUpInside:(UIControl *)sender;
 
 @end
 
