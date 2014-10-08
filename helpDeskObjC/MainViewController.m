@@ -11,10 +11,15 @@
 #import <Parse/Parse.h>
 
 @interface MainViewController ()
-
 @end
 
 @implementation MainViewController
+CGRect screenRect;
+CGPoint initialLocationPinImageViewCenter;
+CGRect initialLocationTextFieldOverlayViewFrame;
+CGPoint initialScanQrBtnCenter;
+CGRect initialLocationLabelFrame;
+
 #pragma mark - view lifecycle
 - (void)viewDidLoad {
 	[super viewDidLoad];
@@ -24,6 +29,17 @@
 	_sidebarButton.action = @selector(revealToggle:);
 	
 	[self.view addGestureRecognizer:self.revealViewController.panGestureRecognizer];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+	[super viewWillAppear:animated];
+	
+	screenRect = [[UIScreen mainScreen] bounds];
+	
+	initialLocationTextFieldOverlayViewFrame = _locationTextField.frame;
+	initialLocationPinImageViewCenter = _locationPinImageView.center;
+	initialScanQrBtnCenter = _scanQrBtn.center;
+	initialLocationLabelFrame = _locationLabel.frame;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -196,7 +212,7 @@
 }
 
 - (void)moveShadow:(UIImageView *) shadowToMove up:(BOOL)isMoveUp {
-	[UIView animateWithDuration:0.5 animations:^{
+	[UIView animateWithDuration:0.3 animations:^{
 		if (isMoveUp) {
 			shadowToMove.center = CGPointMake(shadowToMove.center.x, shadowToMove.center.y - shadowToMove.frame.size.height);
 		} else {
@@ -231,7 +247,7 @@
 }
 
 -(void)showPicker {
-	CGRect screenRect = [[UIScreen mainScreen] bounds];
+	screenRect = [[UIScreen mainScreen] bounds];
 
 	[self hideNavigationBar];
 	[self hideKeyboard];
@@ -297,6 +313,68 @@
 - (void)hideNavigationBar {
 	[[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
 	[[self navigationController] setNavigationBarHidden:YES animated:YES];
+}
+
+- (IBAction)scanQr {
+}
+
+- (IBAction)addLocationManuallyTouchDown {
+	[self setMainImage:_addLocationManuallyImageView invisible:NO];
+}
+
+- (IBAction)addLocationManuallyTouchCancel {
+	[self setMainImage:_addLocationManuallyImageView invisible:YES];
+}
+
+- (IBAction)addLocationManuallyTouchUpInside {
+	[self setMainImage:_addLocationManuallyImageView invisible:YES];
+	
+	[UIView animateKeyframesWithDuration:0.5 delay:0.4 options:UIViewKeyframeAnimationOptionBeginFromCurrentState animations:^{
+		_locationTextFieldOverlayView.alpha = 1.0;
+	} completion:^(BOOL finished) {
+		[UIView animateWithDuration:0.5 animations:^{
+			[_locationTextFieldOverlayView setFrame:CGRectMake(0, 0, screenRect.size.width, _locationTextFieldOverlayView.frame.size.height)];
+			
+			_locationPinImageView.center = CGPointMake((0 - _locationPinImageView.frame.size.width), _locationPinImageView.center.y);
+			
+			_scanQrBtn.center = CGPointMake(_scanQrBtn.frame.size.width + screenRect.size.width, _scanQrBtn.center.y);
+			
+			_locationLabel.frame = CGRectMake(0, _locationLabel.center.y/2, _locationLabel.frame.size.width, _locationLabel.frame.size.height);
+			
+			_activeTextField = _locationTextField;
+		} completion:^(BOOL finished) {
+			_locationTextField.text = _locationLabel.text;
+			
+			_locationTextFieldOverlayView.alpha = 0.0;
+			_locationTextField.alpha = 1.0;
+			_locationLabel.alpha = 0.0;
+			
+			_addLocationManuallyBtn.hidden = true;
+			
+			[_locationTextField becomeFirstResponder];
+		}];
+	}];
+}
+
+- (IBAction)addLocationManuallyDidEnd {
+	[UIView animateWithDuration:0.5 animations:^{
+		_locationLabel.alpha = 1.0;
+		_locationTextFieldOverlayView.alpha = 0.0;
+		_locationTextField.alpha = 0.0;
+		
+		_locationTextFieldOverlayView.frame = initialLocationTextFieldOverlayViewFrame;
+		_locationPinImageView.center = initialLocationPinImageViewCenter;
+		_scanQrBtn.center = initialScanQrBtnCenter;
+		_locationLabel.frame = initialLocationLabelFrame;
+		
+		if (_locationTextField.hasText) {
+			_locationLabel.text = _locationTextField.text;
+		} else {
+			_locationLabel.text = @"Add place";
+		}
+	}];
+	
+	_addLocationManuallyBtn.hidden = false;
 }
 
 @end

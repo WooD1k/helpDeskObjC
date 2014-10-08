@@ -19,6 +19,15 @@
 @property (weak, nonatomic) IBOutlet UIImageView *takePhotoBtnSelectedImageView;
 @property (weak, nonatomic) IBOutlet UIImageView *takePhotoBtnShadowImageView;
 
+#pragma mark - scanQrBtn elements
+@property (weak, nonatomic) IBOutlet UIImageView *locationPinImageView;
+@property (weak, nonatomic) IBOutlet UILabel *locationLabel;
+@property (weak, nonatomic) IBOutlet UITextField *locationTextField;
+@property (weak, nonatomic) IBOutlet UIView *locationTextFieldOverlayView;
+@property (weak, nonatomic) IBOutlet UIButton *scanQrBtn;
+@property (weak, nonatomic) IBOutlet UIButton *addLocationManuallyBtn;
+@property (weak, nonatomic) IBOutlet UIImageView *addLocationManuallyImageView;
+
 #pragma makr - elements for slideIn\slideOut animation
 @property (weak, nonatomic) IBOutlet UIView *topContainer;
 @property (weak, nonatomic) IBOutlet UIView *bottomContainer;
@@ -46,6 +55,13 @@
 #pragma mark - takePhotoBtn events
 - (IBAction)takePhotoTouchDown:(UIControl *)sender;
 - (IBAction)takePhotoTouchUpInside:(UIControl *)sender;
+
+#pragma mark - addLocation events
+- (IBAction)scanQr;
+- (IBAction)addLocationManuallyTouchDown;
+- (IBAction)addLocationManuallyTouchUpInside;
+- (IBAction)addLocationManuallyTouchCancel;
+- (IBAction)addLocationManuallyDidEnd;
 
 @end
 
