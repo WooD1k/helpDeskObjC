@@ -15,10 +15,19 @@
 
 @implementation MainViewController
 CGRect screenRect;
-CGPoint initialLocationPinImageViewCenter;
-CGRect initialLocationTextFieldOverlayViewFrame;
-CGPoint initialScanQrBtnCenter;
-CGRect initialLocationLabelFrame;
+CGRect keyboardFrame;
+
+CGFloat defaultTopContainerTopConstraint;
+CGFloat defaultBottomContainerTopConstraint;
+
+CGFloat defaulLocationPinImageViewLeadingConstraintConstant;
+CGFloat defaulLocationLblLeadingConstraintConstant;
+CGFloat defaulScanQrBtnTrailingConstraintConstant;
+CGFloat defaultScanQrBtnBackgroundImageViewTrailingConstraintConstant;
+CGFloat defaultLocationTextFieldOverlayWidthConstraintConstant;
+
+CGFloat defaultDescMarkerImageViewLeadingConstraint;
+CGFloat defaultAddDescLblLeadingConstraint;
 
 #pragma mark - view lifecycle
 - (void)viewDidLoad {
@@ -36,10 +45,108 @@ CGRect initialLocationLabelFrame;
 	
 	screenRect = [[UIScreen mainScreen] bounds];
 	
-	initialLocationTextFieldOverlayViewFrame = _locationTextField.frame;
-	initialLocationPinImageViewCenter = _locationPinImageView.center;
-	initialScanQrBtnCenter = _scanQrBtn.center;
-	initialLocationLabelFrame = _locationLabel.frame;
+	_scanditPicker = [[ScanditSDKBarcodePicker alloc] initWithAppKey:@"mHbeTgp5EeSKsmLJfKEh7Cg56poI/nKQw2Hb8HRrI/U"];
+	
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(keyboardWillShow:)
+												 name:UIKeyboardWillShowNotification
+											   object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(keyboardWillHide:)
+												 name:UIKeyboardWillHideNotification
+											   object:nil];
+	
+	UIView *paddingForTextField = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 5, 1)];
+	_locationTextField.leftView = paddingForTextField;
+	_locationTextField.leftViewMode = UITextFieldViewModeAlways;
+}
+
+#pragma mark - show\hide keyboard notifications
+- (void)keyboardWillShow:(NSNotification *)notifiction {
+	keyboardFrame = [notifiction.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
+	
+	if (_activeTextField) {
+		[self calculateOffsetFromTextFieldAndMove];
+	} else if (_activeTextView) {
+		[self calculateOffsetFromTextViewAndMove];
+	}
+}
+
+- (void)keyboardWillHide:(NSNotification *)notifiction {
+	CGRect initialViewRect = CGRectMake(0.0, 0.0, self.view.frame.size.width, self.view.frame.size.height);
+	if (!CGRectEqualToRect(initialViewRect, self.view.frame)) {
+		[UIView animateWithDuration:0.2 animations:^{
+			self.view.frame = initialViewRect;
+		}];
+	}
+}
+
+#pragma mark - calculate offset and move view
+- (void)calculateOffsetFromTextFieldAndMove {
+	UIView *windowView = [[UIApplication sharedApplication] keyWindow];
+	
+	CGPoint activeFieldLowerPonit = CGPointMake(_activeTextView.frame.origin.x, _activeTextView.frame.origin.y + _activeTextView.frame.size.height);
+	CGPoint convertedFieldLowerPoint  = [_descContainerView convertPoint:activeFieldLowerPonit toView:windowView];
+	CGPoint targetLowerPoint = CGPointMake(_activeTextView.frame.origin.x, keyboardFrame.origin.y);
+	
+	CGFloat offset =  targetLowerPoint.y - convertedFieldLowerPoint.y;
+	CGPoint viewCenterWithOffset = CGPointMake(self.view.center.x, self.view.center.y + offset);
+	
+	[self moveMainViewToViewWithOffset:viewCenterWithOffset];
+}
+
+- (void)calculateOffsetFromTextViewAndMove {
+	UIView *windowView = [[UIApplication sharedApplication] keyWindow];
+	
+	CGPoint activeFieldLowerPonit = CGPointMake(_activeTextView.frame.origin.x, _activeTextView.frame.origin.y + _activeTextView.frame.size.height);
+	CGPoint convertedFieldLowerPoint  = [_descContainerView convertPoint:activeFieldLowerPonit toView:windowView];
+	CGPoint targetLowerPoint = CGPointMake(_activeTextView.frame.origin.x, keyboardFrame.origin.y);
+	
+	CGFloat offset =  targetLowerPoint.y - convertedFieldLowerPoint.y;
+	CGPoint viewCenterWithOffset = CGPointMake(self.view.center.x, self.view.center.y + offset);
+	
+	[self moveMainViewToViewWithOffset:viewCenterWithOffset];
+}
+
+-(void)moveMainViewToViewWithOffset:(CGPoint)viewWithOffset {
+	[UIView animateWithDuration:0.2 delay:0.1 options:UIViewAnimationOptionCurveEaseOut animations:^{
+		self.view.center = CGPointMake(viewWithOffset.x, viewWithOffset.y);
+	} completion:nil];
+}
+
+#pragma mark - UITextViewDelegate methods
+- (BOOL)textViewShouldBeginEditing:(UITextView *)textView {
+	_activeTextView = textView;
+	return true;
+}
+
+- (void)textViewDidEndEditing:(UITextView *)textView{
+	_addDescTextView.alpha = 0.0;
+	
+	_descMarkerImageViewLeadingConstraint.constant = defaultDescMarkerImageViewLeadingConstraint;
+	_addDescLblLeadingConstraint.constant = defaultAddDescLblLeadingConstraint;
+	
+	[UIView animateWithDuration:0.5 animations:^{
+		_addDescLbl.alpha = 1.0;
+		
+		[_descContainerView layoutIfNeeded];
+		if (_addDescTextView.hasText) {
+			CGSize contentSize = [_addDescTextView sizeThatFits:_addDescLbl.frame.size];
+			_descContainerHeightConstraint.constant = contentSize.height;
+			
+			_addDescLbl.text = _addDescTextView.text;
+		}
+	} completion:^(BOOL finished) {
+		_addDescBtn.hidden = false;
+	}];
+}
+
+-(void)textViewDidChange:(UITextView *)textView {
+	CGSize contentSize = [textView sizeThatFits:textView.frame.size];
+	
+	_descContainerHeightConstraint.constant = contentSize.height;
+	
+	[self calculateOffsetFromTextViewAndMove];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -134,8 +241,7 @@ CGRect initialLocationLabelFrame;
 }
 
 #pragma mark - QR scanner functionality
-- (IBAction)scanQr:(UIButton *)sender {
-	_scanditPicker = [[ScanditSDKBarcodePicker alloc] initWithAppKey:@"mHbeTgp5EeSKsmLJfKEh7Cg56poI/nKQw2Hb8HRrI/U"];
+- (IBAction)prepareQrScanerPicker {
 	[_scanditPicker.overlayController setTorchEnabled:false];
 	
 	_closePickerButton = [[UIButton alloc] init];
@@ -155,7 +261,6 @@ CGRect initialLocationLabelFrame;
 	_scanditPicker.overlayController.delegate = self;
 	
 	[_scanditPicker startScanning];
-	_mainView.alpha = 0.0;
 	
 	NSLayoutConstraint *closeBtnTrailingSpace = [NSLayoutConstraint constraintWithItem:_qrView
 																			 attribute:NSLayoutAttributeTrailing
@@ -174,9 +279,6 @@ CGRect initialLocationLabelFrame;
 																		 constant:20];
 	[_qrView addConstraint:closeBtnTrailingSpace];
 	[_qrView addConstraint:closeBtnTopSpace];
-	
-	[self hideKeyboard];
-	[self hideNavigationBar];
 }
 
 #pragma mark - ScanditSDKOverlayControllerDelegate methods
@@ -192,7 +294,7 @@ CGRect initialLocationLabelFrame;
 		NSString *barcodeValue = [barcode objectForKey:@"barcode"];
 		
 		if (barcodeValue) {
-			_issueLocationTextField.text = barcodeValue;
+			_locationLabel.text = barcodeValue;
 		}
 		
 		[self closePickerSubView];
@@ -208,7 +310,7 @@ CGRect initialLocationLabelFrame;
 - (IBAction)takePhotoTouchUpInside:(UIControl *)sender {
 	[self moveShadow:_takePhotoBtnShadowImageView up:NO];
 	[self setMainImage:_takePhotoBtnImageView invisible:NO];
-	[self showPicker];
+//	[self showPicker];
 }
 
 - (void)moveShadow:(UIImageView *) shadowToMove up:(BOOL)isMoveUp {
@@ -247,14 +349,19 @@ CGRect initialLocationLabelFrame;
 }
 
 -(void)showPicker {
-	screenRect = [[UIScreen mainScreen] bounds];
-
 	[self hideNavigationBar];
 	[self hideKeyboard];
 	
+	defaultTopContainerTopConstraint = _topContainerTopConstraint.constant;
+	defaultBottomContainerTopConstraint = _bottomContainerTopConstraint.constant;
+	
+	_topContainerTopConstraint.constant = -_topContainer.frame.size.height;
+	_bottomContainerTopConstraint.constant = _bottomContainerTopConstraint.constant + _bottomContainer.frame.size.height + 20.0f;
+	
 	[UIView animateWithDuration:1.0 animations:^{
-		_topContainer.center = CGPointMake(_topContainer.center.x, 0 - (_topContainer.center.y + _takePhotoBtnShadowImageView.frame.size.height));
-		_bottomContainer.center = CGPointMake(_bottomContainer.center.x, (_bottomContainer.frame.size.height + screenRect.size.height));
+		[_mainView layoutIfNeeded];
+	} completion:^(BOOL finished) {
+		_mainView.hidden = true;
 	}];
 }
 
@@ -288,25 +395,35 @@ CGRect initialLocationLabelFrame;
 
 #pragma mark - hide QR\Photo
 - (void)closePickerSubView {
+	_mainView.hidden = false;
+	
 	[[self navigationController] setNavigationBarHidden:NO animated:YES];
 	[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationSlide];
 	
-	if (_scanditPicker) {
-		[_closePickerButton removeFromSuperview];
-		[_scanditPicker.view removeFromSuperview];
-		_scanditPicker = nil;
-	} else if (_imagePicker) {
-		[_imagePicker.view removeFromSuperview];
-		_imagePicker = nil;
-	}
+	_topContainerTopConstraint.constant = defaultTopContainerTopConstraint;
+	_bottomContainerTopConstraint.constant = defaultBottomContainerTopConstraint;
 	
-	_mainView.alpha = 1.0;
+	[UIView animateWithDuration:1.0 animations:^{
+		[_mainView layoutIfNeeded];
+	} completion:^(BOOL finished) {
+		if (_scanditPicker) {
+			[_closePickerButton removeFromSuperview];
+			[_scanditPicker.view removeFromSuperview];
+		} else if (_imagePicker) {
+			[_imagePicker.view removeFromSuperview];
+			_imagePicker = nil;
+		}
+	}];
 }
 
 #pragma mark - hide system UI elements
 - (void)hideKeyboard{
 	if (_activeTextField) {
 		[_activeTextField resignFirstResponder];
+		_activeTextField = nil;
+	} else if (_activeTextView) {
+		[_activeTextView resignFirstResponder];
+		_activeTextView = nil;
 	}
 }
 
@@ -315,9 +432,7 @@ CGRect initialLocationLabelFrame;
 	[[self navigationController] setNavigationBarHidden:YES animated:YES];
 }
 
-- (IBAction)scanQr {
-}
-
+#pragma mark - addLocation btn events
 - (IBAction)addLocationManuallyTouchDown {
 	[self setMainImage:_addLocationManuallyImageView invisible:NO];
 }
@@ -329,19 +444,25 @@ CGRect initialLocationLabelFrame;
 - (IBAction)addLocationManuallyTouchUpInside {
 	[self setMainImage:_addLocationManuallyImageView invisible:YES];
 	
+	defaulLocationPinImageViewLeadingConstraintConstant = _locationPinImageViewLeadingConstraint.constant;
+	defaulLocationLblLeadingConstraintConstant = _locationLblLeadingConstraint.constant;
+	defaulScanQrBtnTrailingConstraintConstant = _scanQrBtnTrailingConstraint.constant;
+	defaultScanQrBtnBackgroundImageViewTrailingConstraintConstant = _scanQrBtnBackgroundImageViewTrailingConstraint.constant;
+	defaultLocationTextFieldOverlayWidthConstraintConstant = _locationTextFieldOverlayWidthConstraint.constant;
+	
 	[UIView animateKeyframesWithDuration:0.5 delay:0.4 options:UIViewKeyframeAnimationOptionBeginFromCurrentState animations:^{
 		_locationTextFieldOverlayView.alpha = 1.0;
 	} completion:^(BOOL finished) {
+		_locationPinImageViewLeadingConstraint.constant = -_locationPinImageView.frame.size.width;
+		_locationLblLeadingConstraint.constant = _locationTextField.leftView.frame.size.width;
+		_scanQrBtnTrailingConstraint.constant = -_scanQrBtn.frame.size.width;
+		_scanQrBtnBackgroundImageViewTrailingConstraint.constant = _scanQrBtnBackgroundImageView.frame.size.width;
+		_locationTextFieldOverlayWidthConstraint.constant = screenRect.size.width;
+		
 		[UIView animateWithDuration:0.5 animations:^{
-			[_locationTextFieldOverlayView setFrame:CGRectMake(0, 0, screenRect.size.width, _locationTextFieldOverlayView.frame.size.height)];
+			[_locationContainerView layoutIfNeeded];
 			
-			_locationPinImageView.center = CGPointMake((0 - _locationPinImageView.frame.size.width), _locationPinImageView.center.y);
-			
-			_scanQrBtn.center = CGPointMake(_scanQrBtn.frame.size.width + screenRect.size.width, _scanQrBtn.center.y);
-			
-			_locationLabel.frame = CGRectMake(0, _locationLabel.center.y/2, _locationLabel.frame.size.width, _locationLabel.frame.size.height);
-			
-			_activeTextField = _locationTextField;
+			[_locationTextField becomeFirstResponder];
 		} completion:^(BOOL finished) {
 			_locationTextField.text = _locationLabel.text;
 			
@@ -350,31 +471,87 @@ CGRect initialLocationLabelFrame;
 			_locationLabel.alpha = 0.0;
 			
 			_addLocationManuallyBtn.hidden = true;
-			
-			[_locationTextField becomeFirstResponder];
 		}];
 	}];
 }
 
 - (IBAction)addLocationManuallyDidEnd {
+	_locationPinImageViewLeadingConstraint.constant = defaulLocationPinImageViewLeadingConstraintConstant;
+	_locationLblLeadingConstraint.constant = defaulLocationLblLeadingConstraintConstant;
+	_scanQrBtnTrailingConstraint.constant = defaulScanQrBtnTrailingConstraintConstant;
+	_scanQrBtnBackgroundImageViewTrailingConstraint.constant = defaultScanQrBtnBackgroundImageViewTrailingConstraintConstant;
+	_locationTextFieldOverlayWidthConstraint.constant = defaultLocationTextFieldOverlayWidthConstraintConstant;
+	
+	if (_locationTextField.hasText) {
+		_locationLabel.text = _locationTextField.text;
+		_locationTextField.text = nil;
+	} else {
+		_locationLabel.text = @"Add place";
+	}
+	
 	[UIView animateWithDuration:0.5 animations:^{
+		[_locationContainerView layoutIfNeeded];
+		
 		_locationLabel.alpha = 1.0;
 		_locationTextFieldOverlayView.alpha = 0.0;
 		_locationTextField.alpha = 0.0;
-		
-		_locationTextFieldOverlayView.frame = initialLocationTextFieldOverlayViewFrame;
-		_locationPinImageView.center = initialLocationPinImageViewCenter;
-		_scanQrBtn.center = initialScanQrBtnCenter;
-		_locationLabel.frame = initialLocationLabelFrame;
-		
-		if (_locationTextField.hasText) {
-			_locationLabel.text = _locationTextField.text;
-		} else {
-			_locationLabel.text = @"Add place";
-		}
 	}];
 	
 	_addLocationManuallyBtn.hidden = false;
 }
 
+#pragma mark - scan QR btn events
+- (IBAction)scanQrTouchDown {
+	[self prepareQrScanerPicker];
+	[self setMainImage:_scanQrBtnBackgroundImageView invisible:NO];
+}
+
+- (IBAction)scanQrTouchUpInside {
+	[self setMainImage:_scanQrBtnBackgroundImageView invisible:YES];
+	[self showPicker];
+}
+
+- (IBAction)scanQrTouchCancel {
+	[self setMainImage:_scanQrBtnBackgroundImageView invisible:YES];
+}
+
+#pragma mark - add desc btn events
+- (IBAction)addDecBtnTouchDown {
+	[self setMainImage:_addDescBtnSelectedImageView invisible:NO];
+	[self moveShadow:_addDescShadowImageView up:YES];
+}
+
+- (IBAction)addDescBtnTouchUpInside {
+	[self setMainImage:_addDescBtnSelectedImageView invisible:YES];
+	[self moveShadow:_addDescShadowImageView up:NO];
+	
+	defaultDescMarkerImageViewLeadingConstraint = _descMarkerImageViewLeadingConstraint.constant;
+	defaultAddDescLblLeadingConstraint = _addDescLblLeadingConstraint.constant;
+	
+	_descMarkerImageViewLeadingConstraint.constant = -_descMarkerImageView.frame.size.width;
+	_addDescLblLeadingConstraint.constant = 0/*_locationTextField.leftView.frame.size.width*/;
+	
+	CGSize contentSize = [_addDescTextView sizeThatFits:_addDescLbl.frame.size];
+	_descContainerHeightConstraint.constant = contentSize.height;
+	
+	[UIView animateWithDuration:0.5 animations:^{
+		_addDescLbl.alpha = 0.0;
+		
+		[_descContainerView layoutIfNeeded];
+	} completion:^(BOOL finished) {
+		_addDescTextView.alpha = 1.0;
+		
+		[UIView animateWithDuration:0.0 animations:^{
+			
+		} completion:^(BOOL finished) {
+			_addDescBtn.hidden = true;
+			[_addDescTextView becomeFirstResponder];
+		}];
+	}];
+}
+
+- (IBAction)addDescBtnTouchCancel {
+	[self setMainImage:_addDescBtnSelectedImageView invisible:YES];
+	[self moveShadow:_addDescShadowImageView up:NO];
+}
 @end
