@@ -25,9 +25,15 @@ CGFloat defaulLocationLblLeadingConstraintConstant;
 CGFloat defaulScanQrBtnTrailingConstraintConstant;
 CGFloat defaultScanQrBtnBackgroundImageViewTrailingConstraintConstant;
 CGFloat defaultLocationTextFieldOverlayWidthConstraintConstant;
+CGFloat defaultScanQrContainerTopConstraint;
 
 CGFloat defaultDescMarkerImageViewLeadingConstraint;
 CGFloat defaultAddDescLblLeadingConstraint;
+
+CGFloat defaultDescContainerHeightConstraint;
+CGFloat defaultSendReportBtnTopToMainViewConstraint;
+CGFloat defaultPhotoImageViewHeightConstraint;
+CGFloat defaultTakePhotoBtnTopConstraint;
 
 #pragma mark - view lifecycle
 - (void)viewDidLoad {
@@ -45,8 +51,6 @@ CGFloat defaultAddDescLblLeadingConstraint;
 	
 	screenRect = [[UIScreen mainScreen] bounds];
 	
-	_scanditPicker = [[ScanditSDKBarcodePicker alloc] initWithAppKey:@"mHbeTgp5EeSKsmLJfKEh7Cg56poI/nKQw2Hb8HRrI/U"];
-	
 	[[NSNotificationCenter defaultCenter] addObserver:self
 											 selector:@selector(keyboardWillShow:)
 												 name:UIKeyboardWillShowNotification
@@ -59,6 +63,21 @@ CGFloat defaultAddDescLblLeadingConstraint;
 	UIView *paddingForTextField = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 5, 1)];
 	_locationTextField.leftView = paddingForTextField;
 	_locationTextField.leftViewMode = UITextFieldViewModeAlways;
+	
+	defaultDescContainerHeightConstraint = _descContainerHeightConstraint.constant;
+	defaultScanQrContainerTopConstraint = _scanQrContainerTopConstraint.constant;
+	defaultSendReportBtnTopToMainViewConstraint = _sendReportBtnTopToMainViewConstraint.constant;
+	defaultPhotoImageViewHeightConstraint = _photoImageViewHeightConstraint.constant;
+	defaultTakePhotoBtnTopConstraint = _takePhotoBtnTopConstraint.constant;
+	
+	
+	
+	_addDescTextView.textContainer.maximumNumberOfLines = 3;
+}
+
+- (void)didReceiveMemoryWarning {
+	[super didReceiveMemoryWarning];
+	// Dispose of any resources that can be recreated.
 }
 
 #pragma mark - show\hide keyboard notifications
@@ -117,6 +136,7 @@ CGFloat defaultAddDescLblLeadingConstraint;
 #pragma mark - UITextViewDelegate methods
 - (BOOL)textViewShouldBeginEditing:(UITextView *)textView {
 	_activeTextView = textView;
+	
 	return true;
 }
 
@@ -131,94 +151,31 @@ CGFloat defaultAddDescLblLeadingConstraint;
 		
 		[_descContainerView layoutIfNeeded];
 		if (_addDescTextView.hasText) {
-			CGSize contentSize = [_addDescTextView sizeThatFits:_addDescLbl.frame.size];
-			_descContainerHeightConstraint.constant = contentSize.height;
-			
 			_addDescLbl.text = _addDescTextView.text;
+			
+			if (_descContainerHeightConstraint.constant > defaultDescContainerHeightConstraint) {
+				_scanQrContainerTopConstraint.constant = defaultScanQrContainerTopConstraint - (_descContainerView.frame.size.height - defaultDescContainerHeightConstraint);
+			} else {
+				_scanQrContainerTopConstraint.constant = defaultScanQrContainerTopConstraint;
+			}
+			
+			[_bottomContainer layoutIfNeeded];
 		}
 	} completion:^(BOOL finished) {
 		_addDescBtn.hidden = false;
 	}];
 }
 
--(void)textViewDidChange:(UITextView *)textView {
+- (void)textViewDidChange:(UITextView *)textView {
 	CGSize contentSize = [textView sizeThatFits:textView.frame.size];
 	
 	_descContainerHeightConstraint.constant = contentSize.height;
+	[_descContainerView layoutIfNeeded];
 	
 	[self calculateOffsetFromTextViewAndMove];
 }
 
-- (void)didReceiveMemoryWarning {
-	[super didReceiveMemoryWarning];
-	// Dispose of any resources that can be recreated.
-}
-
 #pragma mark - IBActions
-- (IBAction)sendIssueToServer {
-	UIAlertView *alertView = [[UIAlertView alloc] init];
-	alertView.title = @"Opps";
-	[alertView addButtonWithTitle:@"OK"];
-	
-	if (!_issueLocationTextField.hasText) {
-		alertView.message = @"issue location can't be empty";
-		[alertView show];
-	} else if (!_issueDescriptionTextField.hasText) {
-		alertView.message = @"issue description can't be empty";
-		[alertView show];
-	} else {
-		UIView *activityIndicatorBackground = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
-		
-		activityIndicatorBackground.layer.cornerRadius = 15;
-		activityIndicatorBackground.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.8];
-		activityIndicatorBackground.center = _mainView.center;
-		
-		UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-		activityIndicator.center = CGPointMake(activityIndicatorBackground.frame.size.width/2, activityIndicatorBackground.frame.size.height/2);
-		
-		[activityIndicatorBackground addSubview:activityIndicator];
-		[_mainView addSubview:activityIndicatorBackground];
-		
-		[activityIndicator startAnimating];
-		
-		PFObject *issueObject = [PFObject objectWithClassName:@"issues"];
-		
-		issueObject[@"location"] = _issueLocationTextField.text;
-		issueObject[@"description"] = _issueDescriptionTextField.text;
-		
-		if (_photoImageView.image) {
-			NSData *imageData = UIImagePNGRepresentation(_photoImageView.image);
-			NSNumber *randomNumber = [NSNumber numberWithInt:arc4random_uniform(1000000)];
-			NSString *fileName = [NSString stringWithFormat:@"issue_%@.png", randomNumber];
-			PFFile * imageFile = [PFFile fileWithName:fileName data:imageData];
-			
-			issueObject[@"image"] = imageFile;
-		}
-		
-		[issueObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-			if (succeeded) {
-				alertView.title = @"Thanks a bunch!";
-				alertView.message = @"Your issue has been sent to AD";
-				
-				_photoImageView.image = nil;
-				_issueLocationTextField.text = @"";
-				_issueDescriptionTextField.text = @"";
-				
-				[alertView show];
-			} else {
-				alertView.title = @"Something went wrong";
-				alertView.message = [NSString stringWithFormat:@"Please try agein later!\n%@", error];
-				
-				[alertView show];
-			}
-			
-			[activityIndicatorBackground removeFromSuperview];
-		}];
-		
-		[self hideKeyboard];
-	}
-}
-
 - (IBAction)textFieldGotFocus:(UITextField *)sender {
 	_activeTextField = sender;
 	_activeTextField.delegate = self;
@@ -230,18 +187,17 @@ CGFloat defaultAddDescLblLeadingConstraint;
 
 #pragma mark - UITextFieldDelegate method
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
-	if (textField == _issueLocationTextField) {
-		[_issueDescriptionTextField becomeFirstResponder];
-	} else if (textField == _issueDescriptionTextField) {
-		[_issueDescriptionTextField resignFirstResponder];
-		[self sendIssueToServer];
-	}
+	[_activeTextField resignFirstResponder];
 	
 	return YES;
 }
 
 #pragma mark - QR scanner functionality
 - (IBAction)prepareQrScanerPicker {
+	if (!_scanditPicker) {
+		_scanditPicker = [[ScanditSDKBarcodePicker alloc] initWithAppKey:@"mHbeTgp5EeSKsmLJfKEh7Cg56poI/nKQw2Hb8HRrI/U"];
+	}
+	
 	[_scanditPicker.overlayController setTorchEnabled:false];
 	
 	_closePickerButton = [[UIButton alloc] init];
@@ -251,16 +207,13 @@ CGFloat defaultAddDescLblLeadingConstraint;
 	_closePickerButton.layer.borderWidth = 2;
 	
 	[_closePickerButton addTarget:self
-						   action:@selector(closePickerSubView)
+						   action:@selector(slideInAnimation)
 				 forControlEvents:UIControlEventTouchUpInside];
-	
 	
 	[_qrView addSubview:_scanditPicker.view];
 	[_qrView addSubview:_closePickerButton];
 	
 	_scanditPicker.overlayController.delegate = self;
-	
-	[_scanditPicker startScanning];
 	
 	NSLayoutConstraint *closeBtnTrailingSpace = [NSLayoutConstraint constraintWithItem:_qrView
 																			 attribute:NSLayoutAttributeTrailing
@@ -283,7 +236,7 @@ CGFloat defaultAddDescLblLeadingConstraint;
 
 #pragma mark - ScanditSDKOverlayControllerDelegate methods
 - (void)scanditSDKOverlayController:(ScanditSDKOverlayController *)overlayController didCancelWithStatus:(NSDictionary *)status {
-	[self closePickerSubView];
+	[self slideInAnimation];
 }
 
 - (void)scanditSDKOverlayController:(ScanditSDKOverlayController *)overlayController didManualSearch:(NSString *)text {
@@ -297,20 +250,34 @@ CGFloat defaultAddDescLblLeadingConstraint;
 			_locationLabel.text = barcodeValue;
 		}
 		
-		[self closePickerSubView];
+		[self slideInAnimation];
 	}
 }
 
 #pragma mark - takePhotoBtn animation
-- (IBAction)takePhotoTouchDown:(UIControl *)sender {
+- (IBAction)takePhotoTouchDown {
 	[self moveShadow:_takePhotoBtnShadowImageView up:YES];
 	[self setMainImage:_takePhotoBtnImageView invisible:YES];
 }
 
-- (IBAction)takePhotoTouchUpInside:(UIControl *)sender {
+- (IBAction)takePhotoTouchUpInside {
 	[self moveShadow:_takePhotoBtnShadowImageView up:NO];
 	[self setMainImage:_takePhotoBtnImageView invisible:NO];
-//	[self showPicker];
+	
+	_imagePicker = [[UIImagePickerController alloc] init];
+	_imagePicker.delegate = self;
+	
+	if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+		_imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
+		_imagePicker.allowsEditing = true;
+		
+		[self.navigationController presentViewController:_imagePicker animated:true completion:nil];
+	}
+}
+
+- (IBAction)takePhotoTouchCancel {
+	[self moveShadow:_takePhotoBtnShadowImageView up:NO];
+	[self setMainImage:_takePhotoBtnImageView invisible:NO];
 }
 
 - (void)moveShadow:(UIImageView *) shadowToMove up:(BOOL)isMoveUp {
@@ -348,72 +315,71 @@ CGFloat defaultAddDescLblLeadingConstraint;
 	}
 }
 
--(void)showPicker {
-	[self hideNavigationBar];
+-(void)slideOutAnimation {
+	[self hideNavigationAndStatusBar];
 	[self hideKeyboard];
 	
 	defaultTopContainerTopConstraint = _topContainerTopConstraint.constant;
 	defaultBottomContainerTopConstraint = _bottomContainerTopConstraint.constant;
 	
-	_topContainerTopConstraint.constant = -_topContainer.frame.size.height;
+	_sendReportBtnTopToMainViewConstraint.constant = screenRect.size.height + _sendReportBtn.frame.size.height;
+	
+	_topContainerTopConstraint.constant = -_topContainer.frame.size.height - 20.0f;
 	_bottomContainerTopConstraint.constant = _bottomContainerTopConstraint.constant + _bottomContainer.frame.size.height + 20.0f;
 	
-	[UIView animateWithDuration:1.0 animations:^{
+	[UIView animateWithDuration:1.5 animations:^{
 		[_mainView layoutIfNeeded];
 	} completion:^(BOOL finished) {
 		_mainView.hidden = true;
+		[_scanditPicker startScanning];
 	}];
-}
-
-- (IBAction)takePhoto:(UIButton *)sender {
-	_imagePicker = [[UIImagePickerController alloc] init];
-	_imagePicker.delegate = self;
-	
-	if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
-		_imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
-		_imagePicker.allowsEditing = true;
-		
-		[self hideNavigationBar];
-		[self hideKeyboard];
-	}
 }
 
 #pragma mark - UIImagePickerControllerDelegate methods
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info{
 	UIImage *photo = [info objectForKey:@"UIImagePickerControllerEditedImage"];
 	
+	_photoImageViewHeightConstraint.constant = defaultPhotoImageViewHeightConstraint * 1.5;
+	_takePhotoBtnTopConstraint.constant = 30;
+	
+	[_topContainer layoutIfNeeded];
+	
 	if (photo) {
+		_takePhotoLbl.alpha = 0.0;
+		_retakePhotoLbl.alpha = 1.0;
+		
 		_photoImageView.image = photo;
+		_photoImageView.alpha = 1.0;
 	}
 	
-	[self closePickerSubView];
+	[self closeImagePicker];
 }
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
-	[self closePickerSubView];
+	[self closeImagePicker];
 }
 
 #pragma mark - hide QR\Photo
-- (void)closePickerSubView {
+- (void)slideInAnimation {
 	_mainView.hidden = false;
 	
-	[[self navigationController] setNavigationBarHidden:NO animated:YES];
-	[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationSlide];
+	[self showNavigationAndStatusBar];
 	
 	_topContainerTopConstraint.constant = defaultTopContainerTopConstraint;
 	_bottomContainerTopConstraint.constant = defaultBottomContainerTopConstraint;
+	_sendReportBtnTopToMainViewConstraint.constant = defaultSendReportBtnTopToMainViewConstraint;
 	
 	[UIView animateWithDuration:1.0 animations:^{
 		[_mainView layoutIfNeeded];
 	} completion:^(BOOL finished) {
-		if (_scanditPicker) {
-			[_closePickerButton removeFromSuperview];
-			[_scanditPicker.view removeFromSuperview];
-		} else if (_imagePicker) {
-			[_imagePicker.view removeFromSuperview];
-			_imagePicker = nil;
-		}
+		[_scanditPicker startScanning];
+		[_scanditPicker.view removeFromSuperview];
 	}];
+}
+
+- (void)closeImagePicker {
+	_scanditPicker = nil;
+	[self dismissViewControllerAnimated:true completion:nil];
 }
 
 #pragma mark - hide system UI elements
@@ -427,9 +393,14 @@ CGFloat defaultAddDescLblLeadingConstraint;
 	}
 }
 
-- (void)hideNavigationBar {
+- (void)hideNavigationAndStatusBar {
 	[[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
 	[[self navigationController] setNavigationBarHidden:YES animated:YES];
+}
+
+- (void)showNavigationAndStatusBar {
+	[[self navigationController] setNavigationBarHidden:NO animated:YES];
+	[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationSlide];
 }
 
 #pragma mark - addLocation btn events
@@ -503,12 +474,13 @@ CGFloat defaultAddDescLblLeadingConstraint;
 #pragma mark - scan QR btn events
 - (IBAction)scanQrTouchDown {
 	[self prepareQrScanerPicker];
+	
 	[self setMainImage:_scanQrBtnBackgroundImageView invisible:NO];
 }
 
 - (IBAction)scanQrTouchUpInside {
 	[self setMainImage:_scanQrBtnBackgroundImageView invisible:YES];
-	[self showPicker];
+	[self slideOutAnimation];
 }
 
 - (IBAction)scanQrTouchCancel {
@@ -553,5 +525,111 @@ CGFloat defaultAddDescLblLeadingConstraint;
 - (IBAction)addDescBtnTouchCancel {
 	[self setMainImage:_addDescBtnSelectedImageView invisible:YES];
 	[self moveShadow:_addDescShadowImageView up:NO];
+}
+
+#pragma mark - sendREport btn events
+- (IBAction)sendReportTouchDown {
+	[self setMainImage:_sendReportBtnSelectedImageView invisible:NO];
+	[self moveShadow:_sendReportShadowImageView up:YES];
+}
+
+- (IBAction)sendReportTouchUpInside {
+	[self setMainImage:_sendReportBtnSelectedImageView invisible:YES];
+	[self moveShadow:_sendReportShadowImageView up:NO];
+	
+	UIAlertView *alertView = [[UIAlertView alloc] init];
+	alertView.title = @"Opps";
+	[alertView addButtonWithTitle:@"OK"];
+	
+	if ([_locationLabel.text  isEqual: @"Add place"] || _locationLabel.text.length == 0) {
+		alertView.message = @"Please fill in location field";
+		[alertView show];
+	} else if ([_addDescLbl.text  isEqual: @"Add description"] || _addDescLbl.text.length == 0) {
+		alertView.message = @"Please fill in description field";
+		[alertView show];
+	} else {
+		UIView *activityIndicatorBackground = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
+		
+		activityIndicatorBackground.layer.cornerRadius = 15;
+		activityIndicatorBackground.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.8];
+		activityIndicatorBackground.center = _mainView.center;
+		
+		UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+		activityIndicator.center = CGPointMake(activityIndicatorBackground.frame.size.width/2, activityIndicatorBackground.frame.size.height/2);
+		
+		[activityIndicatorBackground addSubview:activityIndicator];
+		[_mainView addSubview:activityIndicatorBackground];
+		
+		[activityIndicator startAnimating];
+		
+		PFObject *issueObject = [PFObject objectWithClassName:@"issues"];
+		
+		issueObject[@"location"] = _locationLabel.text;
+		issueObject[@"description"] = _addDescLbl.text;
+		
+		if (_photoImageView.image) {
+			NSData *imageData = UIImagePNGRepresentation(_photoImageView.image);
+			NSDateFormatter *dateFormater = [[NSDateFormatter alloc] init];
+			[dateFormater setDateFormat:@"yyMMddHHmmss"];
+			
+			NSDate *currentDate = [[NSDate alloc] init];
+			NSString *formatedDate = [dateFormater stringFromDate:currentDate];
+			
+			NSString *fileName = [NSString stringWithFormat:@"issue_%@.png", formatedDate];
+			PFFile * imageFile = [PFFile fileWithName:fileName data:imageData];
+			
+			issueObject[@"image"] = imageFile;
+		}
+		
+		[issueObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+			if (succeeded) {
+				alertView.title = @"Thanks a bunch!";
+				alertView.message = @"Your issue has been sent to AD";
+				
+				_photoImageView.image = nil;
+				_locationLabel.text = @"Add place";
+				_addDescLbl.text = @"Add description";
+				
+				_takePhotoLbl.alpha = 1.0;
+				_retakePhotoLbl.alpha = 0.0;
+				
+#warning TODO: do not hardcode, use default constraint constant
+				_takePhotoBtnTopConstraint.constant = 45 /*defaultTakePhotoBtnTopConstraint*/;
+				_photoImageViewHeightConstraint.constant = 102/*defaultPhotoImageViewHeightConstraint*/;
+				
+				[UIView animateWithDuration:0.5 animations:^{
+					[_topContainer layoutIfNeeded];
+				}];
+				
+				[alertView show];
+			} else {
+				alertView.title = @"Something went wrong";
+				alertView.message = [NSString stringWithFormat:@"Please try agein later!\n%@", error];
+				
+				[alertView show];
+			}
+			
+			[activityIndicatorBackground removeFromSuperview];
+		}];
+	}
+}
+
+-(void)resetMainView {
+	_photoImageView.image = nil;
+	_locationLabel.text = @"Add place";
+	_addDescLbl.text = @"Add description";
+	
+	_takePhotoLbl.alpha = 1.0;
+	_retakePhotoLbl.alpha = 0.0;
+	
+	_takePhotoBtnTopConstraint.constant = defaultTakePhotoBtnTopConstraint;
+	_photoImageViewHeightConstraint.constant = defaultPhotoImageViewHeightConstraint;
+	
+	[_topContainer layoutIfNeeded];
+}
+
+- (IBAction)sendReportTouchCancel {
+	[self setMainImage:_sendReportBtnSelectedImageView invisible:YES];
+	[self moveShadow:_sendReportShadowImageView up:NO];
 }
 @end

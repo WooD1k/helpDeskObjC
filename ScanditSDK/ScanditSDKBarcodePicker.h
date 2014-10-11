@@ -173,9 +173,13 @@ typedef enum {
 /**
  * @brief Sets the focus working range for the barcode picker
  *
- * The working range tells the engine at which distance barcodes are to be expected. When set to
- * STANDARD_RANGE (the default), the focus is optimized for barcodes close to the camera.
- * When set to LONG_RANGE, the focus is optimized for far-away codes.
+ * The working range tells the engine at which distance barcodes are to be expected.
+ * When set to STANDARD_RANGE (the default), the focus is optimized for barcodes close
+ * to the camera. When set to LONG_RANGE, the focus is optimized for far-away codes.
+ *
+ * When using non-standard working range, it is better to directly pass the working
+ * range when constructing the barcode picker, because the camera can already start
+ * to adjust the focus at an earlier point in time.
  *
  * See ::WorkingRange for a list of possible values
  *
@@ -221,6 +225,23 @@ typedef enum {
    cameraFacingPreference:(CameraFacingDirection)facing;
 
 /**
+ * @brief Initiate the barcode picker with the desired camera orientation and working range
+ *
+ * Consider using #prepareWithAppKey:cameraFacingPreference: in applicationDidFinishLaunching
+ * prior to calling this method in your view controller to accelerate the camera start.
+ *
+ * @see ScanditSDKBarcodePicker#prepareWithAppKey:cameraFacingPreference:
+ *
+ * @since 4.2.0
+ *
+ * @param scanditSDKAppKey your Scandit SDK App Key (available from your Scandit account)
+ * @param facing the desired camera direction
+ * @param range the desired working range
+ */
+- (id)initWithAppKey:(NSString *)scanditSDKAppKey
+cameraFacingPreference:(CameraFacingDirection)facing workingRange:(WorkingRange)range;
+
+/**
  * @brief Initiate the barcode picker with the default camera orientation (CAMERA_FACING_BACK).
  *
  * Consider using #prepareWithAppKey: in applicationDidFinishLaunching prior to calling this method 
@@ -250,6 +271,22 @@ typedef enum {
 - (id)initWithAppKey:(NSString *)scanditSDKAppKey
 cameraFacingPreference:(CameraFacingDirection)facing;
 
+/**
+ * @brief Prepares a ScanditSDKBarcodePicker which accelerates the camera start with the
+ * desired camera orientation and working range
+ *
+ * We recommend calling this method in applicationDidFinishLaunching prior to calling #initWithAppKey:.
+ * Preparing the picker with this method accelerates the camera start significantly.
+ * The additional resources required for this speed up are minimal.
+ *
+ * @since 4.2.0
+ *
+ * @param scanditSDKAppKey your Scandit SDK App Key (available from your Scandit account)
+ * @param facing the desired camera direction
+ * @param range the desired working range for the auto-focus
+ */
++ (void)prepareWithAppKey:(NSString *)scanditSDKAppKey
+   cameraFacingPreference:(CameraFacingDirection)facing workingRange:(WorkingRange)range;
 
 /**
  * @brief Sets a custom overlay controller that received updates from the barcode picker.
