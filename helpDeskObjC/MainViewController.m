@@ -32,6 +32,7 @@ CGFloat defaultAddDescLblLeadingConstraint;
 
 CGFloat defaultDescContainerHeightConstraint;
 CGFloat defaultSendReportBtnTopToMainViewConstraint;
+
 CGFloat defaultPhotoImageViewHeightConstraint;
 CGFloat defaultTakePhotoBtnTopConstraint;
 
@@ -538,7 +539,7 @@ CGFloat defaultTakePhotoBtnTopConstraint;
 	[self moveShadow:_sendReportShadowImageView up:NO];
 	
 	UIAlertView *alertView = [[UIAlertView alloc] init];
-	alertView.title = @"Opps";
+	alertView.title = @"Oops";
 	[alertView addButtonWithTitle:@"OK"];
 	
 	if ([_locationLabel.text  isEqual: @"Add place"] || _locationLabel.text.length == 0) {
@@ -586,20 +587,7 @@ CGFloat defaultTakePhotoBtnTopConstraint;
 				alertView.title = @"Thanks a bunch!";
 				alertView.message = @"Your issue has been sent to AD";
 				
-				_photoImageView.image = nil;
-				_locationLabel.text = @"Add place";
-				_addDescLbl.text = @"Add description";
-				
-				_takePhotoLbl.alpha = 1.0;
-				_retakePhotoLbl.alpha = 0.0;
-				
-#warning TODO: do not hardcode, use default constraint constant
-				_takePhotoBtnTopConstraint.constant = 45 /*defaultTakePhotoBtnTopConstraint*/;
-				_photoImageViewHeightConstraint.constant = 102/*defaultPhotoImageViewHeightConstraint*/;
-				
-				[UIView animateWithDuration:0.5 animations:^{
-					[_topContainer layoutIfNeeded];
-				}];
+				[self resetMainView];
 				
 				[alertView show];
 			} else {
@@ -618,14 +606,18 @@ CGFloat defaultTakePhotoBtnTopConstraint;
 	_photoImageView.image = nil;
 	_locationLabel.text = @"Add place";
 	_addDescLbl.text = @"Add description";
+	_addDescTextView.text = @"";
 	
 	_takePhotoLbl.alpha = 1.0;
 	_retakePhotoLbl.alpha = 0.0;
 	
-	_takePhotoBtnTopConstraint.constant = defaultTakePhotoBtnTopConstraint;
-	_photoImageViewHeightConstraint.constant = defaultPhotoImageViewHeightConstraint;
+#warning TODO: do not hardcode, use default constraint constant
+	_takePhotoBtnTopConstraint.constant = 45 /*defaultTakePhotoBtnTopConstraint*/;
+	_photoImageViewHeightConstraint.constant = 102/*defaultPhotoImageViewHeightConstraint*/;
 	
-	[_topContainer layoutIfNeeded];
+	[UIView animateWithDuration:0.5 animations:^{
+		[_topContainer layoutIfNeeded];
+	}];
 }
 
 - (IBAction)sendReportTouchCancel {
