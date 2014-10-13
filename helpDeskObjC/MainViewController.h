@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "ScanditSDKOverlayController.h"
+#import "HDButton.h"
 
 @interface MainViewController : UIViewController <UITextFieldDelegate, UITextViewDelegate, ScanditSDKOverlayControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 @property (strong, nonatomic) IBOutlet UIScrollView *scrollView;
@@ -21,6 +22,8 @@
 @property (weak, nonatomic) IBOutlet UIImageView *takePhotoBtnShadowImageView;
 @property (weak, nonatomic) IBOutlet UILabel *takePhotoLbl;
 @property (weak, nonatomic) IBOutlet UILabel *retakePhotoLbl;
+
+@property (weak, nonatomic) IBOutlet HDButton *takePhotoTestButton;
 
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *takePhotoBtnTopConstraint;
 
