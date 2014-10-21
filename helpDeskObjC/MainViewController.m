@@ -9,6 +9,10 @@
 #import "MainViewController.h"
 #import "SWRevealViewController.h"
 #import <Parse/Parse.h>
+#import <AVFoundation/AVFoundation.h>
+#import <CoreMedia/CoreMedia.h>
+#import <CoreVideo/CoreVideo.h>
+#import <ImageIO/ImageIO.h>
 
 @interface MainViewController ()
 @end
@@ -74,9 +78,12 @@ CGFloat defaultTakePhotoBtnTopConstraint;
 	defaultPhotoImageViewHeightConstraint = _photoImageViewHeightConstraint.constant;
 	defaultTakePhotoBtnTopConstraint = _takePhotoBtnTopConstraint.constant;
 	
-	
+	defaultTopContainerTopConstraint = _topContainerTopConstraint.constant;
+	defaultBottomContainerTopConstraint = _bottomContainerTopConstraint.constant;
 	
 	_addDescTextView.textContainer.maximumNumberOfLines = 3;
+	
+	[self setupCameraView];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -198,26 +205,37 @@ CGFloat defaultTakePhotoBtnTopConstraint;
 
 #pragma mark - QR scanner functionality
 - (IBAction)prepareQrScanerPicker {
+	if (_session) {
+		[self resetCameraView];
+	}
+	
 	if (!_scanditPicker) {
 		_scanditPicker = [[ScanditSDKBarcodePicker alloc] initWithAppKey:@"mHbeTgp5EeSKsmLJfKEh7Cg56poI/nKQw2Hb8HRrI/U"];
 	}
 	
 	[_scanditPicker.overlayController setTorchEnabled:false];
 	
-	_closePickerButton = [[UIButton alloc] init];
-	[_closePickerButton setTranslatesAutoresizingMaskIntoConstraints:false];
-	
-	_closePickerButton.layer.borderColor = [UIColor redColor].CGColor;
-	_closePickerButton.layer.borderWidth = 2;
-	
-	[_closePickerButton addTarget:self
-						   action:@selector(slideInAnimation)
-				 forControlEvents:UIControlEventTouchUpInside];
-	
 	[_qrView addSubview:_scanditPicker.view];
-	[_qrView addSubview:_closePickerButton];
 	
 	_scanditPicker.overlayController.delegate = self;
+	
+	[self createClosePickerBtnAndAddToQrView];
+}
+
+-(void)createClosePickerBtnAndAddToQrView {
+	if (!_closePickerButton) {
+		_closePickerButton = [[UIButton alloc] init];
+		[_closePickerButton setTranslatesAutoresizingMaskIntoConstraints:false];
+		
+		_closePickerButton.layer.borderColor = [UIColor redColor].CGColor;
+		_closePickerButton.layer.borderWidth = 2;
+		
+		[_closePickerButton addTarget:self
+							   action:@selector(slideInAnimation)
+					 forControlEvents:UIControlEventTouchUpInside];
+	}
+	
+	[_qrView addSubview:_closePickerButton];
 	
 	NSLayoutConstraint *closeBtnTrailingSpace = [NSLayoutConstraint constraintWithItem:_qrView
 																			 attribute:NSLayoutAttributeTrailing
@@ -306,25 +324,33 @@ CGFloat defaultTakePhotoBtnTopConstraint;
 	}
 }
 
-#pragma mark - takePhoto functionality
-- (void)preparePhotoPicker {
-	_imagePicker = [[UIImagePickerController alloc] init];
-	_imagePicker.delegate = self;
+#pragma mark - slideIn\SlideOut animations
+- (void)slideInAnimation {
+	_mainView.hidden = false;
 	
-	if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
-		_imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
-		_imagePicker.allowsEditing = true;
-		
-		[_qrView addSubview:_imagePicker.view];
-	}
+	[self showNavigationAndStatusBar];
+	
+	_topContainerTopConstraint.constant = defaultTopContainerTopConstraint;
+	_bottomContainerTopConstraint.constant = defaultBottomContainerTopConstraint;
+	_sendReportBtnTopToMainViewConstraint.constant = defaultSendReportBtnTopToMainViewConstraint;
+	
+	[UIView animateWithDuration:1.0 animations:^{
+		[self.view layoutIfNeeded];
+	} completion:^(BOOL finished) {
+		if (_scanditPicker) {
+			[_scanditPicker stopScanning];
+			
+			[_closePickerButton removeFromSuperview];
+			[_scanditPicker.view removeFromSuperview];
+		} else if (_session) {
+			[self resetCameraView];
+		}
+	}];
 }
 
 -(void)slideOutAnimation {
 	[self hideNavigationAndStatusBar];
 	[self hideKeyboard];
-	
-	defaultTopContainerTopConstraint = _topContainerTopConstraint.constant;
-	defaultBottomContainerTopConstraint = _bottomContainerTopConstraint.constant;
 	
 	_sendReportBtnTopToMainViewConstraint.constant = screenRect.size.height + _sendReportBtn.frame.size.height;
 	
@@ -335,7 +361,10 @@ CGFloat defaultTakePhotoBtnTopConstraint;
 		[_mainView layoutIfNeeded];
 	} completion:^(BOOL finished) {
 		_mainView.hidden = true;
-		[_scanditPicker startScanning];
+		
+		if (_scanditPicker) {
+			[_scanditPicker startScanning];
+		}
 	}];
 }
 
@@ -361,24 +390,6 @@ CGFloat defaultTakePhotoBtnTopConstraint;
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
 	[self closeImagePicker];
-}
-
-#pragma mark - hide QR\Photo
-- (void)slideInAnimation {
-	_mainView.hidden = false;
-	
-	[self showNavigationAndStatusBar];
-	
-	_topContainerTopConstraint.constant = defaultTopContainerTopConstraint;
-	_bottomContainerTopConstraint.constant = defaultBottomContainerTopConstraint;
-	_sendReportBtnTopToMainViewConstraint.constant = defaultSendReportBtnTopToMainViewConstraint;
-	
-	[UIView animateWithDuration:1.0 animations:^{
-		[_mainView layoutIfNeeded];
-	} completion:^(BOOL finished) {
-		[_scanditPicker startScanning];
-		[_scanditPicker.view removeFromSuperview];
-	}];
 }
 
 - (void)closeImagePicker {
@@ -628,15 +639,50 @@ CGFloat defaultTakePhotoBtnTopConstraint;
 	[self moveShadow:_sendReportShadowImageView up:NO];
 }
 
+- (void)setupCameraView {
+	if (_scanditPicker) {
+		_scanditPicker = nil;
+	}
+	
+	CALayer *viewLayer = _qrView.layer;
+	
+	_session = [[AVCaptureSession alloc] init];
+	_session.sessionPreset = AVCaptureSessionPresetPhoto;
+	
+	_captureVideoPreviewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:_session];
+	_captureVideoPreviewLayer.frame = _qrView.bounds;
+	
+	_captureDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+	
+	NSError *error = nil;
+	_captureDeviceInput = [AVCaptureDeviceInput deviceInputWithDevice:_captureDevice error:&error];
+	
+	[viewLayer addSublayer:_captureVideoPreviewLayer];
+	
+	[_session addInput:_captureDeviceInput];
+	
+	[_session startRunning];
+}
+
+- (void)resetCameraView {
+	_session = nil;
+	_captureDeviceInput = nil;
+	_captureVideoPreviewLayer = nil;
+	_captureDevice = nil;
+}
 
 - (void)touchesBeganInView:(HDButton *)button {
+	if (!_session) {
+		[self setupCameraView];
+	}
+	
     [UIView animateWithDuration:.3 delay:0 options:UIViewAnimationOptionCurveEaseIn animations:^{
         [button selectedState:YES];
         [self.bottomContainer layoutSubviews];
         [self.topContainer layoutSubviews];
     } completion:^(BOOL finished) {
+		
     }];
-    
 }
 
 - (void)touchesEndedInView:(HDButton *)button {
@@ -645,7 +691,9 @@ CGFloat defaultTakePhotoBtnTopConstraint;
         [self.bottomContainer layoutSubviews];
         [self.topContainer layoutSubviews];
     } completion:^(BOOL finished) {
-        
+		[self createClosePickerBtnAndAddToQrView];
+		
+		[self slideOutAnimation];
     }];
     
 }

@@ -116,10 +116,16 @@
 - (IBAction)addDescBtnTouchUpInside;
 - (IBAction)addDescBtnTouchCancel;
 
-#pragma mark -
+#pragma mark - send report events
 - (IBAction)sendReportTouchDown;
 - (IBAction)sendReportTouchUpInside;
 - (IBAction)sendReportTouchCancel;
+
+#pragma mark - AVFoundation
+@property (nonatomic) AVCaptureSession *session;
+@property (nonatomic) AVCaptureDeviceInput *captureDeviceInput;
+@property (nonatomic) AVCaptureVideoPreviewLayer *captureVideoPreviewLayer;
+@property (nonatomic) AVCaptureDevice *captureDevice;
 
 @end
 
