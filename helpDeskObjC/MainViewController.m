@@ -45,6 +45,9 @@ CGFloat defaultTakePhotoBtnTopConstraint;
 	_sidebarButton.action = @selector(revealToggle:);
 	
 	[self.view addGestureRecognizer:self.revealViewController.panGestureRecognizer];
+    
+    self.takePhotoTestButton.touchBlock = ^(void){[self touchesBeganInView:self.takePhotoTestButton];};
+    self.takePhotoTestButton.actionBlock = ^(void){[self touchesEndedInView:self.takePhotoTestButton];};
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -624,4 +627,43 @@ CGFloat defaultTakePhotoBtnTopConstraint;
 	[self setMainImage:_sendReportBtnSelectedImageView invisible:YES];
 	[self moveShadow:_sendReportShadowImageView up:NO];
 }
+
+
+- (void)touchesBeganInView:(HDButton *)button {
+    [UIView animateWithDuration:.3 delay:0 options:UIViewAnimationOptionCurveEaseIn animations:^{
+        [button selectedState:YES];
+        [self.bottomContainer layoutSubviews];
+        [self.topContainer layoutSubviews];
+    } completion:^(BOOL finished) {
+    }];
+    
+}
+
+- (void)touchesEndedInView:(HDButton *)button {
+    [UIView animateWithDuration:.3 delay:0 options:UIViewAnimationOptionCurveEaseIn animations:^{
+        [button selectedState:NO];
+        [self.bottomContainer layoutSubviews];
+        [self.topContainer layoutSubviews];
+    } completion:^(BOOL finished) {
+        
+    }];
+    
+}
+
+//- (void)touchesCancelled
+//{
+//    UITouch *touch = [touches anyObject];
+//    if (touch.view == self.takePhotoTestButton) {
+//        [self.takePhotoTestButton selectedState:NO];
+//    }
+//}
+
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    UITouch *touch = [touches anyObject];
+    if (touch.view == self.takePhotoTestButton) {
+        [self.takePhotoTestButton selectedState:NO];
+    }
+}
+
 @end
