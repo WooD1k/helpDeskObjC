@@ -15,6 +15,10 @@
 #import <ImageIO/ImageIO.h>
 
 @interface MainViewController ()
+
+@property (nonatomic) AVCaptureStillImageOutput *stillImageOutput;
+@property (nonatomic) UIView *photoAreaView;
+
 @end
 
 @implementation MainViewController
@@ -254,6 +258,72 @@ CGFloat defaultTakePhotoBtnTopConstraint;
 																		 constant:20];
 	[_qrView addConstraint:closeBtnTrailingSpace];
 	[_qrView addConstraint:closeBtnTopSpace];
+}
+
+- (void)createTakeBtnAddToQrView {
+	UIButton *savePhotoBtn = [[UIButton alloc] init];
+	savePhotoBtn.translatesAutoresizingMaskIntoConstraints = false;
+	
+	savePhotoBtn.layer.borderColor = [UIColor greenColor].CGColor;
+	savePhotoBtn.layer.borderWidth = 2;
+	
+	[savePhotoBtn addTarget:self action:@selector(savePhoto) forControlEvents:UIControlEventTouchUpInside];
+	
+	[_qrView addSubview:savePhotoBtn];
+	
+	NSLayoutConstraint *savePhotoBtnBottomConstraint = [NSLayoutConstraint constraintWithItem:_qrView
+																					attribute:NSLayoutAttributeBottom
+																					relatedBy:NSLayoutRelationEqual
+																					   toItem:savePhotoBtn
+																					attribute:NSLayoutAttributeBottom
+																				   multiplier:1.0
+																					 constant:20];
+	
+	NSLayoutConstraint *savePhotoBtnCenterXConstraint = [NSLayoutConstraint constraintWithItem:savePhotoBtn
+																					 attribute:NSLayoutAttributeCenterX
+																					 relatedBy:NSLayoutRelationEqual
+																						toItem:_qrView
+																					 attribute:NSLayoutAttributeCenterX
+																					multiplier:1.0
+																					  constant:0];
+	
+	[_qrView addConstraint:savePhotoBtnBottomConstraint];
+	[_qrView addConstraint:savePhotoBtnCenterXConstraint];
+}
+
+- (void) savePhoto {
+	AVCaptureConnection *videoConnection = nil;
+	
+	for (AVCaptureConnection *connection in _stillImageOutput.connections) {
+		for (AVCaptureInputPort *port in [connection inputPorts]) {
+			if ([[port mediaType] isEqual:AVMediaTypeVideo]) {
+				videoConnection = connection;
+				break;
+			}
+		}
+		if (videoConnection) {
+			break;
+		}
+	}
+	
+	[_stillImageOutput captureStillImageAsynchronouslyFromConnection:videoConnection completionHandler:^(CMSampleBufferRef imageDataSampleBuffer, NSError *error) {
+		
+		NSData *imageData = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageDataSampleBuffer];
+		
+		UIImage *image = [[UIImage alloc] initWithData:imageData scale:[[UIScreen mainScreen] scale]];
+		
+		NSLog(@"[UIScreen mainScreen] scale]: %f", [[UIScreen mainScreen] scale]);
+		NSLog(@"image.size: %@", NSStringFromCGSize(image.size));
+		NSLog(@"_qrView.frame.size: %@", NSStringFromCGSize(_qrView.frame.size));
+		_photoImageView.image = image;
+		
+		_takePhotoLbl.alpha = 0.0;
+		_retakePhotoLbl.alpha = 1.0;
+
+		_photoImageView.alpha = 1.0;
+		
+		[self slideInAnimation];
+	}];
 }
 
 #pragma mark - ScanditSDKOverlayControllerDelegate methods
@@ -647,10 +717,14 @@ CGFloat defaultTakePhotoBtnTopConstraint;
 	CALayer *viewLayer = _qrView.layer;
 	
 	_session = [[AVCaptureSession alloc] init];
-	_session.sessionPreset = AVCaptureSessionPresetPhoto;
+	_session.sessionPreset = AVCaptureSessionPresetInputPriority;
 	
 	_captureVideoPreviewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:_session];
 	_captureVideoPreviewLayer.frame = _qrView.bounds;
+	
+	_stillImageOutput = [[AVCaptureStillImageOutput alloc] init];
+	NSDictionary *outputSettings = [[NSDictionary alloc] initWithObjectsAndKeys:AVVideoCodecJPEG, AVVideoCodecKey, nil];
+	[_stillImageOutput setOutputSettings:outputSettings];
 	
 	_captureDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
 	
@@ -660,8 +734,57 @@ CGFloat defaultTakePhotoBtnTopConstraint;
 	[viewLayer addSublayer:_captureVideoPreviewLayer];
 	
 	[_session addInput:_captureDeviceInput];
+	[_session addOutput:_stillImageOutput];
 	
 	[_session startRunning];
+	
+	_photoAreaView = [[UIView alloc] init];
+	
+	_photoAreaView.translatesAutoresizingMaskIntoConstraints = false;
+	
+	_photoAreaView.layer.borderWidth = 2;
+	_photoAreaView.layer.borderColor = [UIColor orangeColor].CGColor;
+	
+	[_qrView addSubview:_photoAreaView];
+	
+	NSLayoutConstraint *photoAreaViewCenterXConstraint = [NSLayoutConstraint constraintWithItem:_qrView
+																					  attribute:NSLayoutAttributeCenterX
+																					  relatedBy:NSLayoutRelationEqual
+																						 toItem:_photoAreaView
+																					  attribute:NSLayoutAttributeCenterX
+																					 multiplier:1.0
+																					   constant:0];
+	
+	NSLayoutConstraint *photoAreaViewCenterYConstraint = [NSLayoutConstraint constraintWithItem:_qrView
+																					  attribute:NSLayoutAttributeCenterY
+																					  relatedBy:NSLayoutRelationEqual
+																						 toItem:_photoAreaView
+																					  attribute:NSLayoutAttributeCenterY
+																					 multiplier:1.0
+																					   constant:0];
+	
+	NSLayoutConstraint *photoAreaViewHeightConstraint = [NSLayoutConstraint constraintWithItem:_photoAreaView
+																					  attribute:NSLayoutAttributeHeight
+																					  relatedBy:NSLayoutRelationEqual
+																						 toItem:nil
+																					  attribute:NSLayoutAttributeHeight
+																					 multiplier:1.0
+																					   constant:_qrView.frame.size.width/1.5];
+	
+	NSLayoutConstraint *photoAreaViewWidthConstraint = [NSLayoutConstraint constraintWithItem:_photoAreaView
+																					 attribute:NSLayoutAttributeWidth
+																					 relatedBy:NSLayoutRelationEqual
+																						toItem:nil
+																					 attribute:NSLayoutAttributeWidth
+																					multiplier:1.0
+																					  constant:_qrView.frame.size.width/1.5];
+	
+	[_qrView addConstraint:photoAreaViewHeightConstraint];
+	[_qrView addConstraint:photoAreaViewWidthConstraint];
+	[_qrView addConstraint:photoAreaViewCenterXConstraint];
+	[_qrView addConstraint:photoAreaViewCenterYConstraint];
+	
+	[self createTakeBtnAddToQrView];
 }
 
 - (void)resetCameraView {
