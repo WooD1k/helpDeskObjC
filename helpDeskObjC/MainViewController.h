@@ -126,6 +126,7 @@
 @property (nonatomic) AVCaptureDeviceInput *captureDeviceInput;
 @property (nonatomic) AVCaptureVideoPreviewLayer *captureVideoPreviewLayer;
 @property (nonatomic) AVCaptureDevice *captureDevice;
+@property (nonatomic) AVCaptureStillImageOutput *stillImageOutput;
 
 @end
 

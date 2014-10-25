@@ -15,10 +15,6 @@
 #import <ImageIO/ImageIO.h>
 
 @interface MainViewController ()
-
-@property (nonatomic) AVCaptureStillImageOutput *stillImageOutput;
-@property (nonatomic) UIView *photoAreaView;
-
 @end
 
 @implementation MainViewController
@@ -308,18 +304,52 @@ CGFloat defaultTakePhotoBtnTopConstraint;
 	
 	[_stillImageOutput captureStillImageAsynchronouslyFromConnection:videoConnection completionHandler:^(CMSampleBufferRef imageDataSampleBuffer, NSError *error) {
 		
-		NSData *imageData = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageDataSampleBuffer];
+		NSData *photoData = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageDataSampleBuffer];
 		
-		UIImage *image = [[UIImage alloc] initWithData:imageData scale:[[UIScreen mainScreen] scale]];
+		UIImage *photo = [[UIImage alloc] initWithData:photoData];
 		
-		NSLog(@"[UIScreen mainScreen] scale]: %f", [[UIScreen mainScreen] scale]);
-		NSLog(@"image.size: %@", NSStringFromCGSize(image.size));
-		NSLog(@"_qrView.frame.size: %@", NSStringFromCGSize(_qrView.frame.size));
-		_photoImageView.image = image;
+		CGSize photoSize = photo.size;
+		
+		CGFloat sideToCropBy = photoSize.width;
+		
+		// output size has sideLength for both dimensions
+		CGSize cropSize = CGSizeMake(sideToCropBy, sideToCropBy);
+		
+		// calculate scale so that smaller dimension fits sideLength
+		CGFloat scale = MAX(sideToCropBy / photoSize.width,
+							sideToCropBy / photoSize.height);
+		
+		// scaling the image with this scale results in this output size
+		CGSize scaledPhotoSize = CGSizeMake(photoSize.width * scale,
+											photoSize.height * scale);
+		
+		// determine point in center of "canvas"
+		CGPoint center = CGPointMake(cropSize.width/2.0,
+									 cropSize.height/2.0);
+		
+		// calculate drawing rect relative to output Size
+		CGRect cropRect = CGRectMake(center.x - scaledPhotoSize.width/2.0,
+									   center.y - scaledPhotoSize.height/2.0,
+									   scaledPhotoSize.width,
+									   scaledPhotoSize.height);
+		
+		// begin a new bitmap context, scale 0 takes display scale
+		UIGraphicsBeginImageContextWithOptions(cropSize, YES, 0);
+		
+		// draw the source image into the calculated rect
+		[photo drawInRect:cropRect];
+		
+		// create new image from bitmap context
+		UIImage *croppedImage = UIGraphicsGetImageFromCurrentImageContext();
+		
+		// clean up
+		UIGraphicsEndImageContext();
+		
+		_photoImageView.image = croppedImage;
 		
 		_takePhotoLbl.alpha = 0.0;
 		_retakePhotoLbl.alpha = 1.0;
-
+		
 		_photoImageView.alpha = 1.0;
 		
 		[self slideInAnimation];
@@ -737,52 +767,6 @@ CGFloat defaultTakePhotoBtnTopConstraint;
 	[_session addOutput:_stillImageOutput];
 	
 	[_session startRunning];
-	
-	_photoAreaView = [[UIView alloc] init];
-	
-	_photoAreaView.translatesAutoresizingMaskIntoConstraints = false;
-	
-	_photoAreaView.layer.borderWidth = 2;
-	_photoAreaView.layer.borderColor = [UIColor orangeColor].CGColor;
-	
-	[_qrView addSubview:_photoAreaView];
-	
-	NSLayoutConstraint *photoAreaViewCenterXConstraint = [NSLayoutConstraint constraintWithItem:_qrView
-																					  attribute:NSLayoutAttributeCenterX
-																					  relatedBy:NSLayoutRelationEqual
-																						 toItem:_photoAreaView
-																					  attribute:NSLayoutAttributeCenterX
-																					 multiplier:1.0
-																					   constant:0];
-	
-	NSLayoutConstraint *photoAreaViewCenterYConstraint = [NSLayoutConstraint constraintWithItem:_qrView
-																					  attribute:NSLayoutAttributeCenterY
-																					  relatedBy:NSLayoutRelationEqual
-																						 toItem:_photoAreaView
-																					  attribute:NSLayoutAttributeCenterY
-																					 multiplier:1.0
-																					   constant:0];
-	
-	NSLayoutConstraint *photoAreaViewHeightConstraint = [NSLayoutConstraint constraintWithItem:_photoAreaView
-																					  attribute:NSLayoutAttributeHeight
-																					  relatedBy:NSLayoutRelationEqual
-																						 toItem:nil
-																					  attribute:NSLayoutAttributeHeight
-																					 multiplier:1.0
-																					   constant:_qrView.frame.size.width/1.5];
-	
-	NSLayoutConstraint *photoAreaViewWidthConstraint = [NSLayoutConstraint constraintWithItem:_photoAreaView
-																					 attribute:NSLayoutAttributeWidth
-																					 relatedBy:NSLayoutRelationEqual
-																						toItem:nil
-																					 attribute:NSLayoutAttributeWidth
-																					multiplier:1.0
-																					  constant:_qrView.frame.size.width/1.5];
-	
-	[_qrView addConstraint:photoAreaViewHeightConstraint];
-	[_qrView addConstraint:photoAreaViewWidthConstraint];
-	[_qrView addConstraint:photoAreaViewCenterXConstraint];
-	[_qrView addConstraint:photoAreaViewCenterYConstraint];
 	
 	[self createTakeBtnAddToQrView];
 }
