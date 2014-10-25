@@ -10,18 +10,13 @@
 #import "ScanditSDKOverlayController.h"
 #import "HDButton.h"
 
-@interface MainViewController : UIViewController <UITextFieldDelegate, UITextViewDelegate, ScanditSDKOverlayControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
+@interface MainViewController : UIViewController <UITextFieldDelegate, UITextViewDelegate, ScanditSDKOverlayControllerDelegate, UINavigationControllerDelegate>
 @property (strong, nonatomic) IBOutlet UIScrollView *scrollView;
 @property (weak, nonatomic) IBOutlet UIView *mainView;
 @property (weak, nonatomic) IBOutlet UIView *qrView;
 
 #pragma mark - takePhotoBtn elements
 @property (weak, nonatomic) IBOutlet UIButton *takePhotoBtn;
-@property (weak, nonatomic) IBOutlet UIImageView *takePhotoBtnImageView;
-@property (weak, nonatomic) IBOutlet UIImageView *takePhotoBtnSelectedImageView;
-@property (weak, nonatomic) IBOutlet UIImageView *takePhotoBtnShadowImageView;
-@property (weak, nonatomic) IBOutlet UILabel *takePhotoLbl;
-@property (weak, nonatomic) IBOutlet UILabel *retakePhotoLbl;
 
 @property (weak, nonatomic) IBOutlet HDButton *takePhotoTestButton;
 
@@ -94,11 +89,6 @@
 
 - (IBAction)textFieldGotFocus:(UITextField *)sender;
 - (IBAction)hideKeyboard:(UITapGestureRecognizer *)sender;
-
-#pragma mark - takePhotoBtn events
-- (IBAction)takePhotoTouchDown;
-- (IBAction)takePhotoTouchUpInside;
-- (IBAction)takePhotoTouchCancel;
 
 #pragma mark - addLocation events
 - (IBAction)addLocationManuallyTouchDown;

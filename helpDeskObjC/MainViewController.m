@@ -345,12 +345,11 @@ CGFloat defaultTakePhotoBtnTopConstraint;
 		// clean up
 		UIGraphicsEndImageContext();
 		
-		_photoImageView.image = croppedImage;
+		[_takePhotoTestButton setPhoto:croppedImage];
 		
-		_takePhotoLbl.alpha = 0.0;
-		_retakePhotoLbl.alpha = 1.0;
-		
-		_photoImageView.alpha = 1.0;
+		[UIView animateKeyframesWithDuration:1 delay:0 options:UIViewKeyframeAnimationOptionBeginFromCurrentState animations:^{
+			[_mainView layoutIfNeeded];
+		} completion:nil];
 		
 		[self slideInAnimation];
 	}];
@@ -376,32 +375,7 @@ CGFloat defaultTakePhotoBtnTopConstraint;
 	}
 }
 
-#pragma mark - takePhotoBtn animation
-- (IBAction)takePhotoTouchDown {
-	[self moveShadow:_takePhotoBtnShadowImageView up:YES];
-	[self setMainImage:_takePhotoBtnImageView invisible:YES];
-}
-
-- (IBAction)takePhotoTouchUpInside {
-	[self moveShadow:_takePhotoBtnShadowImageView up:NO];
-	[self setMainImage:_takePhotoBtnImageView invisible:NO];
-	
-	_imagePicker = [[UIImagePickerController alloc] init];
-	_imagePicker.delegate = self;
-	
-	if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
-		_imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
-		_imagePicker.allowsEditing = true;
-		
-		[self.navigationController presentViewController:_imagePicker animated:true completion:nil];
-	}
-}
-
-- (IBAction)takePhotoTouchCancel {
-	[self moveShadow:_takePhotoBtnShadowImageView up:NO];
-	[self setMainImage:_takePhotoBtnImageView invisible:NO];
-}
-
+#pragma mark - animation helpers
 - (void)moveShadow:(UIImageView *) shadowToMove up:(BOOL)isMoveUp {
 	[UIView animateWithDuration:0.3 animations:^{
 		if (isMoveUp) {
@@ -466,35 +440,6 @@ CGFloat defaultTakePhotoBtnTopConstraint;
 			[_scanditPicker startScanning];
 		}
 	}];
-}
-
-#pragma mark - UIImagePickerControllerDelegate methods
-- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info{
-	UIImage *photo = [info objectForKey:@"UIImagePickerControllerEditedImage"];
-	
-	_photoImageViewHeightConstraint.constant = defaultPhotoImageViewHeightConstraint * 1.5;
-	_takePhotoBtnTopConstraint.constant = 30;
-	
-	[_topContainer layoutIfNeeded];
-	
-	if (photo) {
-		_takePhotoLbl.alpha = 0.0;
-		_retakePhotoLbl.alpha = 1.0;
-		
-		_photoImageView.image = photo;
-		_photoImageView.alpha = 1.0;
-	}
-	
-	[self closeImagePicker];
-}
-
-- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
-	[self closeImagePicker];
-}
-
-- (void)closeImagePicker {
-	_scanditPicker = nil;
-	[self dismissViewControllerAnimated:true completion:nil];
 }
 
 #pragma mark - hide system UI elements
@@ -717,17 +662,15 @@ CGFloat defaultTakePhotoBtnTopConstraint;
 }
 
 -(void)resetMainView {
-	_photoImageView.image = nil;
 	_locationLabel.text = @"Add place";
 	_addDescLbl.text = @"Add description";
 	_addDescTextView.text = @"";
 	
-	_takePhotoLbl.alpha = 1.0;
-	_retakePhotoLbl.alpha = 0.0;
-	
 #warning TODO: do not hardcode, use default constraint constant
 	_takePhotoBtnTopConstraint.constant = 45 /*defaultTakePhotoBtnTopConstraint*/;
 	_photoImageViewHeightConstraint.constant = 102/*defaultPhotoImageViewHeightConstraint*/;
+	
+	[_takePhotoTestButton resetConstraints];
 	
 	[UIView animateWithDuration:0.5 animations:^{
 		[_topContainer layoutIfNeeded];
@@ -804,14 +747,6 @@ CGFloat defaultTakePhotoBtnTopConstraint;
     }];
     
 }
-
-//- (void)touchesCancelled
-//{
-//    UITouch *touch = [touches anyObject];
-//    if (touch.view == self.takePhotoTestButton) {
-//        [self.takePhotoTestButton selectedState:NO];
-//    }
-//}
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {

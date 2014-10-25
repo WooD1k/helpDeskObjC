@@ -96,6 +96,28 @@
     }];
 }
 
+- (void)setPhoto:(UIImage *)photo {
+	_heightConstraint.constant = self.heightConstraint.constant * 1.5;
+	_photoImageView.image = photo;
+	
+	_takePhotoLbl.alpha = 0.0;
+	_retakePhotoLbl.alpha = 1.0;
+	
+	_photoImageView.alpha = 1.0;
+}
+
+- (void)resetConstraints {
+	 _heightConstraint.constant = normalHeight;
+	
+	_takePhotoLbl.alpha = 1.0;
+	_retakePhotoLbl.alpha = 0.0;
+	_photoImageView.image = nil;
+	
+	[UIView animateWithDuration:.3 delay:0 options:UIViewAnimationOptionCurveEaseIn animations:^{
+		[self layoutSubviews];
+	} completion:nil];
+}
+
 //- (IBAction)takePhotoTouchDown {
 //    [self moveShadow:_takePhotoBtnShadowImageView up:YES];
 //    [self setMainImage:_takePhotoBtnImageView invisible:YES];
