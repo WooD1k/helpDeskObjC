@@ -15,6 +15,8 @@
 @property (weak, nonatomic) IBOutlet UIView *mainView;
 @property (weak, nonatomic) IBOutlet UIView *qrView;
 
+@property (nonatomic) BOOL isSendingData;
+
 #pragma mark - takePhotoBtn elements
 @property (weak, nonatomic) IBOutlet UIButton *takePhotoBtn;
 
@@ -110,6 +112,9 @@
 - (IBAction)sendReportTouchDown;
 - (IBAction)sendReportTouchUpInside;
 - (IBAction)sendReportTouchCancel;
+
+#pragma mark - send report animation
+- (void)moveElementsOffscreen;
 
 #pragma mark - AVFoundation
 @property (nonatomic) AVCaptureSession *session;

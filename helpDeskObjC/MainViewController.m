@@ -39,11 +39,16 @@ CGFloat defaultSendReportBtnTopToMainViewConstraint;
 
 CGFloat defaultPhotoImageViewHeightConstraint;
 CGFloat defaultTakePhotoBtnTopConstraint;
+CGFloat defaultReportSentLblTrailingConstraint;
+CGFloat defaultSendReportLblLeadingConstraint;
+
 
 #pragma mark - view lifecycle
 - (void)viewDidLoad {
 	[super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
+	
+	[[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
 	
 	_sidebarButton.target = self.revealViewController;
 	_sidebarButton.action = @selector(revealToggle:);
@@ -52,6 +57,12 @@ CGFloat defaultTakePhotoBtnTopConstraint;
     
     self.takePhotoTestButton.touchBlock = ^(void){[self touchesBeganInView:self.takePhotoTestButton];};
     self.takePhotoTestButton.actionBlock = ^(void){[self touchesEndedInView:self.takePhotoTestButton];};
+	
+	UIImage *cameraSmallImage = [UIImage imageNamed:@"camera_small"];
+	UIImageView *cameraSmallImageView = [[UIImageView alloc] initWithImage:cameraSmallImage];
+	cameraSmallImageView.frame = CGRectMake(90, 12, 30, 22);
+	
+	[self.navigationController.navigationBar addSubview:cameraSmallImageView];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -80,6 +91,8 @@ CGFloat defaultTakePhotoBtnTopConstraint;
 	
 	defaultTopContainerTopConstraint = _topContainerTopConstraint.constant;
 	defaultBottomContainerTopConstraint = _bottomContainerTopConstraint.constant;
+	defaultReportSentLblTrailingConstraint = _reportSentLblTrailingConstraint.constant;
+	defaultSendReportLblLeadingConstraint = _sendReportLblLeadingConstraint.constant;
 	
 	_addDescTextView.textContainer.maximumNumberOfLines = 3;
 	
@@ -166,11 +179,15 @@ CGFloat defaultTakePhotoBtnTopConstraint;
 			
 			if (_descContainerHeightConstraint.constant > defaultDescContainerHeightConstraint) {
 				_scanQrContainerTopConstraint.constant = defaultScanQrContainerTopConstraint - (_descContainerView.frame.size.height - defaultDescContainerHeightConstraint);
+				if (_takePhotoBtnTopConstraint.constant == defaultTakePhotoBtnTopConstraint) {
+					_takePhotoBtnTopConstraint.constant = _takePhotoBtnTopConstraint.constant - 20;
+				}
 			} else {
 				_scanQrContainerTopConstraint.constant = defaultScanQrContainerTopConstraint;
+				_takePhotoBtnTopConstraint.constant = defaultTakePhotoBtnTopConstraint;
 			}
 			
-			[_bottomContainer layoutIfNeeded];
+			[_mainView layoutIfNeeded];
 		}
 	} completion:^(BOOL finished) {
 		_addDescBtn.hidden = false;
@@ -186,14 +203,10 @@ CGFloat defaultTakePhotoBtnTopConstraint;
 	[self calculateOffsetFromTextViewAndMove];
 }
 
-#pragma mark - IBActions
+#pragma mark - textFieldGotFocus
 - (IBAction)textFieldGotFocus:(UITextField *)sender {
 	_activeTextField = sender;
 	_activeTextField.delegate = self;
-}
-
-- (IBAction)hideKeyboard:(UITapGestureRecognizer *)sender {
-	[self hideKeyboard];
 }
 
 #pragma mark - UITextFieldDelegate method
@@ -256,105 +269,6 @@ CGFloat defaultTakePhotoBtnTopConstraint;
 	[_qrView addConstraint:closeBtnTopSpace];
 }
 
-- (void)createTakeBtnAddToQrView {
-	UIButton *savePhotoBtn = [[UIButton alloc] init];
-	savePhotoBtn.translatesAutoresizingMaskIntoConstraints = false;
-	
-	savePhotoBtn.layer.borderColor = [UIColor greenColor].CGColor;
-	savePhotoBtn.layer.borderWidth = 2;
-	
-	[savePhotoBtn addTarget:self action:@selector(savePhoto) forControlEvents:UIControlEventTouchUpInside];
-	
-	[_qrView addSubview:savePhotoBtn];
-	
-	NSLayoutConstraint *savePhotoBtnBottomConstraint = [NSLayoutConstraint constraintWithItem:_qrView
-																					attribute:NSLayoutAttributeBottom
-																					relatedBy:NSLayoutRelationEqual
-																					   toItem:savePhotoBtn
-																					attribute:NSLayoutAttributeBottom
-																				   multiplier:1.0
-																					 constant:20];
-	
-	NSLayoutConstraint *savePhotoBtnCenterXConstraint = [NSLayoutConstraint constraintWithItem:savePhotoBtn
-																					 attribute:NSLayoutAttributeCenterX
-																					 relatedBy:NSLayoutRelationEqual
-																						toItem:_qrView
-																					 attribute:NSLayoutAttributeCenterX
-																					multiplier:1.0
-																					  constant:0];
-	
-	[_qrView addConstraint:savePhotoBtnBottomConstraint];
-	[_qrView addConstraint:savePhotoBtnCenterXConstraint];
-}
-
-- (void) savePhoto {
-	AVCaptureConnection *videoConnection = nil;
-	
-	for (AVCaptureConnection *connection in _stillImageOutput.connections) {
-		for (AVCaptureInputPort *port in [connection inputPorts]) {
-			if ([[port mediaType] isEqual:AVMediaTypeVideo]) {
-				videoConnection = connection;
-				break;
-			}
-		}
-		if (videoConnection) {
-			break;
-		}
-	}
-	
-	[_stillImageOutput captureStillImageAsynchronouslyFromConnection:videoConnection completionHandler:^(CMSampleBufferRef imageDataSampleBuffer, NSError *error) {
-		
-		NSData *photoData = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageDataSampleBuffer];
-		
-		UIImage *photo = [[UIImage alloc] initWithData:photoData];
-		
-		CGSize photoSize = photo.size;
-		
-		CGFloat sideToCropBy = photoSize.width;
-		
-		// output size has sideLength for both dimensions
-		CGSize cropSize = CGSizeMake(sideToCropBy, sideToCropBy);
-		
-		// calculate scale so that smaller dimension fits sideLength
-		CGFloat scale = MAX(sideToCropBy / photoSize.width,
-							sideToCropBy / photoSize.height);
-		
-		// scaling the image with this scale results in this output size
-		CGSize scaledPhotoSize = CGSizeMake(photoSize.width * scale,
-											photoSize.height * scale);
-		
-		// determine point in center of "canvas"
-		CGPoint center = CGPointMake(cropSize.width/2.0,
-									 cropSize.height/2.0);
-		
-		// calculate drawing rect relative to output Size
-		CGRect cropRect = CGRectMake(center.x - scaledPhotoSize.width/2.0,
-									   center.y - scaledPhotoSize.height/2.0,
-									   scaledPhotoSize.width,
-									   scaledPhotoSize.height);
-		
-		// begin a new bitmap context, scale 0 takes display scale
-		UIGraphicsBeginImageContextWithOptions(cropSize, YES, 0);
-		
-		// draw the source image into the calculated rect
-		[photo drawInRect:cropRect];
-		
-		// create new image from bitmap context
-		UIImage *croppedImage = UIGraphicsGetImageFromCurrentImageContext();
-		
-		// clean up
-		UIGraphicsEndImageContext();
-		
-		[_takePhotoTestButton setPhoto:croppedImage];
-		
-		[UIView animateKeyframesWithDuration:1 delay:0 options:UIViewKeyframeAnimationOptionBeginFromCurrentState animations:^{
-			[_mainView layoutIfNeeded];
-		} completion:nil];
-		
-		[self slideInAnimation];
-	}];
-}
-
 #pragma mark - ScanditSDKOverlayControllerDelegate methods
 - (void)scanditSDKOverlayController:(ScanditSDKOverlayController *)overlayController didCancelWithStatus:(NSDictionary *)status {
 	[self slideInAnimation];
@@ -398,7 +312,7 @@ CGFloat defaultTakePhotoBtnTopConstraint;
 	}
 }
 
-#pragma mark - slideIn\SlideOut animations
+#pragma mark - slideIn\slideOut\resetMainView animations
 - (void)slideInAnimation {
 	_mainView.hidden = false;
 	
@@ -407,6 +321,8 @@ CGFloat defaultTakePhotoBtnTopConstraint;
 	_topContainerTopConstraint.constant = defaultTopContainerTopConstraint;
 	_bottomContainerTopConstraint.constant = defaultBottomContainerTopConstraint;
 	_sendReportBtnTopToMainViewConstraint.constant = defaultSendReportBtnTopToMainViewConstraint;
+	
+	_takePhotoBtnTopConstraint.constant = defaultTakePhotoBtnTopConstraint;
 	
 	[UIView animateWithDuration:1.0 animations:^{
 		[self.view layoutIfNeeded];
@@ -431,6 +347,8 @@ CGFloat defaultTakePhotoBtnTopConstraint;
 	_topContainerTopConstraint.constant = -_topContainer.frame.size.height - 20.0f;
 	_bottomContainerTopConstraint.constant = _bottomContainerTopConstraint.constant + _bottomContainer.frame.size.height + 20.0f;
 	
+	_takePhotoBtnTopConstraint.constant = -_takePhotoTestButton.frame.size.height;
+	
 	[UIView animateWithDuration:1.5 animations:^{
 		[_mainView layoutIfNeeded];
 	} completion:^(BOOL finished) {
@@ -439,6 +357,24 @@ CGFloat defaultTakePhotoBtnTopConstraint;
 		if (_scanditPicker) {
 			[_scanditPicker startScanning];
 		}
+	}];
+}
+
+-(void)resetMainView {
+	_locationLabel.text = @"Add place";
+	_addDescLbl.text = @"Add description";
+	_addDescTextView.text = @"";
+	
+	_takePhotoBtnTopConstraint.constant = defaultTakePhotoBtnTopConstraint;
+	_scanQrContainerTopConstraint.constant = defaultScanQrContainerTopConstraint;
+	_sendReportBtnTopToMainViewConstraint.constant = defaultSendReportBtnTopToMainViewConstraint;
+	_reportSentLblTrailingConstraint.constant = defaultReportSentLblTrailingConstraint;
+	_sendReportLblLeadingConstraint.constant = defaultSendReportLblLeadingConstraint;
+	
+	[_takePhotoTestButton resetConstraints];
+	
+	[UIView animateWithDuration:1 animations:^{
+		[_mainView layoutIfNeeded];
 	}];
 }
 
@@ -451,6 +387,10 @@ CGFloat defaultTakePhotoBtnTopConstraint;
 		[_activeTextView resignFirstResponder];
 		_activeTextView = nil;
 	}
+}
+
+- (IBAction)hideKeyboard:(UITapGestureRecognizer *)sender {
+	[self hideKeyboard];
 }
 
 - (void)hideNavigationAndStatusBar {
@@ -587,99 +527,219 @@ CGFloat defaultTakePhotoBtnTopConstraint;
 	[self moveShadow:_addDescShadowImageView up:NO];
 }
 
-#pragma mark - sendREport btn events
+#pragma mark - sendReport btn events
 - (IBAction)sendReportTouchDown {
-	[self setMainImage:_sendReportBtnSelectedImageView invisible:NO];
-	[self moveShadow:_sendReportShadowImageView up:YES];
-}
-
-- (IBAction)sendReportTouchUpInside {
-	[self setMainImage:_sendReportBtnSelectedImageView invisible:YES];
-	[self moveShadow:_sendReportShadowImageView up:NO];
-	
-	UIAlertView *alertView = [[UIAlertView alloc] init];
-	alertView.title = @"Oops";
-	[alertView addButtonWithTitle:@"OK"];
-	
-	if ([_locationLabel.text  isEqual: @"Add place"] || _locationLabel.text.length == 0) {
-		alertView.message = @"Please fill in location field";
-		[alertView show];
-	} else if ([_addDescLbl.text  isEqual: @"Add description"] || _addDescLbl.text.length == 0) {
-		alertView.message = @"Please fill in description field";
-		[alertView show];
-	} else {
-		UIView *activityIndicatorBackground = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
-		
-		activityIndicatorBackground.layer.cornerRadius = 15;
-		activityIndicatorBackground.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.8];
-		activityIndicatorBackground.center = _mainView.center;
-		
-		UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-		activityIndicator.center = CGPointMake(activityIndicatorBackground.frame.size.width/2, activityIndicatorBackground.frame.size.height/2);
-		
-		[activityIndicatorBackground addSubview:activityIndicator];
-		[_mainView addSubview:activityIndicatorBackground];
-		
-		[activityIndicator startAnimating];
-		
-		PFObject *issueObject = [PFObject objectWithClassName:@"issues"];
-		
-		issueObject[@"location"] = _locationLabel.text;
-		issueObject[@"description"] = _addDescLbl.text;
-		
-		if (_photoImageView.image) {
-			NSData *imageData = UIImagePNGRepresentation(_photoImageView.image);
-			NSDateFormatter *dateFormater = [[NSDateFormatter alloc] init];
-			[dateFormater setDateFormat:@"yyMMddHHmmss"];
-			
-			NSDate *currentDate = [[NSDate alloc] init];
-			NSString *formatedDate = [dateFormater stringFromDate:currentDate];
-			
-			NSString *fileName = [NSString stringWithFormat:@"issue_%@.png", formatedDate];
-			PFFile * imageFile = [PFFile fileWithName:fileName data:imageData];
-			
-			issueObject[@"image"] = imageFile;
-		}
-		
-		[issueObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-			if (succeeded) {
-				alertView.title = @"Thanks a bunch!";
-				alertView.message = @"Your issue has been sent to AD";
-				
-				[self resetMainView];
-				
-				[alertView show];
-			} else {
-				alertView.title = @"Something went wrong";
-				alertView.message = [NSString stringWithFormat:@"Please try agein later!\n%@", error];
-				
-				[alertView show];
-			}
-			
-			[activityIndicatorBackground removeFromSuperview];
-		}];
+	if (!_isSendingData) {
+		[self setMainImage:_sendReportBtnSelectedImageView invisible:NO];
+		[self moveShadow:_sendReportShadowImageView up:YES];
 	}
 }
 
--(void)resetMainView {
-	_locationLabel.text = @"Add place";
-	_addDescLbl.text = @"Add description";
-	_addDescTextView.text = @"";
-	
-#warning TODO: do not hardcode, use default constraint constant
-	_takePhotoBtnTopConstraint.constant = 45 /*defaultTakePhotoBtnTopConstraint*/;
-	_photoImageViewHeightConstraint.constant = 102/*defaultPhotoImageViewHeightConstraint*/;
-	
-	[_takePhotoTestButton resetConstraints];
-	
-	[UIView animateWithDuration:0.5 animations:^{
-		[_topContainer layoutIfNeeded];
-	}];
+- (IBAction)sendReportTouchUpInside {
+	if (!_isSendingData) {
+		[self setMainImage:_sendReportBtnSelectedImageView invisible:YES];
+		[self moveShadow:_sendReportShadowImageView up:NO];
+		
+		UIAlertView *alertView = [[UIAlertView alloc] init];
+		alertView.title = @"Oops";
+		[alertView addButtonWithTitle:@"OK"];
+		
+		if ([_locationLabel.text  isEqual: @"Add place"] || _locationLabel.text.length == 0) {
+			alertView.message = @"Please fill in location field";
+			[alertView show];
+		} else if ([_addDescLbl.text  isEqual: @"Add description"] || _addDescLbl.text.length == 0) {
+			alertView.message = @"Please fill in description field";
+			[alertView show];
+		} else {
+			[self moveElementsOffscreen];
+			
+			_isSendingData = true;
+			
+			PFObject *issueObject = [PFObject objectWithClassName:@"issues"];
+			
+			issueObject[@"location"] = _locationLabel.text;
+			issueObject[@"description"] = _addDescLbl.text;
+			
+			if (_photoImageView.image) {
+				NSData *imageData = UIImagePNGRepresentation(_photoImageView.image);
+				NSDateFormatter *dateFormater = [[NSDateFormatter alloc] init];
+				[dateFormater setDateFormat:@"yyMMddHHmmss"];
+				
+				NSDate *currentDate = [[NSDate alloc] init];
+				NSString *formatedDate = [dateFormater stringFromDate:currentDate];
+				
+				NSString *fileName = [NSString stringWithFormat:@"issue_%@.png", formatedDate];
+				PFFile * imageFile = [PFFile fileWithName:fileName data:imageData];
+				
+				issueObject[@"image"] = imageFile;
+			}
+			[UIView animateWithDuration:.5 delay:.2 options:UIViewAnimationOptionCurveLinear animations:^{
+				_sendReportLbl.text = @"SENDING...";
+			} completion:nil];
+			
+			[issueObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+				if (succeeded) {
+					_sendReportLblLeadingConstraint.constant = -_sendReportLbl.frame.size.width * 2;
+					_reportSentLblTrailingConstraint.constant = 0;
+					
+					[UIView animateWithDuration:.5 animations:^{
+						[_mainView layoutIfNeeded];
+					} completion:^(BOOL finished) {
+						_sendReportLbl.text = @"SEND REPORT";
+						
+						[self performSelector:@selector(resetMainView) withObject:nil afterDelay:.5];
+						
+						_isSendingData = false;
+					}];
+				} else {
+					alertView.title = @"Something went wrong";
+					alertView.message = [NSString stringWithFormat:@"Please try agein later!\n%@", error];
+					
+					[alertView show];
+				}
+			}];
+		}
+	}
 }
 
 - (IBAction)sendReportTouchCancel {
 	[self setMainImage:_sendReportBtnSelectedImageView invisible:YES];
 	[self moveShadow:_sendReportShadowImageView up:NO];
+}
+
+#pragma mark take photo functionality
+- (void)touchesBeganInView:(HDButton *)button {
+	if (!_session) {
+		[self setupCameraView];
+	}
+	
+    [UIView animateWithDuration:.3 delay:0 options:UIViewAnimationOptionCurveEaseIn animations:^{
+        [button selectedState:YES];
+        [self.bottomContainer layoutSubviews];
+        [self.topContainer layoutSubviews];
+    } completion:^(BOOL finished) {
+		
+    }];
+}
+
+- (void)touchesEndedInView:(HDButton *)button {
+    [UIView animateWithDuration:.3 delay:0 options:UIViewAnimationOptionCurveEaseIn animations:^{
+        [button selectedState:NO];
+        [self.bottomContainer layoutSubviews];
+        [self.topContainer layoutSubviews];
+    } completion:^(BOOL finished) {
+		[self createClosePickerBtnAndAddToQrView];
+		
+		[self slideOutAnimation];
+    }];
+    
+}
+
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    UITouch *touch = [touches anyObject];
+    if (touch.view == self.takePhotoTestButton) {
+        [self.takePhotoTestButton selectedState:NO];
+    }
+}
+
+- (void)createTakeBtnAddToQrView {
+	UIButton *savePhotoBtn = [[UIButton alloc] init];
+	savePhotoBtn.translatesAutoresizingMaskIntoConstraints = false;
+	
+	savePhotoBtn.layer.borderColor = [UIColor greenColor].CGColor;
+	savePhotoBtn.layer.borderWidth = 2;
+	
+	[savePhotoBtn addTarget:self action:@selector(savePhoto) forControlEvents:UIControlEventTouchUpInside];
+	
+	[_qrView addSubview:savePhotoBtn];
+	
+	NSLayoutConstraint *savePhotoBtnBottomConstraint = [NSLayoutConstraint constraintWithItem:_qrView
+																					attribute:NSLayoutAttributeBottom
+																					relatedBy:NSLayoutRelationEqual
+																					   toItem:savePhotoBtn
+																					attribute:NSLayoutAttributeBottom
+																				   multiplier:1.0
+																					 constant:20];
+	
+	NSLayoutConstraint *savePhotoBtnCenterXConstraint = [NSLayoutConstraint constraintWithItem:savePhotoBtn
+																					 attribute:NSLayoutAttributeCenterX
+																					 relatedBy:NSLayoutRelationEqual
+																						toItem:_qrView
+																					 attribute:NSLayoutAttributeCenterX
+																					multiplier:1.0
+																					  constant:0];
+	
+	[_qrView addConstraint:savePhotoBtnBottomConstraint];
+	[_qrView addConstraint:savePhotoBtnCenterXConstraint];
+}
+
+- (void) savePhoto {
+	AVCaptureConnection *videoConnection = nil;
+	
+	for (AVCaptureConnection *connection in _stillImageOutput.connections) {
+		for (AVCaptureInputPort *port in [connection inputPorts]) {
+			if ([[port mediaType] isEqual:AVMediaTypeVideo]) {
+				videoConnection = connection;
+				break;
+			}
+		}
+		if (videoConnection) {
+			break;
+		}
+	}
+	
+	[_stillImageOutput captureStillImageAsynchronouslyFromConnection:videoConnection completionHandler:^(CMSampleBufferRef imageDataSampleBuffer, NSError *error) {
+		
+		NSData *photoData = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageDataSampleBuffer];
+		
+		UIImage *photo = [[UIImage alloc] initWithData:photoData];
+		
+		CGSize photoSize = photo.size;
+		
+		CGFloat sideToCropBy = photoSize.width;
+		
+		// output size has sideLength for both dimensions
+		CGSize cropSize = CGSizeMake(sideToCropBy, sideToCropBy);
+		
+		// calculate scale so that smaller dimension fits sideLength
+		CGFloat scale = MAX(sideToCropBy / photoSize.width,
+							sideToCropBy / photoSize.height);
+		
+		// scaling the image with this scale results in this output size
+		CGSize scaledPhotoSize = CGSizeMake(photoSize.width * scale,
+											photoSize.height * scale);
+		
+		// determine point in center of "canvas"
+		CGPoint center = CGPointMake(cropSize.width/2.0,
+									 cropSize.height/2.0);
+		
+		// calculate drawing rect relative to output Size
+		CGRect cropRect = CGRectMake(center.x - scaledPhotoSize.width/2.0,
+									 center.y - scaledPhotoSize.height/2.0,
+									 scaledPhotoSize.width,
+									 scaledPhotoSize.height);
+		
+		// begin a new bitmap context, scale 0 takes display scale
+		UIGraphicsBeginImageContextWithOptions(cropSize, YES, 0);
+		
+		// draw the source image into the calculated rect
+		[photo drawInRect:cropRect];
+		
+		// create new image from bitmap context
+		UIImage *croppedImage = UIGraphicsGetImageFromCurrentImageContext();
+		
+		// clean up
+		UIGraphicsEndImageContext();
+		
+		[_takePhotoTestButton setPhoto:croppedImage];
+		
+		[UIView animateKeyframesWithDuration:1 delay:0 options:UIViewKeyframeAnimationOptionBeginFromCurrentState animations:^{
+			[_mainView layoutIfNeeded];
+		} completion:nil];
+		
+		[self slideInAnimation];
+	}];
 }
 
 - (void)setupCameraView {
@@ -721,39 +781,16 @@ CGFloat defaultTakePhotoBtnTopConstraint;
 	_captureDevice = nil;
 }
 
-- (void)touchesBeganInView:(HDButton *)button {
-	if (!_session) {
-		[self setupCameraView];
-	}
+#pragma mark - send report animation
+- (void)moveElementsOffscreen {
+	_takePhotoBtnTopConstraint.constant = -_takePhotoTestButton.frame.size.height;
 	
-    [UIView animateWithDuration:.3 delay:0 options:UIViewAnimationOptionCurveEaseIn animations:^{
-        [button selectedState:YES];
-        [self.bottomContainer layoutSubviews];
-        [self.topContainer layoutSubviews];
-    } completion:^(BOOL finished) {
-		
-    }];
-}
-
-- (void)touchesEndedInView:(HDButton *)button {
-    [UIView animateWithDuration:.3 delay:0 options:UIViewAnimationOptionCurveEaseIn animations:^{
-        [button selectedState:NO];
-        [self.bottomContainer layoutSubviews];
-        [self.topContainer layoutSubviews];
-    } completion:^(BOOL finished) {
-		[self createClosePickerBtnAndAddToQrView];
-		
-		[self slideOutAnimation];
-    }];
-    
-}
-
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
-{
-    UITouch *touch = [touches anyObject];
-    if (touch.view == self.takePhotoTestButton) {
-        [self.takePhotoTestButton selectedState:NO];
-    }
+	_scanQrContainerTopConstraint.constant = -_bottomContainer.frame.size.height;
+	_sendReportBtnTopToMainViewConstraint.constant = defaultScanQrContainerTopConstraint * 2;
+	
+	[UIView animateWithDuration:.5 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+		[_mainView layoutIfNeeded];
+	} completion:nil];
 }
 
 @end

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6245" systemVersion="14A388a" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6250" systemVersion="14A389" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6238"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6244"/>
     </dependencies>
     <customFonts key="customFonts">
         <mutableArray key="PTC75F.ttf">
@@ -54,7 +54,6 @@
                     </variation>
                 </view>
             </subviews>
-            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
             <constraints>
                 <constraint firstItem="vYt-1O-GTf" firstAttribute="width" secondItem="fgH-cb-dy1" secondAttribute="width" id="0pj-fj-c0k"/>
                 <constraint firstItem="vYt-1O-GTf" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="Jlw-9x-NKI"/>
@@ -65,7 +64,7 @@
                 <constraint firstItem="vYt-1O-GTf" firstAttribute="leading" secondItem="fgH-cb-dy1" secondAttribute="trailing" constant="-320" id="h31-6y-j6M"/>
                 <constraint firstItem="fgH-cb-dy1" firstAttribute="top" secondItem="vYt-1O-GTf" secondAttribute="bottom" id="vYz-kz-dhd"/>
             </constraints>
-            <nil key="simulatedStatusBarMetrics"/>
+            <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="lightContent"/>
             <simulatedOrientationMetrics key="simulatedOrientationMetrics"/>
             <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
             <variation key="default">
