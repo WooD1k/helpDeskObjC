@@ -19,6 +19,8 @@
 #pragma mark - View lifecycle
 - (void)viewWillAppear:(BOOL)animated {
 	PFQuery* issuesQuery = [PFQuery queryWithClassName:@"issues"];
+	[issuesQuery setLimit:10];
+	[issuesQuery orderByDescending:@"createdAt"];
 	
 	[issuesQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
 		if (error) {
