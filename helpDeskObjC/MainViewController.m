@@ -53,6 +53,7 @@ CGRect screenRect;
 	
 	[[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
 	
+    // setup reveal controller and add action to menu btn
 	_sidebarButton.target = self.revealViewController;
 	_sidebarButton.action = @selector(revealToggle:);
     
@@ -144,7 +145,7 @@ CGRect screenRect;
 	
 	_addDescTextView.textContainer.maximumNumberOfLines = 5;
 	
-	[self performSelector:@selector(setupCameraView) withObject:nil afterDelay:0.2];
+//	[self performSelector:@selector(setupCameraView) withObject:nil afterDelay:0.2];
     
     [self updateConstraints];
 }
@@ -888,6 +889,7 @@ CGRect screenRect;
     } completion:nil];
 }
 
+// compress constrains animation when 
 - (void)compressConstraints
 {
     CGFloat totalSubviewsHeight = _takePhotoHeightConstraint.constant + _locationHeightConstraint.constant + _descContainerHeightConstraint.constant + _sendHeightConstraint.constant;

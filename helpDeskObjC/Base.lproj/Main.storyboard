@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6245" systemVersion="14A388a" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="1le-aV-5WD">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6250" systemVersion="14A389" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="1le-aV-5WD">
     <dependencies>
-        <deployment defaultVersion="1792" identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6238"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6244"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
     </dependencies>
     <customFonts key="customFonts">
@@ -126,10 +126,10 @@
         <scene sceneID="nHM-el-TXW">
             <objects>
                 <navigationController id="byp-R8-apg" sceneMemberID="viewController">
-                    <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="lightContent"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="Edm-3h-mPN">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <color key="barTintColor" red="0.12941176469999999" green="0.12941176469999999" blue="0.16862745100000001" alpha="1" colorSpace="calibratedRGB"/>
                     </navigationBar>
                     <connections>
                         <segue destination="dni-3Z-gNn" kind="relationship" relationship="rootViewController" id="f5M-n7-9Cp"/>
@@ -777,7 +777,6 @@
                                 </connections>
                             </collectionView>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="FIB-15-Ua2" firstAttribute="top" secondItem="DO3-qN-gnE" secondAttribute="bottom" id="C8i-No-ejW"/>
                             <constraint firstItem="DO3-qN-gnE" firstAttribute="leading" secondItem="r1C-rg-w72" secondAttribute="leading" id="Guq-6g-n3c"/>
@@ -786,9 +785,10 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="Cud-H6-bX3">
-                        <barButtonItem key="leftBarButtonItem" title="Menu" id="GdV-gl-uHV"/>
+                        <barButtonItem key="leftBarButtonItem" title="Menu" id="GdV-gl-uHV">
+                            <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        </barButtonItem>
                     </navigationItem>
-                    <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="lightContent"/>
                     <connections>
                         <outlet property="collectionView" destination="DO3-qN-gnE" id="43G-Pa-aJt"/>
                         <outlet property="revealButtonItem" destination="GdV-gl-uHV" id="hYM-Wg-nvR"/>
