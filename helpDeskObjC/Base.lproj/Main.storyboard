@@ -216,14 +216,14 @@
                                                             </mask>
                                                         </variation>
                                                     </imageView>
-                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Rdw-am-7dt" customClass="HDButton">
+                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Rdw-am-7dt" userLabel="Add Place Button" customClass="HDButton">
                                                         <rect key="frame" x="0.0" y="0.0" width="250" height="45"/>
                                                         <subviews>
                                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="X7Y-2S-Yda">
                                                                 <rect key="frame" x="0.0" y="0.0" width="250" height="45"/>
                                                                 <subviews>
-                                                                    <imageView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="location_pin" translatesAutoresizingMaskIntoConstraints="NO" id="jA3-0T-pfe">
-                                                                        <rect key="frame" x="28" y="11" width="15" height="25"/>
+                                                                    <imageView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="location_pin" translatesAutoresizingMaskIntoConstraints="NO" id="jA3-0T-pfe">
+                                                                        <rect key="frame" x="28" y="7.5" width="15" height="30"/>
                                                                         <constraints>
                                                                             <constraint firstAttribute="width" constant="15" id="1ai-pG-ihB"/>
                                                                             <constraint firstAttribute="width" constant="15" id="6bQ-dk-kNt"/>
@@ -277,11 +277,11 @@
                                                             <outlet property="heightConstraint" destination="BDd-0S-e6e" id="MYe-H8-Fkk"/>
                                                         </connections>
                                                     </view>
-                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="otn-NH-di2" customClass="HDButton">
+                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="otn-NH-di2" userLabel="Scan QR Button" customClass="HDButton">
                                                         <rect key="frame" x="250" y="0.0" width="70" height="45"/>
                                                         <subviews>
-                                                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="219-Xe-MeY">
-                                                                <rect key="frame" x="0.0" y="1" width="250" height="45"/>
+                                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="219-Xe-MeY">
+                                                                <rect key="frame" x="0.0" y="0.0" width="70" height="45"/>
                                                                 <subviews>
                                                                     <imageView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="QR" translatesAutoresizingMaskIntoConstraints="NO" id="hd8-Kk-bF8">
                                                                         <rect key="frame" x="20" y="8" width="30" height="30"/>
@@ -376,7 +376,7 @@
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="SDy-xq-rw8" userLabel="decsContainer">
                                                 <rect key="frame" x="0.0" y="310" width="320" height="45"/>
                                                 <subviews>
-                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cCd-Z1-y7t" customClass="HDButton">
+                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cCd-Z1-y7t" userLabel="Add Description Button" customClass="HDButton">
                                                         <rect key="frame" x="0.0" y="0.0" width="320" height="45"/>
                                                         <subviews>
                                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="RPA-Tu-JVd">
@@ -465,7 +465,7 @@
                                                     </mask>
                                                 </variation>
                                             </view>
-                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MOx-kg-4HU" customClass="HDButton">
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MOx-kg-4HU" userLabel="Take Photo Button" customClass="HDButton">
                                                 <rect key="frame" x="0.0" y="104" width="320" height="96"/>
                                                 <subviews>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hoc-wc-ehm">
@@ -483,8 +483,8 @@
                                                                 <color key="textColor" red="0.16862745100000001" green="0.16625583350000001" blue="0.16690702509999999" alpha="1" colorSpace="calibratedRGB"/>
                                                                 <nil key="highlightedColor"/>
                                                             </label>
-                                                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Retake" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="M1m-aW-RjZ">
-                                                                <rect key="frame" x="213" y="53" width="111" height="18"/>
+                                                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Retake" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="50" translatesAutoresizingMaskIntoConstraints="NO" id="M1m-aW-RjZ">
+                                                                <rect key="frame" x="213" y="53" width="50" height="18"/>
                                                                 <constraints>
                                                                     <constraint firstAttribute="height" constant="37" id="UJE-5P-7gS"/>
                                                                     <constraint firstAttribute="width" constant="85.5" id="lv5-Yh-nrH"/>
@@ -549,20 +549,20 @@
                                                     <outlet property="takePhotoLbl" destination="Zod-RC-G6V" id="Ven-3m-8jx"/>
                                                 </connections>
                                             </view>
-                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZkV-zI-B6n" customClass="HDButton">
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZkV-zI-B6n" userLabel="Send Report Button" customClass="HDButton">
                                                 <rect key="frame" x="0.0" y="423" width="320" height="58"/>
                                                 <subviews>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="oTE-pe-Neh">
                                                         <rect key="frame" x="0.0" y="-19" width="320" height="96"/>
                                                         <subviews>
                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="SEND REPORT" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="A96-qA-zZT">
-                                                                <rect key="frame" x="96" y="30" width="220" height="36"/>
+                                                                <rect key="frame" x="96" y="30" width="220" height="35.5"/>
                                                                 <fontDescription key="fontDescription" name="PTSans-CaptionBold" family="PT Sans Caption" pointSize="30"/>
                                                                 <color key="textColor" red="0.16862745098039217" green="0.16862745098039217" blue="0.16862745098039217" alpha="1" colorSpace="calibratedRGB"/>
                                                                 <nil key="highlightedColor"/>
                                                             </label>
                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="SENT" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0mi-Kq-uW6">
-                                                                <rect key="frame" x="340" y="30" width="75" height="36"/>
+                                                                <rect key="frame" x="340" y="30" width="75" height="35.5"/>
                                                                 <constraints>
                                                                     <constraint firstAttribute="width" constant="74.5" id="SQF-9h-1Yz"/>
                                                                 </constraints>

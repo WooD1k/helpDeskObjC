@@ -886,7 +886,7 @@
     } completion:nil];
 }
 
-// compress constrains animation when 
+// compress constrains animation when takePhoto btn pressed
 - (void)compressConstraints
 {
     CGFloat totalSubviewsHeight = _takePhotoHeightConstraint.constant + _locationHeightConstraint.constant + _descContainerHeightConstraint.constant + _sendHeightConstraint.constant;
