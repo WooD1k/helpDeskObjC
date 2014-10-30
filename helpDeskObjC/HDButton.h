@@ -8,24 +8,37 @@
 
 #import <UIKit/UIKit.h>
 
+#define MAX_HDBUTTON_SIZE 170
+
 @interface HDButton : UIControl
 
-@property (weak, nonatomic) IBOutlet UIImageView *normalImageView;
-@property (weak, nonatomic) IBOutlet UIImageView *selectedImageView;
-@property (weak, nonatomic) IBOutlet UIImageView *shadowImageView;
-@property (weak, nonatomic) IBOutlet UIImageView *photoImageView;
-@property (weak, nonatomic) IBOutlet UIView *contentView;
+@property (strong, nonatomic) UIImageView *normalImageView;
+@property (strong, nonatomic) UIImageView *selectedImageView;
+@property (strong, nonatomic) UIImageView *shadowImageView;
+
+@property (strong, nonatomic) IBOutlet UIView *contentView;
+
+
+@property (strong, nonatomic) IBOutlet UIImageView *photoImageView;
+@property (strong, nonatomic) IBOutlet UIImageView *photoCameraImageView;
 
 @property (weak, nonatomic) IBOutlet UILabel *takePhotoLbl;
 @property (weak, nonatomic) IBOutlet UILabel *retakePhotoLbl;
 
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *heightConstraint;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *shadowBottomConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *contentViewHeightConstraint;
 
-@property (copy, nonatomic) void (^touchBlock)(void);
+@property (strong, nonatomic) UIImage *normalImage;
+@property (strong, nonatomic) UIImage *selectedImage;
+@property (strong, nonatomic) UIImage *shadowImage;
+
+@property (assign, nonatomic, getter=isScalableBackground) BOOL scalableBackground;
+
+@property (copy, nonatomic) void (^touchDownBlock)(void);
+@property (copy, nonatomic) void (^touchUpBlock)(void);
+@property (copy, nonatomic) void (^touchCanceledBlock)(void);
 @property (copy, nonatomic) void (^actionBlock)(void);
 
-- (void)selectedState:(BOOL)selected;
 - (void)setPhoto:(UIImage *)photo;
 - (void)resetConstraints;
 

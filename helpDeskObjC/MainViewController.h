@@ -21,97 +21,66 @@
 @property (weak, nonatomic) IBOutlet UIButton *takePhotoBtn;
 
 @property (weak, nonatomic) IBOutlet HDButton *takePhotoTestButton;
+@property (weak, nonatomic) IBOutlet HDButton *locationTestButton;
+@property (weak, nonatomic) IBOutlet HDButton *qrCodeTestButton;
+@property (weak, nonatomic) IBOutlet HDButton *descriptionTestButton;
+@property (weak, nonatomic) IBOutlet HDButton *sendTestButton;
 
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *takePhotoBtnTopConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *takePhotoTopConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *locationTopConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *descriptionTopConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *sendTopConstraint;
+
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *topBackgroundTopConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *bottomBackgroundBottomConstraint;
+
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *takePhotoHeightConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *locationHeightConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *descContainerHeightConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *sendHeightConstraint;
+
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *topBackgroundHeightConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *bottomBackgroundHeightConstraint;
 
 #pragma mark - scanQrBtn elements
 @property (weak, nonatomic) IBOutlet UIImageView *locationPinImageView;
 @property (weak, nonatomic) IBOutlet UILabel *locationLabel;
 @property (weak, nonatomic) IBOutlet UITextField *locationTextField;
-@property (weak, nonatomic) IBOutlet UIView *locationTextFieldOverlayView;
-@property (weak, nonatomic) IBOutlet UIButton *scanQrBtn;
-@property (weak, nonatomic) IBOutlet UIImageView *scanQrBtnBackgroundImageView;
-@property (weak, nonatomic) IBOutlet UIButton *addLocationManuallyBtn;
-@property (weak, nonatomic) IBOutlet UIImageView *addLocationManuallyImageView;
 @property (weak, nonatomic) IBOutlet UIView *locationContainerView;
 
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *locationPinImageViewLeadingConstraint;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *locationLblLeadingConstraint;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *scanQrBtnTrailingConstraint;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *scanQrBtnBackgroundImageViewTrailingConstraint;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *locationTextFieldOverlayWidthConstraint;
-
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *scanQrContainerTopConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *scanQrImageViewCenterXConstraint;
 
 #pragma mark - addDesc elements
 @property (weak, nonatomic) IBOutlet UIImageView *descMarkerImageView;
-@property (weak, nonatomic) IBOutlet UIButton *addDescBtn;
-@property (weak, nonatomic) IBOutlet UIImageView *addDescBtnSelectedImageView;
 @property (weak, nonatomic) IBOutlet UILabel *addDescLbl;
 @property (weak, nonatomic) IBOutlet UITextView *addDescTextView;
-@property (weak, nonatomic) IBOutlet UIImageView *addDescShadowImageView;
 @property (weak, nonatomic) IBOutlet UIView *descContainerView;
-@property (weak, nonatomic) IBOutlet UIImageView *addDescBtnBackground;
-@property (weak, nonatomic) IBOutlet UIImageView *addDescBtnBackgroundSelected;
 
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *descMarkerImageViewLeadingConstraint;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *addDescLblLeadingConstraint;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *descContainerHeightConstraint;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *addDescLblConstrain;
 
 #pragma mark - sendBtn elements
-@property (weak, nonatomic) IBOutlet UIButton *sendReportBtn;
 @property (weak, nonatomic) IBOutlet UILabel *sendReportLbl;
 @property (weak, nonatomic) IBOutlet UILabel *reportSentLbl;
-@property (weak, nonatomic) IBOutlet UIImageView *sendReportBtnSelectedImageView;
-@property (weak, nonatomic) IBOutlet UIImageView *sendReportShadowImageView;
-
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *sendReportBtnTopToMainViewConstraint;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *sendReportLblLeadingConstraint;
-
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *reportSentLblTrailingConstraint;
 
 #pragma makr - elements for slideIn\slideOut animation
-@property (weak, nonatomic) IBOutlet UIView *topContainer;
-@property (weak, nonatomic) IBOutlet UIView *bottomContainer;
 
 @property (weak, nonatomic) IBOutlet UIImageView *photoImageView;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *photoImageViewHeightConstraint;
 
 @property (weak, nonatomic) UITextField *activeTextField;
-@property (weak, nonatomic) UITextView *activeTextView;
-
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *topContainerTopConstraint;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *bottomContainerTopConstraint;
 
 @property (strong, nonatomic) ScanditSDKBarcodePicker *scanditPicker;
 @property (nonatomic) UIButton *closePickerButton;
 @property (nonatomic) UIImagePickerController *imagePicker;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *sidebarButton;
 
+@property (nonatomic, strong) UIDynamicAnimator *animator;
+
 - (IBAction)textFieldGotFocus:(UITextField *)sender;
-- (IBAction)hideKeyboard:(UITapGestureRecognizer *)sender;
 
-#pragma mark - addLocation events
-- (IBAction)addLocationManuallyTouchDown;
-- (IBAction)addLocationManuallyTouchUpInside;
-- (IBAction)addLocationManuallyTouchCancel;
-- (IBAction)addLocationManuallyDidEnd;
-
-#pragma mark - addLocation manually events
-- (IBAction)scanQrTouchDown;
-- (IBAction)scanQrTouchUpInside;
-- (IBAction)scanQrTouchCancel;
-
-#pragma mark - add description events
-- (IBAction)addDecBtnTouchDown;
-- (IBAction)addDescBtnTouchUpInside;
-- (IBAction)addDescBtnTouchCancel;
-
-#pragma mark - send report events
-- (IBAction)sendReportTouchDown;
-- (IBAction)sendReportTouchUpInside;
-- (IBAction)sendReportTouchCancel;
+- (IBAction)hideKeyboard:(id)sender;
 
 #pragma mark - send report animation
 - (void)moveElementsOffscreen;

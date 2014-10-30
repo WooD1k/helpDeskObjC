@@ -17,30 +17,33 @@
 @interface MainViewController ()
 @end
 
-@implementation MainViewController
+@implementation MainViewController {
 CGRect screenRect;
-CGRect keyboardFrame;
-
-CGFloat defaultTopContainerTopConstraint;
-CGFloat defaultBottomContainerTopConstraint;
-
-CGFloat defaulLocationPinImageViewLeadingConstraintConstant;
-CGFloat defaulLocationLblLeadingConstraintConstant;
-CGFloat defaulScanQrBtnTrailingConstraintConstant;
-CGFloat defaultScanQrBtnBackgroundImageViewTrailingConstraintConstant;
-CGFloat defaultLocationTextFieldOverlayWidthConstraintConstant;
-CGFloat defaultScanQrContainerTopConstraint;
-
-CGFloat defaultDescMarkerImageViewLeadingConstraint;
-CGFloat defaultAddDescLblLeadingConstraint;
-
-CGFloat defaultDescContainerHeightConstraint;
-CGFloat defaultSendReportBtnTopToMainViewConstraint;
-
-CGFloat defaultPhotoImageViewHeightConstraint;
-CGFloat defaultTakePhotoBtnTopConstraint;
-CGFloat defaultReportSentLblTrailingConstraint;
-CGFloat defaultSendReportLblLeadingConstraint;
+    CGRect keyboardFrame;
+    
+    CGFloat defaultTopContainerTopConstraint;
+    CGFloat defaultBottomContainerTopConstraint;
+    
+    CGFloat defaulLocationPinImageViewLeadingConstraintConstant;
+    CGFloat defaulLocationLblLeadingConstraintConstant;
+    CGFloat defaulScanQrImageViewCenterXConstraintConstant;
+    CGFloat defaultScanQrBtnBackgroundImageViewTrailingConstraintConstant;
+    CGFloat defaultLocationTextFieldOverlayWidthConstraintConstant;
+    CGFloat defaultScanQrContainerTopConstraint;
+    
+    CGFloat defaultDescMarkerImageViewLeadingConstraint;
+    CGFloat defaultAddDescLblLeadingConstraint;
+    
+    CGFloat defaultDescContainerHeightConstraint;
+    CGFloat defaultSendReportBtnTopToMainViewConstraint;
+    
+    CGFloat defaultPhotoImageViewHeightConstraint;
+    CGFloat defaultTakePhotoBtnTopConstraint;
+    CGFloat defaultReportSentLblTrailingConstraint;
+    CGFloat defaultSendReportLblLeadingConstraint;
+    
+    UIButton *savePhotoBtn;
+}
 
 
 #pragma mark - view lifecycle
@@ -52,17 +55,76 @@ CGFloat defaultSendReportLblLeadingConstraint;
 	
 	_sidebarButton.target = self.revealViewController;
 	_sidebarButton.action = @selector(revealToggle:);
+    
+    [_scrollView setScrollEnabled:YES];
 	
 	[self.view addGestureRecognizer:self.revealViewController.panGestureRecognizer];
     
-    self.takePhotoTestButton.touchBlock = ^(void){[self touchesBeganInView:self.takePhotoTestButton];};
-    self.takePhotoTestButton.actionBlock = ^(void){[self touchesEndedInView:self.takePhotoTestButton];};
-	
+    __weak typeof(self) weakSelf = self;
+    
+    self.takePhotoTestButton.touchDownBlock = ^(void){[weakSelf compressConstraints];};
+    self.takePhotoTestButton.touchUpBlock = ^(void){[weakSelf updateConstraints];};
+    self.takePhotoTestButton.touchCanceledBlock = ^(void){[weakSelf updateConstraints];};
+    self.takePhotoTestButton.actionBlock = ^(void){(weakSelf.session?:[weakSelf setupCameraView]); [weakSelf performSelector:@selector(slideOutAnimation) withObject:nil afterDelay:0.2];};
+    
+//    self.locationTestButton.touchDownBlock = ^(void){};
+//    self.locationTestButton.touchUpBlock = ^(void){};
+//    self.locationTestButton.touchCanceledBlock = ^(void){};
+    self.locationTestButton.actionBlock = ^(void){[weakSelf animateLocationOnDown];};
+    
+//    self.qrCodeTestButton.touchDownBlock = ^(void){};
+//    self.qrCodeTestButton.touchUpBlock = ^(void){};
+//    self.qrCodeTestButton.touchCanceledBlock = ^(void){};
+    self.qrCodeTestButton.actionBlock = ^(void){[weakSelf prepareQrScanerPicker]; [weakSelf performSelector:@selector(slideOutAnimation) withObject:nil afterDelay:0.2];};
+    
+//    self.descriptionTestButton.touchDownBlock = ^(void){};
+//    self.descriptionTestButton.touchUpBlock = ^(void){};
+//    self.descriptionTestButton.touchCanceledBlock = ^(void){};
+    self.descriptionTestButton.actionBlock = ^(void){[weakSelf animateDescriptionOnDown];};
+    
+//    _sendTestButton.touchDownBlock = ^(void){[weakSelf touchesBeganInView:weakSelf.descriptionTestButton];};
+//    _sendTestButton.touchUpBlock = ^(void){[weakSelf touchesEndedInView:weakSelf.descriptionTestButton];};
+//    _sendTestButton.touchCanceledBlock = ^(void){[weakSelf touchesCanceledInView:weakSelf.descriptionTestButton];};
+    _sendTestButton.actionBlock = ^(void){[weakSelf sendReportTouchUpInside];};
+
+    
+    _takePhotoTestButton.shadowImage = [UIImage imageNamed:@"button_yellow_shadow"];
+    _takePhotoTestButton.normalImage = [UIImage imageNamed:@"button_yellow"];
+    _takePhotoTestButton.selectedImage = [UIImage imageNamed:@"button_yellow_selected"];
+    
+    _locationTestButton.selectedImage = [UIImage imageNamed:@"button_orange_selected_field"];
+    _locationTestButton.scalableBackground = NO;
+    
+    _qrCodeTestButton.selectedImage = [UIImage imageNamed:@"button_orange_selected_qr"];
+    _qrCodeTestButton.scalableBackground = NO;
+    
+    _descriptionTestButton.shadowImage = [UIImage imageNamed:@"button_red_shadow"];
+    _descriptionTestButton.normalImage = [UIImage imageNamed:@"button_red"];
+    _descriptionTestButton.selectedImage = [UIImage imageNamed:@"button_red_selected"];
+    _descriptionTestButton.scalableBackground = NO;
+    
+    _sendTestButton.shadowImage = [UIImage imageNamed:@"button_green_shadow"];
+    _sendTestButton.normalImage = [UIImage imageNamed:@"button_green"];
+    _sendTestButton.selectedImage = [UIImage imageNamed:@"button_green_selected"];
+    
+    
 	UIImage *cameraSmallImage = [UIImage imageNamed:@"camera_small"];
 	UIImageView *cameraSmallImageView = [[UIImageView alloc] initWithImage:cameraSmallImage];
 	cameraSmallImageView.frame = CGRectMake(90, 12, 30, 22);
 	
 	[self.navigationController.navigationBar addSubview:cameraSmallImageView];
+    
+    self.animator = [[UIDynamicAnimator alloc] initWithReferenceView:self.view];
+    
+    _addDescTextView.contentInset = UIEdgeInsetsMake(4,0,0,0);
+    
+    _scrollView.contentInset = UIEdgeInsetsMake(64,0,0,0);
+    [self setAutomaticallyAdjustsScrollViewInsets:YES];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.mainView attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1 constant:0]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.mainView attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1 constant:0]];
+    
+    [_scrollView setCanCancelContentTouches:YES];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -70,143 +132,175 @@ CGFloat defaultSendReportLblLeadingConstraint;
 	
 	screenRect = [[UIScreen mainScreen] bounds];
 	
-	[[NSNotificationCenter defaultCenter] addObserver:self
-											 selector:@selector(keyboardWillShow:)
-												 name:UIKeyboardWillShowNotification
-											   object:nil];
-	[[NSNotificationCenter defaultCenter] addObserver:self
-											 selector:@selector(keyboardWillHide:)
-												 name:UIKeyboardWillHideNotification
-											   object:nil];
+    [self registerForKeyboardNotifications];
 	
 	UIView *paddingForTextField = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 5, 1)];
 	_locationTextField.leftView = paddingForTextField;
 	_locationTextField.leftViewMode = UITextFieldViewModeAlways;
 	
-	defaultDescContainerHeightConstraint = _descContainerHeightConstraint.constant;
-	defaultScanQrContainerTopConstraint = _scanQrContainerTopConstraint.constant;
-	defaultSendReportBtnTopToMainViewConstraint = _sendReportBtnTopToMainViewConstraint.constant;
-	defaultPhotoImageViewHeightConstraint = _photoImageViewHeightConstraint.constant;
-	defaultTakePhotoBtnTopConstraint = _takePhotoBtnTopConstraint.constant;
+	defaultDescContainerHeightConstraint = 100;
+	defaultScanQrContainerTopConstraint = _locationTopConstraint.constant;
+	defaultTakePhotoBtnTopConstraint = _takePhotoTopConstraint.constant;
 	
-	defaultTopContainerTopConstraint = _topContainerTopConstraint.constant;
-	defaultBottomContainerTopConstraint = _bottomContainerTopConstraint.constant;
-	defaultReportSentLblTrailingConstraint = _reportSentLblTrailingConstraint.constant;
-	defaultSendReportLblLeadingConstraint = _sendReportLblLeadingConstraint.constant;
+	_addDescTextView.textContainer.maximumNumberOfLines = 5;
 	
-	_addDescTextView.textContainer.maximumNumberOfLines = 3;
-	
-	[self setupCameraView];
-}
-
-- (void)didReceiveMemoryWarning {
-	[super didReceiveMemoryWarning];
-	// Dispose of any resources that can be recreated.
-}
-
-#pragma mark - show\hide keyboard notifications
-- (void)keyboardWillShow:(NSNotification *)notifiction {
-	keyboardFrame = [notifiction.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
-	
-	if (_activeTextField) {
-		[self calculateOffsetFromTextFieldAndMove];
-	} else if (_activeTextView) {
-		[self calculateOffsetFromTextViewAndMove];
-	}
-}
-
-- (void)keyboardWillHide:(NSNotification *)notifiction {
-	CGRect initialViewRect = CGRectMake(0.0, 0.0, self.view.frame.size.width, self.view.frame.size.height);
-	if (!CGRectEqualToRect(initialViewRect, self.view.frame)) {
-		[UIView animateWithDuration:0.2 animations:^{
-			self.view.frame = initialViewRect;
-		}];
-	}
-}
-
-#pragma mark - calculate offset and move view
-- (void)calculateOffsetFromTextFieldAndMove {
-	UIView *windowView = [[UIApplication sharedApplication] keyWindow];
-	
-	CGPoint activeFieldLowerPonit = CGPointMake(_activeTextView.frame.origin.x, _activeTextView.frame.origin.y + _activeTextView.frame.size.height);
-	CGPoint convertedFieldLowerPoint  = [_descContainerView convertPoint:activeFieldLowerPonit toView:windowView];
-	CGPoint targetLowerPoint = CGPointMake(_activeTextView.frame.origin.x, keyboardFrame.origin.y);
-	
-	CGFloat offset =  targetLowerPoint.y - convertedFieldLowerPoint.y;
-	CGPoint viewCenterWithOffset = CGPointMake(self.view.center.x, self.view.center.y + offset);
-	
-	[self moveMainViewToViewWithOffset:viewCenterWithOffset];
-}
-
-- (void)calculateOffsetFromTextViewAndMove {
-	UIView *windowView = [[UIApplication sharedApplication] keyWindow];
-	
-	CGPoint activeFieldLowerPonit = CGPointMake(_activeTextView.frame.origin.x, _activeTextView.frame.origin.y + _activeTextView.frame.size.height);
-	CGPoint convertedFieldLowerPoint  = [_descContainerView convertPoint:activeFieldLowerPonit toView:windowView];
-	CGPoint targetLowerPoint = CGPointMake(_activeTextView.frame.origin.x, keyboardFrame.origin.y);
-	
-	CGFloat offset =  targetLowerPoint.y - convertedFieldLowerPoint.y;
-	CGPoint viewCenterWithOffset = CGPointMake(self.view.center.x, self.view.center.y + offset);
-	
-	[self moveMainViewToViewWithOffset:viewCenterWithOffset];
-}
-
--(void)moveMainViewToViewWithOffset:(CGPoint)viewWithOffset {
-	[UIView animateWithDuration:0.2 delay:0.1 options:UIViewAnimationOptionCurveEaseOut animations:^{
-		self.view.center = CGPointMake(viewWithOffset.x, viewWithOffset.y);
-	} completion:nil];
+	[self performSelector:@selector(setupCameraView) withObject:nil afterDelay:0.2];
+    
+    [self updateConstraints];
 }
 
 #pragma mark - UITextViewDelegate methods
 - (BOOL)textViewShouldBeginEditing:(UITextView *)textView {
-	_activeTextView = textView;
+	_activeTextField = textView;
 	
 	return true;
 }
 
+- (void)layoutSublayersOfLayer:(CALayer *)layer
+{
+//    [super layoutSublayersOfLayer:layer];
+//    if (layer == _qrView.layer) {
+//        for (CALayer *sublayer in layer.sublayers) {
+//            sublayer.frame = layer.bounds;
+//        }
+//    }
+}
+
+- (IBAction)animateLocationOnDown {
+    defaulLocationPinImageViewLeadingConstraintConstant = _locationPinImageViewLeadingConstraint.constant;
+    defaulLocationLblLeadingConstraintConstant = _locationLblLeadingConstraint.constant;
+    defaulScanQrImageViewCenterXConstraintConstant = _scanQrImageViewCenterXConstraint.constant;
+    
+    _locationPinImageViewLeadingConstraint.constant = -75;
+    _locationLblLeadingConstraint.constant = _locationTextField.leftView.frame.size.width;
+    _scanQrImageViewCenterXConstraint.constant = -75;
+    
+    [UIView animateWithDuration:0.2 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+        [_locationContainerView layoutIfNeeded];
+    } completion:^(BOOL finished) {
+        _locationTextField.text = _locationLabel.text;
+        _locationTextField.backgroundColor = [UIColor clearColor];
+        _locationTextField.hidden = NO;
+        [UIView animateWithDuration:0.2 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+            _locationTextField.backgroundColor = [UIColor whiteColor];
+        } completion:^(BOOL finished) {
+            _locationLabel.alpha = 0.0;
+            if ([_locationTextField.text isEqualToString:@"Add place"]) {
+                _locationTextField.text = nil;
+            }
+            [_locationTextField becomeFirstResponder];
+        }];
+    }];
+}
+
+- (IBAction)animateDescriptionOnDown {
+    defaultDescMarkerImageViewLeadingConstraint = _descMarkerImageViewLeadingConstraint.constant;
+    defaultAddDescLblLeadingConstraint = _addDescLblLeadingConstraint.constant;
+    
+    _descMarkerImageViewLeadingConstraint.constant = -_descMarkerImageView.frame.size.width;
+    _addDescLblLeadingConstraint.constant = _locationTextField.leftView.frame.size.width;
+    
+    [UIView animateWithDuration:0.2 animations:^{
+        [_descContainerView layoutIfNeeded];
+    } completion:^(BOOL finished) {
+        _addDescTextView.alpha = 1.0;
+        _addDescLbl.alpha = 0.0;
+        _addDescTextView.text = _addDescLbl.text;
+        _addDescTextView.hidden = NO;
+        
+        [UIView animateWithDuration:0.2 animations:^{
+            _addDescTextView.backgroundColor = [UIColor whiteColor];
+        } completion:^(BOOL finished) {
+            if ([_addDescTextView.text isEqualToString:@"Add description"]) {
+                _addDescTextView.text = nil;
+            }
+            [_addDescTextView becomeFirstResponder];
+        }];
+    }];
+}
+
+
+- (IBAction)addLocationManuallyDidEnd {
+    _locationPinImageViewLeadingConstraint.constant = defaulLocationPinImageViewLeadingConstraintConstant;
+    _locationLblLeadingConstraint.constant = defaulLocationLblLeadingConstraintConstant;
+    _scanQrImageViewCenterXConstraint.constant = defaulScanQrImageViewCenterXConstraintConstant;
+    
+    [_locationTextField resignFirstResponder];
+    
+    if (_locationTextField.hasText) {
+        _locationLabel.text = _locationTextField.text;
+    } else {
+        _locationLabel.text = @"Add place";
+    }
+    _locationTextField.text = nil;
+    _locationLabel.alpha = 1.0;
+    
+    [UIView animateWithDuration:0.2 animations:^{
+        _locationTextField.backgroundColor = [UIColor clearColor];
+        [_locationContainerView layoutIfNeeded];
+    } completion:^(BOOL finished) {
+        _locationTextField.hidden = YES;
+    }];
+}
+
 - (void)textViewDidEndEditing:(UITextView *)textView{
-	_addDescTextView.alpha = 0.0;
+    _addDescLbl.alpha = 1.0;
+    _addDescTextView.alpha = 0.0;
+    
+#warning remove spaces!!
+    if (_addDescTextView.hasText) {
+        _addDescLbl.text = _addDescTextView.text;
+    } else {
+        _addDescLbl.text = @"Add description";
+    }
 	
-	_descMarkerImageViewLeadingConstraint.constant = defaultDescMarkerImageViewLeadingConstraint;
-	_addDescLblLeadingConstraint.constant = defaultAddDescLblLeadingConstraint;
-	
-	[UIView animateWithDuration:0.5 animations:^{
-		_addDescLbl.alpha = 1.0;
-		
-		[_descContainerView layoutIfNeeded];
-		if (_addDescTextView.hasText) {
-			_addDescLbl.text = _addDescTextView.text;
-			
-			if (_descContainerHeightConstraint.constant > defaultDescContainerHeightConstraint) {
-				_scanQrContainerTopConstraint.constant = defaultScanQrContainerTopConstraint - (_descContainerView.frame.size.height - defaultDescContainerHeightConstraint);
-				if (_takePhotoBtnTopConstraint.constant == defaultTakePhotoBtnTopConstraint) {
-					_takePhotoBtnTopConstraint.constant = _takePhotoBtnTopConstraint.constant - 20;
-				}
-			} else {
-				_scanQrContainerTopConstraint.constant = defaultScanQrContainerTopConstraint;
-				_takePhotoBtnTopConstraint.constant = defaultTakePhotoBtnTopConstraint;
-			}
-			
-			[_mainView layoutIfNeeded];
-		}
+#warning fix label animation!!!
+	[UIView animateWithDuration:0.3 delay:0 options:0 animations:^{
+        _descMarkerImageViewLeadingConstraint.constant = defaultDescMarkerImageViewLeadingConstraint;
+        _addDescLblLeadingConstraint.constant = defaultAddDescLblLeadingConstraint;
+        
+        CGSize constrainedSize = CGSizeMake(320-96-5, CGFLOAT_MAX);
+        
+        NSDictionary *attributesDictionary = [NSDictionary dictionaryWithObjectsAndKeys:
+                                              _addDescLbl.font, NSFontAttributeName,
+                                              nil];
+        
+        NSMutableAttributedString *string = [[NSMutableAttributedString alloc] initWithString:_addDescLbl.text attributes:attributesDictionary];
+        
+        CGRect requiredHeight = [string boundingRectWithSize:constrainedSize options:NSStringDrawingUsesLineFragmentOrigin context:nil];
+        
+        _descContainerHeightConstraint.constant = (int)MAX(45, MIN(requiredHeight.size.height+7+7, 100));
+        _descriptionTestButton.heightConstraint.constant = _descContainerHeightConstraint.constant;
+        
+        [_descriptionTestButton setNeedsUpdateConstraints];
+        [_descriptionTestButton updateConstraintsIfNeeded];
+        
+        [_descriptionTestButton layoutIfNeeded];
+        [_descContainerView layoutIfNeeded];
+        
 	} completion:^(BOOL finished) {
-		_addDescBtn.hidden = false;
+        [self updateConstraints];
 	}];
 }
 
 - (void)textViewDidChange:(UITextView *)textView {
 	CGSize contentSize = [textView sizeThatFits:textView.frame.size];
 	
-	_descContainerHeightConstraint.constant = contentSize.height;
+	_descContainerHeightConstraint.constant = MAX(45, MIN(contentSize.height, 100));
+    _descriptionTestButton.heightConstraint.constant = _descContainerHeightConstraint.constant;
+    [_descriptionTestButton setNeedsUpdateConstraints];
+    [_descriptionTestButton updateConstraintsIfNeeded];
+    [_descriptionTestButton layoutIfNeeded];
 	[_descContainerView layoutIfNeeded];
-	
-	[self calculateOffsetFromTextViewAndMove];
+    
+    [self updateConstraints];
+    [self updateScroll];
 }
 
 #pragma mark - textFieldGotFocus
 - (IBAction)textFieldGotFocus:(UITextField *)sender {
 	_activeTextField = sender;
-	_activeTextField.delegate = self;
+	sender.delegate = self;
 }
 
 #pragma mark - UITextFieldDelegate method
@@ -227,7 +321,7 @@ CGFloat defaultSendReportLblLeadingConstraint;
 	}
 	
 	[_scanditPicker.overlayController setTorchEnabled:false];
-	
+    _scanditPicker.view.frame = self.qrView.bounds;
 	[_qrView addSubview:_scanditPicker.view];
 	
 	_scanditPicker.overlayController.delegate = self;
@@ -238,33 +332,47 @@ CGFloat defaultSendReportLblLeadingConstraint;
 -(void)createClosePickerBtnAndAddToQrView {
 	if (!_closePickerButton) {
 		_closePickerButton = [[UIButton alloc] init];
+        [_closePickerButton setTitle:@"Cancel" forState:UIControlStateNormal];
+        
 		[_closePickerButton setTranslatesAutoresizingMaskIntoConstraints:false];
-		
-		_closePickerButton.layer.borderColor = [UIColor redColor].CGColor;
-		_closePickerButton.layer.borderWidth = 2;
 		
 		[_closePickerButton addTarget:self
 							   action:@selector(slideInAnimation)
 					 forControlEvents:UIControlEventTouchUpInside];
+        
+        [_closePickerButton addConstraint:[NSLayoutConstraint constraintWithItem:_closePickerButton
+                                                                                 attribute:NSLayoutAttributeWidth
+                                                                                 relatedBy:NSLayoutRelationEqual
+                                                                                    toItem:nil
+                                                                                 attribute:NSLayoutAttributeNotAnAttribute
+                                                                                multiplier:1.0
+                                                                                  constant:100]];
+        [_closePickerButton addConstraint:[NSLayoutConstraint constraintWithItem:_closePickerButton
+                                                                       attribute:NSLayoutAttributeHeight
+                                                                       relatedBy:NSLayoutRelationEqual
+                                                                          toItem:nil
+                                                                       attribute:NSLayoutAttributeNotAnAttribute
+                                                                      multiplier:1.0
+                                                                        constant:50]];
 	}
 	
 	[_qrView addSubview:_closePickerButton];
 	
 	NSLayoutConstraint *closeBtnTrailingSpace = [NSLayoutConstraint constraintWithItem:_qrView
-																			 attribute:NSLayoutAttributeTrailing
+																			 attribute:NSLayoutAttributeLeading
 																			 relatedBy:NSLayoutRelationEqual
 																				toItem:_closePickerButton
-																			 attribute:NSLayoutAttributeTrailing
+																			 attribute:NSLayoutAttributeLeading
 																			multiplier:1.0
-																			  constant:10];
+																			  constant:-20];
 	
 	NSLayoutConstraint *closeBtnTopSpace = [NSLayoutConstraint constraintWithItem:_closePickerButton
-																		attribute:NSLayoutAttributeTop
+																		attribute:NSLayoutAttributeBottom
 																		relatedBy:NSLayoutRelationEqual
 																		   toItem:_qrView
-																		attribute:NSLayoutAttributeTop
+																		attribute:NSLayoutAttributeBottom
 																	   multiplier:1.0
-																		 constant:20];
+																		 constant:-10];
 	[_qrView addConstraint:closeBtnTrailingSpace];
 	[_qrView addConstraint:closeBtnTopSpace];
 }
@@ -314,17 +422,15 @@ CGFloat defaultSendReportLblLeadingConstraint;
 
 #pragma mark - slideIn\slideOut\resetMainView animations
 - (void)slideInAnimation {
-	_mainView.hidden = false;
+    [_scrollView setHidden:NO];
 	
 	[self showNavigationAndStatusBar];
 	
-	_topContainerTopConstraint.constant = defaultTopContainerTopConstraint;
-	_bottomContainerTopConstraint.constant = defaultBottomContainerTopConstraint;
-	_sendReportBtnTopToMainViewConstraint.constant = defaultSendReportBtnTopToMainViewConstraint;
+    _topBackgroundTopConstraint.constant = 0;
+    _bottomBackgroundBottomConstraint.constant = 0;
 	
-	_takePhotoBtnTopConstraint.constant = defaultTakePhotoBtnTopConstraint;
-	
-	[UIView animateWithDuration:1.0 animations:^{
+	[UIView animateWithDuration:0.4 animations:^{
+        [self updateConstraints];
 		[self.view layoutIfNeeded];
 	} completion:^(BOOL finished) {
 		if (_scanditPicker) {
@@ -334,30 +440,50 @@ CGFloat defaultSendReportLblLeadingConstraint;
 			[_scanditPicker.view removeFromSuperview];
 		} else if (_session) {
 			[self resetCameraView];
+            [_closePickerButton removeFromSuperview];
+            [savePhotoBtn removeFromSuperview];
 		}
 	}];
 }
 
 -(void)slideOutAnimation {
-	[self hideNavigationAndStatusBar];
-	[self hideKeyboard];
+    [self hideNavigationAndStatusBar];
+    [self hideKeyboard];
 	
-	_sendReportBtnTopToMainViewConstraint.constant = screenRect.size.height + _sendReportBtn.frame.size.height;
+    _topBackgroundTopConstraint.constant = -(_topBackgroundHeightConstraint.constant + 64);
+    _takePhotoTopConstraint.constant = _topBackgroundTopConstraint.constant +_takePhotoTopConstraint.constant;
+    
+    _bottomBackgroundBottomConstraint.constant = -_bottomBackgroundHeightConstraint.constant;
+    _locationTopConstraint.constant = _locationTopConstraint.constant - _bottomBackgroundBottomConstraint.constant;
+    _descriptionTopConstraint.constant = _descriptionTopConstraint.constant - _bottomBackgroundBottomConstraint.constant;
+    _sendTopConstraint.constant = _sendTopConstraint.constant - _bottomBackgroundBottomConstraint.constant;
 	
-	_topContainerTopConstraint.constant = -_topContainer.frame.size.height - 20.0f;
-	_bottomContainerTopConstraint.constant = _bottomContainerTopConstraint.constant + _bottomContainer.frame.size.height + 20.0f;
 	
-	_takePhotoBtnTopConstraint.constant = -_takePhotoTestButton.frame.size.height;
-	
-	[UIView animateWithDuration:1.5 animations:^{
+	[UIView animateWithDuration:0.4 delay:0 options:UIViewAnimationOptionCurveEaseIn animations:^{
 		[_mainView layoutIfNeeded];
 	} completion:^(BOOL finished) {
-		_mainView.hidden = true;
-		
 		if (_scanditPicker) {
 			[_scanditPicker startScanning];
 		}
+        
+        [_scrollView setHidden:YES];
 	}];
+    
+//    UIDynamicItemBehavior *behavior = [[UIDynamicItemBehavior alloc] initWithItems:@[self.locationContainerView]];
+//    behavior.elasticity = 0.5;
+    
+//    UIAttachmentBehavior *boxattachment = [[UIAttachmentBehavior alloc]
+//                                           initWithItem:self.locationContainerView attachedToItem:self.bottomContainer];
+//    [boxattachment setFrequency:4.0];
+//    [boxattachment setDamping:0.0];
+//    //    behavior.length = 1;
+//    //    [behavior setFrequency:4.];
+//    //    [behavior setDamping:30];
+//    behavior.action = ^{
+//        self.scanQrContainerTopConstraint.constant = [self.locationContainerView center].y;
+//    };
+//    [self.animator addBehavior:boxattachment];
+//    [self.animator addBehavior:behavior];
 }
 
 -(void)resetMainView {
@@ -365,17 +491,19 @@ CGFloat defaultSendReportLblLeadingConstraint;
 	_addDescLbl.text = @"Add description";
 	_addDescTextView.text = @"";
 	
-	_takePhotoBtnTopConstraint.constant = defaultTakePhotoBtnTopConstraint;
-	_scanQrContainerTopConstraint.constant = defaultScanQrContainerTopConstraint;
-	_sendReportBtnTopToMainViewConstraint.constant = defaultSendReportBtnTopToMainViewConstraint;
-	_reportSentLblTrailingConstraint.constant = defaultReportSentLblTrailingConstraint;
-	_sendReportLblLeadingConstraint.constant = defaultSendReportLblLeadingConstraint;
-	
-	[_takePhotoTestButton resetConstraints];
-	
-	[UIView animateWithDuration:1 animations:^{
-		[_mainView layoutIfNeeded];
-	}];
+    [_takePhotoTestButton resetConstraints];
+    _takePhotoHeightConstraint.constant = _takePhotoTestButton.heightConstraint.constant;
+    
+    _descContainerHeightConstraint.constant = 45;
+    _descriptionTestButton.heightConstraint.constant = _descContainerHeightConstraint.constant;
+    [_descriptionTestButton setNeedsUpdateConstraints];
+    [_descriptionTestButton updateConstraintsIfNeeded];
+    [_descriptionTestButton layoutIfNeeded];
+    [_descContainerView layoutIfNeeded];
+    
+
+    
+    [self updateConstraints];
 }
 
 #pragma mark - hide system UI elements
@@ -383,13 +511,10 @@ CGFloat defaultSendReportLblLeadingConstraint;
 	if (_activeTextField) {
 		[_activeTextField resignFirstResponder];
 		_activeTextField = nil;
-	} else if (_activeTextView) {
-		[_activeTextView resignFirstResponder];
-		_activeTextView = nil;
 	}
 }
 
-- (IBAction)hideKeyboard:(UITapGestureRecognizer *)sender {
+- (IBAction)hideKeyboard:(id)sender {
 	[self hideKeyboard];
 }
 
@@ -403,143 +528,13 @@ CGFloat defaultSendReportLblLeadingConstraint;
 	[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationSlide];
 }
 
-#pragma mark - addLocation btn events
-- (IBAction)addLocationManuallyTouchDown {
-	[self setMainImage:_addLocationManuallyImageView invisible:NO];
-}
 
-- (IBAction)addLocationManuallyTouchCancel {
-	[self setMainImage:_addLocationManuallyImageView invisible:YES];
-}
-
-- (IBAction)addLocationManuallyTouchUpInside {
-	[self setMainImage:_addLocationManuallyImageView invisible:YES];
-	
-	defaulLocationPinImageViewLeadingConstraintConstant = _locationPinImageViewLeadingConstraint.constant;
-	defaulLocationLblLeadingConstraintConstant = _locationLblLeadingConstraint.constant;
-	defaulScanQrBtnTrailingConstraintConstant = _scanQrBtnTrailingConstraint.constant;
-	defaultScanQrBtnBackgroundImageViewTrailingConstraintConstant = _scanQrBtnBackgroundImageViewTrailingConstraint.constant;
-	defaultLocationTextFieldOverlayWidthConstraintConstant = _locationTextFieldOverlayWidthConstraint.constant;
-	
-	[UIView animateKeyframesWithDuration:0.5 delay:0.4 options:UIViewKeyframeAnimationOptionBeginFromCurrentState animations:^{
-		_locationTextFieldOverlayView.alpha = 1.0;
-	} completion:^(BOOL finished) {
-		_locationPinImageViewLeadingConstraint.constant = -_locationPinImageView.frame.size.width;
-		_locationLblLeadingConstraint.constant = _locationTextField.leftView.frame.size.width;
-		_scanQrBtnTrailingConstraint.constant = -_scanQrBtn.frame.size.width;
-		_scanQrBtnBackgroundImageViewTrailingConstraint.constant = _scanQrBtnBackgroundImageView.frame.size.width;
-		_locationTextFieldOverlayWidthConstraint.constant = screenRect.size.width;
-		
-		[UIView animateWithDuration:0.5 animations:^{
-			[_locationContainerView layoutIfNeeded];
-			
-			[_locationTextField becomeFirstResponder];
-		} completion:^(BOOL finished) {
-			_locationTextField.text = _locationLabel.text;
-			
-			_locationTextFieldOverlayView.alpha = 0.0;
-			_locationTextField.alpha = 1.0;
-			_locationLabel.alpha = 0.0;
-			
-			_addLocationManuallyBtn.hidden = true;
-		}];
-	}];
-}
-
-- (IBAction)addLocationManuallyDidEnd {
-	_locationPinImageViewLeadingConstraint.constant = defaulLocationPinImageViewLeadingConstraintConstant;
-	_locationLblLeadingConstraint.constant = defaulLocationLblLeadingConstraintConstant;
-	_scanQrBtnTrailingConstraint.constant = defaulScanQrBtnTrailingConstraintConstant;
-	_scanQrBtnBackgroundImageViewTrailingConstraint.constant = defaultScanQrBtnBackgroundImageViewTrailingConstraintConstant;
-	_locationTextFieldOverlayWidthConstraint.constant = defaultLocationTextFieldOverlayWidthConstraintConstant;
-	
-	if (_locationTextField.hasText) {
-		_locationLabel.text = _locationTextField.text;
-		_locationTextField.text = nil;
-	} else {
-		_locationLabel.text = @"Add place";
-	}
-	
-	[UIView animateWithDuration:0.5 animations:^{
-		[_locationContainerView layoutIfNeeded];
-		
-		_locationLabel.alpha = 1.0;
-		_locationTextFieldOverlayView.alpha = 0.0;
-		_locationTextField.alpha = 0.0;
-	}];
-	
-	_addLocationManuallyBtn.hidden = false;
-}
-
-#pragma mark - scan QR btn events
-- (IBAction)scanQrTouchDown {
-	[self prepareQrScanerPicker];
-	
-	[self setMainImage:_scanQrBtnBackgroundImageView invisible:NO];
-}
-
-- (IBAction)scanQrTouchUpInside {
-	[self setMainImage:_scanQrBtnBackgroundImageView invisible:YES];
-	[self slideOutAnimation];
-}
-
-- (IBAction)scanQrTouchCancel {
-	[self setMainImage:_scanQrBtnBackgroundImageView invisible:YES];
-}
 
 #pragma mark - add desc btn events
-- (IBAction)addDecBtnTouchDown {
-	[self setMainImage:_addDescBtnSelectedImageView invisible:NO];
-	[self moveShadow:_addDescShadowImageView up:YES];
-}
-
-- (IBAction)addDescBtnTouchUpInside {
-	[self setMainImage:_addDescBtnSelectedImageView invisible:YES];
-	[self moveShadow:_addDescShadowImageView up:NO];
-	
-	defaultDescMarkerImageViewLeadingConstraint = _descMarkerImageViewLeadingConstraint.constant;
-	defaultAddDescLblLeadingConstraint = _addDescLblLeadingConstraint.constant;
-	
-	_descMarkerImageViewLeadingConstraint.constant = -_descMarkerImageView.frame.size.width;
-	_addDescLblLeadingConstraint.constant = 0/*_locationTextField.leftView.frame.size.width*/;
-	
-	CGSize contentSize = [_addDescTextView sizeThatFits:_addDescLbl.frame.size];
-	_descContainerHeightConstraint.constant = contentSize.height;
-	
-	[UIView animateWithDuration:0.5 animations:^{
-		_addDescLbl.alpha = 0.0;
-		
-		[_descContainerView layoutIfNeeded];
-	} completion:^(BOOL finished) {
-		_addDescTextView.alpha = 1.0;
-		
-		[UIView animateWithDuration:0.0 animations:^{
-			
-		} completion:^(BOOL finished) {
-			_addDescBtn.hidden = true;
-			[_addDescTextView becomeFirstResponder];
-		}];
-	}];
-}
-
-- (IBAction)addDescBtnTouchCancel {
-	[self setMainImage:_addDescBtnSelectedImageView invisible:YES];
-	[self moveShadow:_addDescShadowImageView up:NO];
-}
 
 #pragma mark - sendReport btn events
-- (IBAction)sendReportTouchDown {
-	if (!_isSendingData) {
-		[self setMainImage:_sendReportBtnSelectedImageView invisible:NO];
-		[self moveShadow:_sendReportShadowImageView up:YES];
-	}
-}
-
 - (IBAction)sendReportTouchUpInside {
 	if (!_isSendingData) {
-		[self setMainImage:_sendReportBtnSelectedImageView invisible:YES];
-		[self moveShadow:_sendReportShadowImageView up:NO];
-		
 		UIAlertView *alertView = [[UIAlertView alloc] init];
 		alertView.title = @"Oops";
 		[alertView addButtonWithTitle:@"OK"];
@@ -551,7 +546,7 @@ CGFloat defaultSendReportLblLeadingConstraint;
 			alertView.message = @"Please fill in description field";
 			[alertView show];
 		} else {
-			[self moveElementsOffscreen];
+			[self slideOutSendAnimation];
 			
 			_isSendingData = true;
 			
@@ -579,9 +574,6 @@ CGFloat defaultSendReportLblLeadingConstraint;
 			
 			[issueObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
 				if (succeeded) {
-					_sendReportLblLeadingConstraint.constant = -_sendReportLbl.frame.size.width * 2;
-					_reportSentLblTrailingConstraint.constant = 0;
-					
 					[UIView animateWithDuration:.5 animations:^{
 						[_mainView layoutIfNeeded];
 					} completion:^(BOOL finished) {
@@ -602,57 +594,47 @@ CGFloat defaultSendReportLblLeadingConstraint;
 	}
 }
 
-- (IBAction)sendReportTouchCancel {
-	[self setMainImage:_sendReportBtnSelectedImageView invisible:YES];
-	[self moveShadow:_sendReportShadowImageView up:NO];
+-(void)slideOutSendAnimation {
+    [self hideKeyboard];
+    
+    CGFloat topBackgroundTopConstraintConstant = -(_topBackgroundHeightConstraint.constant + 64);
+    _takePhotoTopConstraint.constant = topBackgroundTopConstraintConstant;
+    
+    _locationTopConstraint.constant = -_locationTopConstraint.constant;
+    _descriptionTopConstraint.constant = -_descriptionTopConstraint.constant;
+    _sendTopConstraint.constant = _mainView.bounds.size.height/2 - 22;
+    
+    [UIView animateWithDuration:0.4 delay:0 options:UIViewAnimationOptionCurveEaseIn animations:^{
+        [_mainView layoutIfNeeded];
+    } completion:^(BOOL finished) {
+    }];
 }
 
 #pragma mark take photo functionality
-- (void)touchesBeganInView:(HDButton *)button {
-	if (!_session) {
-		[self setupCameraView];
-	}
-	
-    [UIView animateWithDuration:.3 delay:0 options:UIViewAnimationOptionCurveEaseIn animations:^{
-        [button selectedState:YES];
-        [self.bottomContainer layoutSubviews];
-        [self.topContainer layoutSubviews];
-    } completion:^(BOOL finished) {
-		
-    }];
-}
-
-- (void)touchesEndedInView:(HDButton *)button {
-    [UIView animateWithDuration:.3 delay:0 options:UIViewAnimationOptionCurveEaseIn animations:^{
-        [button selectedState:NO];
-        [self.bottomContainer layoutSubviews];
-        [self.topContainer layoutSubviews];
-    } completion:^(BOOL finished) {
-		[self createClosePickerBtnAndAddToQrView];
-		
-		[self slideOutAnimation];
-    }];
-    
-}
-
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
-{
-    UITouch *touch = [touches anyObject];
-    if (touch.view == self.takePhotoTestButton) {
-        [self.takePhotoTestButton selectedState:NO];
-    }
-}
-
 - (void)createTakeBtnAddToQrView {
-	UIButton *savePhotoBtn = [[UIButton alloc] init];
+	savePhotoBtn = [[UIButton alloc] init];
+    [savePhotoBtn setTitle:@"Take Photo" forState:UIControlStateNormal];
 	savePhotoBtn.translatesAutoresizingMaskIntoConstraints = false;
-	
-	savePhotoBtn.layer.borderColor = [UIColor greenColor].CGColor;
-	savePhotoBtn.layer.borderWidth = 2;
 	
 	[savePhotoBtn addTarget:self action:@selector(savePhoto) forControlEvents:UIControlEventTouchUpInside];
 	
 	[_qrView addSubview:savePhotoBtn];
+    
+    [savePhotoBtn addConstraint:[NSLayoutConstraint constraintWithItem:savePhotoBtn
+                                                                   attribute:NSLayoutAttributeWidth
+                                                                   relatedBy:NSLayoutRelationEqual
+                                                                      toItem:nil
+                                                                   attribute:NSLayoutAttributeNotAnAttribute
+                                                                  multiplier:1.0
+                                                                    constant:100]];
+    [savePhotoBtn addConstraint:[NSLayoutConstraint constraintWithItem:savePhotoBtn
+                                                                   attribute:NSLayoutAttributeHeight
+                                                                   relatedBy:NSLayoutRelationEqual
+                                                                      toItem:nil
+                                                                   attribute:NSLayoutAttributeNotAnAttribute
+                                                                  multiplier:1.0
+                                                                    constant:50]];
+    
 	
 	NSLayoutConstraint *savePhotoBtnBottomConstraint = [NSLayoutConstraint constraintWithItem:_qrView
 																					attribute:NSLayoutAttributeBottom
@@ -660,15 +642,15 @@ CGFloat defaultSendReportLblLeadingConstraint;
 																					   toItem:savePhotoBtn
 																					attribute:NSLayoutAttributeBottom
 																				   multiplier:1.0
-																					 constant:20];
+																					 constant:10];
 	
 	NSLayoutConstraint *savePhotoBtnCenterXConstraint = [NSLayoutConstraint constraintWithItem:savePhotoBtn
-																					 attribute:NSLayoutAttributeCenterX
+																					 attribute:NSLayoutAttributeTrailing
 																					 relatedBy:NSLayoutRelationEqual
 																						toItem:_qrView
-																					 attribute:NSLayoutAttributeCenterX
+																					 attribute:NSLayoutAttributeTrailing
 																					multiplier:1.0
-																					  constant:0];
+																					  constant:-20];
 	
 	[_qrView addConstraint:savePhotoBtnBottomConstraint];
 	[_qrView addConstraint:savePhotoBtnCenterXConstraint];
@@ -733,10 +715,12 @@ CGFloat defaultSendReportLblLeadingConstraint;
 		UIGraphicsEndImageContext();
 		
 		[_takePhotoTestButton setPhoto:croppedImage];
-		
-		[UIView animateKeyframesWithDuration:1 delay:0 options:UIViewKeyframeAnimationOptionBeginFromCurrentState animations:^{
-			[_mainView layoutIfNeeded];
-		} completion:nil];
+        _takePhotoHeightConstraint.constant = _takePhotoTestButton.heightConstraint.constant;
+        [_mainView layoutIfNeeded];
+        
+//		[UIView animateKeyframesWithDuration:1 delay:0 options:UIViewKeyframeAnimationOptionBeginFromCurrentState animations:^{
+//			[_mainView layoutIfNeeded];
+//		} completion:nil];
 		
 		[self slideInAnimation];
 	}];
@@ -746,16 +730,17 @@ CGFloat defaultSendReportLblLeadingConstraint;
 	if (_scanditPicker) {
 		_scanditPicker = nil;
 	}
-	
-	CALayer *viewLayer = _qrView.layer;
-	
-	_session = [[AVCaptureSession alloc] init];
-	_session.sessionPreset = AVCaptureSessionPresetInputPriority;
-	
-	_captureVideoPreviewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:_session];
-	_captureVideoPreviewLayer.frame = _qrView.bounds;
-	
-	_stillImageOutput = [[AVCaptureStillImageOutput alloc] init];
+    
+    CALayer *viewLayer = _qrView.layer;
+    
+    _session = [[AVCaptureSession alloc] init];
+    _session.sessionPreset = AVCaptureSessionPresetInputPriority;
+    
+    _captureVideoPreviewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:_session];
+    _captureVideoPreviewLayer.frame = _qrView.bounds;
+    
+    
+    _stillImageOutput = [[AVCaptureStillImageOutput alloc] init];
 	NSDictionary *outputSettings = [[NSDictionary alloc] initWithObjectsAndKeys:AVVideoCodecJPEG, AVVideoCodecKey, nil];
 	[_stillImageOutput setOutputSettings:outputSettings];
 	
@@ -772,6 +757,7 @@ CGFloat defaultSendReportLblLeadingConstraint;
 	[_session startRunning];
 	
 	[self createTakeBtnAddToQrView];
+    [self createClosePickerBtnAndAddToQrView];
 }
 
 - (void)resetCameraView {
@@ -783,14 +769,141 @@ CGFloat defaultSendReportLblLeadingConstraint;
 
 #pragma mark - send report animation
 - (void)moveElementsOffscreen {
-	_takePhotoBtnTopConstraint.constant = -_takePhotoTestButton.frame.size.height;
 	
-	_scanQrContainerTopConstraint.constant = -_bottomContainer.frame.size.height;
-	_sendReportBtnTopToMainViewConstraint.constant = defaultScanQrContainerTopConstraint * 2;
+    _takePhotoTopConstraint.constant = -_takePhotoTestButton.frame.size.height;
 	
 	[UIView animateWithDuration:.5 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
 		[_mainView layoutIfNeeded];
 	} completion:nil];
+}
+
+#pragma mark - show\hide keyboard notifications
+// Call this method somewhere in your view controller setup code.
+- (void)registerForKeyboardNotifications
+{
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWasShown:)
+                                                 name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillBeHidden:)
+                                                 name:UIKeyboardWillHideNotification object:nil];
+}
+
+// Called when the UIKeyboardDidShowNotification is sent.
+- (void)keyboardWasShown:(NSNotification*)aNotification
+{
+    NSDictionary* info = [aNotification userInfo];
+    CGSize kbSize = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
+    UIEdgeInsets contentInsetsNormal = UIEdgeInsetsMake(64.0, 0.0, kbSize.height, 0.0);
+    UIEdgeInsets contentInsets = UIEdgeInsetsMake(64.0, 0.0, kbSize.height + 10, 0.0);
+    
+    CGRect aRect = self.view.frame;
+    aRect.size.height -= kbSize.height;
+    
+    CGFloat delta = _mainView.frame.size.height - kbSize.height;
+    if (_activeTextField == _locationTextField) {
+        delta = (_locationTopConstraint.constant + _locationHeightConstraint.constant) - delta;
+    } else {
+        delta = (_descriptionTopConstraint.constant + _descContainerHeightConstraint.constant) - delta;
+    }
+    
+    [UIView animateWithDuration:0.2 delay:0.1 options:UIViewAnimationOptionCurveEaseIn animations:^{
+        _scrollView.contentInset = contentInsets;
+        _scrollView.scrollIndicatorInsets = contentInsets;
+        
+        CGPoint scrollPoint;
+        if (delta > 0) {
+            scrollPoint = CGPointMake(0.0, -64 + delta+10);
+        } else {
+            scrollPoint = CGPointMake(0.0, -64+10);
+        }
+        [_scrollView setContentOffset:scrollPoint animated:NO];
+    } completion:^(BOOL finished) {
+        [UIView animateWithDuration:0.1 delay:0 options:UIViewAnimationOptionCurveEaseIn animations:^{
+            _scrollView.contentInset = contentInsetsNormal;
+            _scrollView.scrollIndicatorInsets = contentInsetsNormal;
+            
+            CGPoint scrollPoint;
+            if (delta > 0) {
+                scrollPoint = CGPointMake(0.0, -64 + delta);
+            } else {
+                scrollPoint = CGPointMake(0.0, -64);
+            }
+            [_scrollView setContentOffset:scrollPoint animated:NO];
+        } completion:nil];
+    }];
+}
+
+// Called when the UIKeyboardWillHideNotification is sent
+- (void)keyboardWillBeHidden:(NSNotification*)aNotification
+{
+    [UIView animateWithDuration:0.2 delay:0 options:UIViewAnimationOptionCurveEaseIn animations:^{
+        UIEdgeInsets contentInsets = UIEdgeInsetsMake(64,0,0,0);
+        _scrollView.contentInset = contentInsets;
+        _scrollView.scrollIndicatorInsets = contentInsets;
+        [_scrollView setContentOffset:CGPointMake(0.0, -64) animated:NO];
+    } completion:nil];
+}
+
+- (void)updateScroll
+{
+    CGFloat kbHeight = _scrollView.contentInset.bottom;
+    CGRect aRect = self.view.frame;
+    aRect.size.height -= kbHeight;
+    
+    CGFloat delta = _mainView.frame.size.height - kbHeight;
+    if (_activeTextField == _locationTextField) {
+        delta = (_locationTopConstraint.constant + _locationHeightConstraint.constant) - delta;
+    } else {
+        delta = (_descriptionTopConstraint.constant + _descContainerHeightConstraint.constant) - delta;
+    }
+    
+    [UIView animateWithDuration:0.1 delay:0 options:UIViewAnimationOptionCurveEaseIn animations:^{
+        CGPoint scrollPoint;
+        if (delta > 0) {
+            scrollPoint = CGPointMake(0.0, -64 + delta);
+        } else {
+            scrollPoint = CGPointMake(0.0, -64);
+        }
+        [_scrollView setContentOffset:scrollPoint animated:NO];
+    } completion:nil];
+}
+
+- (void)updateConstraints
+{
+    CGFloat totalSubviewsHeight = _takePhotoHeightConstraint.constant + _locationHeightConstraint.constant + _descContainerHeightConstraint.constant + _sendHeightConstraint.constant;
+    CGFloat height = self.view.bounds.size.height - 64;
+    CGFloat delta = height - totalSubviewsHeight;
+    
+    CGFloat photoSpaceHeight = delta *0.6;
+    CGFloat sendSpaceHeight = delta - photoSpaceHeight;
+    
+    _takePhotoTopConstraint.constant = photoSpaceHeight/2;
+    _locationTopConstraint.constant = photoSpaceHeight + _takePhotoHeightConstraint.constant;
+    _descriptionTopConstraint.constant = _locationTopConstraint.constant + _locationHeightConstraint.constant;
+    _sendTopConstraint.constant = _descriptionTopConstraint.constant + _descContainerHeightConstraint.constant + sendSpaceHeight/2;
+    
+    [UIView animateWithDuration:0.2 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
+        [self.view layoutIfNeeded];
+    } completion:nil];
+}
+
+- (void)compressConstraints
+{
+    CGFloat totalSubviewsHeight = _takePhotoHeightConstraint.constant + _locationHeightConstraint.constant + _descContainerHeightConstraint.constant + _sendHeightConstraint.constant;
+    CGFloat height = self.view.bounds.size.height - 64;
+    CGFloat delta = height - totalSubviewsHeight;
+    
+    CGFloat photoSpaceHeight = delta *0.6;
+    CGFloat sendSpaceHeight = delta - photoSpaceHeight;
+    
+    _locationTopConstraint.constant = photoSpaceHeight + _takePhotoHeightConstraint.constant - 7;
+    _descriptionTopConstraint.constant = _locationTopConstraint.constant + _locationHeightConstraint.constant - 5;
+    _sendTopConstraint.constant = _descriptionTopConstraint.constant + _descContainerHeightConstraint.constant + sendSpaceHeight/2 - 3;
+    
+    [UIView animateWithDuration:0.2 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
+        [self.view layoutIfNeeded];
+    } completion:nil];
 }
 
 @end
