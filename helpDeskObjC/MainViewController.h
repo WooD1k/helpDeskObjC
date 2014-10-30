@@ -17,9 +17,6 @@
 
 @property (nonatomic) BOOL isSendingData;
 
-#pragma mark - takePhotoBtn elements
-@property (weak, nonatomic) IBOutlet UIButton *takePhotoBtn;
-
 @property (weak, nonatomic) IBOutlet HDButton *takePhotoTestButton;
 @property (weak, nonatomic) IBOutlet HDButton *locationTestButton;
 @property (weak, nonatomic) IBOutlet HDButton *qrCodeTestButton;

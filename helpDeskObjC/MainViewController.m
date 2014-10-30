@@ -18,7 +18,7 @@
 @end
 
 @implementation MainViewController {
-CGRect screenRect;
+    CGRect screenRect;
     CGRect keyboardFrame;
     
     CGFloat defaultTopContainerTopConstraint;
@@ -38,13 +38,11 @@ CGRect screenRect;
     CGFloat defaultSendReportBtnTopToMainViewConstraint;
     
     CGFloat defaultPhotoImageViewHeightConstraint;
-    CGFloat defaultTakePhotoBtnTopConstraint;
     CGFloat defaultReportSentLblTrailingConstraint;
     CGFloat defaultSendReportLblLeadingConstraint;
     
     UIButton *savePhotoBtn;
 }
-
 
 #pragma mark - view lifecycle
 - (void)viewDidLoad {
@@ -141,11 +139,10 @@ CGRect screenRect;
 	
 	defaultDescContainerHeightConstraint = 100;
 	defaultScanQrContainerTopConstraint = _locationTopConstraint.constant;
-	defaultTakePhotoBtnTopConstraint = _takePhotoTopConstraint.constant;
 	
 	_addDescTextView.textContainer.maximumNumberOfLines = 5;
 	
-//	[self performSelector:@selector(setupCameraView) withObject:nil afterDelay:0.2];
+	[self performSelector:@selector(setupCameraView) withObject:nil afterDelay:0.2];
     
     [self updateConstraints];
 }
