@@ -125,7 +125,7 @@
     
     [self selectedState:YES];
 }
-//
+
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
 {
     isTouchUp = YES;
@@ -276,53 +276,5 @@
     [internalContentView layoutIfNeeded];
     [_contentView layoutIfNeeded];
 }
-
-//- (IBAction)takePhotoTouchDown {
-//    [self moveShadow:_takePhotoBtnShadowImageView up:YES];
-//    [self setMainImage:_takePhotoBtnImageView invisible:YES];
-//}
-//
-//- (IBAction)takePhotoTouchUpInside {
-//    [self moveShadow:_takePhotoBtnShadowImageView up:NO];
-//    [self setMainImage:_takePhotoBtnImageView invisible:NO];
-//    
-//    _imagePicker = [[UIImagePickerController alloc] init];
-//    _imagePicker.delegate = self;
-//    
-//    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
-//        _imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
-//        _imagePicker.allowsEditing = true;
-//        
-//        [self.navigationController presentViewController:_imagePicker animated:true completion:nil];
-//    }
-//}
-//
-//- (IBAction)takePhotoTouchCancel {
-//    [self moveShadow:_takePhotoBtnShadowImageView up:NO];
-//    [self setMainImage:_takePhotoBtnImageView invisible:NO];
-//}
-//
-//- (void)moveShadow:(UIImageView *)shadowToMove up:(BOOL)isMoveUp {
-//    [UIView animateWithDuration:0.3 animations:^{
-//        if (isMoveUp) {
-//            shadowToMove.center = CGPointMake(shadowToMove.center.x, shadowToMove.center.y - shadowToMove.frame.size.height);
-//        } else {
-//            shadowToMove.center = CGPointMake(shadowToMove.center.x, shadowToMove.center.y + shadowToMove.frame.size.height);
-//        }
-//    }];
-//}
-//
-//- (void)setMainImage:(UIImageView *) imageView invisible:(BOOL) isSetInvisible {
-//    if (isSetInvisible) {
-//        [UIView animateWithDuration:0.2 animations:^{
-//            [imageView setAlpha:0.0];
-//        }];
-//    } else {
-//        [UIView animateWithDuration:0.2 animations:^{
-//            [imageView setAlpha:1.0];
-//        }];
-//    }
-//}
-
 
 @end
