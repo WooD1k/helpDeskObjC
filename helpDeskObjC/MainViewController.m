@@ -167,16 +167,6 @@
 	return true;
 }
 
-- (void)layoutSublayersOfLayer:(CALayer *)layer
-{
-//    [super layoutSublayersOfLayer:layer];
-//    if (layer == _qrView.layer) {
-//        for (CALayer *sublayer in layer.sublayers) {
-//            sublayer.frame = layer.bounds;
-//        }
-//    }
-}
-
 - (IBAction)animateLocationOnDown {
     defaulLocationPinImageViewLeadingConstraintConstant = _locationPinImageViewLeadingConstraint.constant;
     defaulLocationLblLeadingConstraintConstant = _locationLblLeadingConstraint.constant;

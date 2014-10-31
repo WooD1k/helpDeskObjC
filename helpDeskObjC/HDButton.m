@@ -26,8 +26,7 @@
     void (^endBlock)(void);
 }
 
-- (instancetype)initWithCoder:(NSCoder *)aDecoder
-{
+- (instancetype)initWithCoder:(NSCoder *)aDecoder {
     self = [super initWithCoder:aDecoder];
     
     if (self) {
@@ -37,8 +36,7 @@
     return self;
 }
 
-- (void)addInternalContentView
-{
+- (void)addInternalContentView {
     self.backgroundColor = [UIColor clearColor];
     _scalableBackground = YES;
     CGRect aBounds = self.bounds;
@@ -57,21 +55,18 @@
     [self addConstraint:[NSLayoutConstraint constraintWithItem:internalContentView attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
 }
 
-- (void)updateConstraints
-{
+- (void)updateConstraints {
     [super updateConstraints];
     internalContentViewHeightConstraint.constant = _heightConstraint.constant;
     _contentViewHeightConstraint.constant = _heightConstraint.constant;
 }
 
-- (void)layoutSubviews
-{
+- (void)layoutSubviews {
     [super layoutSubviews];
     [self insertSubview:internalContentView belowSubview:_contentView];
 }
 
-- (void)setNormalImage:(UIImage *)normalImage
-{
+- (void)setNormalImage:(UIImage *)normalImage {
     _normalImage = normalImage;
     _normalImageView = [[UIImageView alloc] initWithImage:normalImage];
     [_normalImageView setTranslatesAutoresizingMaskIntoConstraints:NO];
@@ -83,8 +78,7 @@
     [internalContentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_normalImageView]|" options:0 metrics:nil views:dict]];
 }
 
-- (void)setSelectedImage:(UIImage *)selectedImage
-{
+- (void)setSelectedImage:(UIImage *)selectedImage {
     _selectedImage = selectedImage;
     _selectedImageView = [[UIImageView alloc] initWithImage:selectedImage];
     _selectedImageView.alpha = 0;
@@ -97,8 +91,7 @@
     [internalContentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_selectedImageView]|" options:0 metrics:nil views:dict]];
 }
 
-- (void)setShadowImage:(UIImage *)shadowImage
-{
+- (void)setShadowImage:(UIImage *)shadowImage {
     _shadowImage = shadowImage;
     _shadowImageView = [[UIImageView alloc] initWithImage:shadowImage];
     [_shadowImageView setTranslatesAutoresizingMaskIntoConstraints:NO];
@@ -114,8 +107,7 @@
     [_shadowImageView addConstraint:[NSLayoutConstraint constraintWithItem:_shadowImageView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:_shadowImageView.frame.size.height]];
 }
 
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
-{
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     isTouchDown = NO;
     isTouchUp = NO;
     
@@ -126,8 +118,7 @@
     [self selectedState:YES];
 }
 
-- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
-{
+- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
     isTouchUp = YES;
     
     if (isTouchDown) {
@@ -141,8 +132,7 @@
     }
 }
 
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
-{
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
     isTouchUp = YES;
     
     UITouch *touch = [touches anyObject];
@@ -170,8 +160,7 @@
     }
 }
 
-- (void)selectedState:(BOOL)selected
-{
+- (void)selectedState:(BOOL)selected {
     if (selected) {
         [self downAnimation];
     } else {
@@ -179,13 +168,11 @@
     }
 }
 
-- (void)resetState
-{
+- (void)resetState {
     [self upAnimation:NO];
 }
 
-- (void)downAnimation
-{
+- (void)downAnimation {
     [self layoutSubviews];
     
     if (!normalHeight) {
@@ -216,8 +203,7 @@
     }];
 }
 
-- (void)upAnimation:(BOOL)shouldCallActionBlock
-{
+- (void)upAnimation:(BOOL)shouldCallActionBlock {
     if (!isTouchUp || !isTouchDown) return;
     
     if (_scalableBackground) {
@@ -225,7 +211,7 @@
     }
     
     shadowTopConstraint.constant = 0;
-
+    
     [UIView animateWithDuration:.2 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
         self.selectedImageView.alpha = 0;
         self.contentView.transform = CGAffineTransformMakeScale(1., 1.);
