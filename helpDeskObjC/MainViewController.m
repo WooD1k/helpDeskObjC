@@ -42,6 +42,8 @@
     CGFloat defaultSendReportLblLeadingConstraint;
     
     UIButton *savePhotoBtn;
+    
+    BOOL isCameraAvailable;
 }
 
 #pragma mark - view lifecycle
@@ -61,10 +63,19 @@
     
     __weak typeof(self) weakSelf = self;
     
+    [self checkCameraAuthorization];
+    
     self.takePhotoTestButton.touchDownBlock = ^(void){[weakSelf compressConstraints];};
     self.takePhotoTestButton.touchUpBlock = ^(void){[weakSelf updateConstraints];};
     self.takePhotoTestButton.touchCanceledBlock = ^(void){[weakSelf updateConstraints];};
-    self.takePhotoTestButton.actionBlock = ^(void){(weakSelf.session?:[weakSelf setupCameraView]); [weakSelf performSelector:@selector(slideOutAnimation) withObject:nil afterDelay:0.2];};
+    self.takePhotoTestButton.actionBlock = ^(void){
+        if (isCameraAvailable) {
+            [weakSelf setupCameraView];
+            [weakSelf performSelector:@selector(slideOutAnimation) withObject:nil afterDelay:0.2];
+        } else {
+            [self showAlertWithTitle:@"Oops!" text:@"Reporter doesn't have permission to use Camera, please change privacy settings!"];
+        }
+    };
     
 //    self.locationTestButton.touchDownBlock = ^(void){};
 //    self.locationTestButton.touchUpBlock = ^(void){};
@@ -141,8 +152,10 @@
 	defaultScanQrContainerTopConstraint = _locationTopConstraint.constant;
 	
 	_addDescTextView.textContainer.maximumNumberOfLines = 5;
-	
-	[self performSelector:@selector(setupCameraView) withObject:nil afterDelay:0.2];
+    
+    if (isCameraAvailable) {
+        [self performSelector:@selector(setupCameraView) withObject:nil afterDelay:0.2];
+    }
     
     [self updateConstraints];
 }
@@ -526,23 +539,27 @@
 	[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationSlide];
 }
 
+#pragma mark - show alert methods
+- (void)showAlertWithTitle:(NSString *)title text:(NSString *)text {
+    UIAlertView *alertView = [[UIAlertView alloc] init];
+    alertView.title = title;
+    [alertView addButtonWithTitle:@"OK"];
+    
+    alertView.message = text;
+    [alertView show];
+}
 
-
-#pragma mark - add desc btn events
+- (void)showAlertWithText:(NSString *)text {
+    [self showAlertWithTitle:@"Oops" text:text];
+}
 
 #pragma mark - sendReport btn events
 - (IBAction)sendReportTouchUpInside {
 	if (!_isSendingData) {
-		UIAlertView *alertView = [[UIAlertView alloc] init];
-		alertView.title = @"Oops";
-		[alertView addButtonWithTitle:@"OK"];
-		
 		if ([_locationLabel.text  isEqual: @"Add place"] || _locationLabel.text.length == 0) {
-			alertView.message = @"Please fill in location field";
-			[alertView show];
+            [self showAlertWithText:@"Please fill in location field"];
 		} else if ([_addDescLbl.text  isEqual: @"Add description"] || _addDescLbl.text.length == 0) {
-			alertView.message = @"Please fill in description field";
-			[alertView show];
+			[self showAlertWithText:@"Please fill in description field"];
 		} else {
 			[self slideOutSendAnimation];
 			
@@ -582,10 +599,7 @@
 						_isSendingData = false;
 					}];
 				} else {
-					alertView.title = @"Something went wrong";
-					alertView.message = [NSString stringWithFormat:@"Please try agein later!\n%@", error];
-					
-					[alertView show];
+                    [self showAlertWithTitle:@"Something went wrong" text:[NSString stringWithFormat:@"Please try agein later!\n%@", error]];
 				}
 			}];
 		}
@@ -725,10 +739,10 @@
 }
 
 - (void)setupCameraView {
-	if (_scanditPicker) {
-		_scanditPicker = nil;
-	}
-    
+    if (_scanditPicker) {
+        _scanditPicker = nil;
+    }
+        
     CALayer *viewLayer = _qrView.layer;
     
     _session = [[AVCaptureSession alloc] init];
@@ -739,22 +753,22 @@
     
     
     _stillImageOutput = [[AVCaptureStillImageOutput alloc] init];
-	NSDictionary *outputSettings = [[NSDictionary alloc] initWithObjectsAndKeys:AVVideoCodecJPEG, AVVideoCodecKey, nil];
-	[_stillImageOutput setOutputSettings:outputSettings];
-	
-	_captureDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
-	
-	NSError *error = nil;
-	_captureDeviceInput = [AVCaptureDeviceInput deviceInputWithDevice:_captureDevice error:&error];
-	
-	[viewLayer addSublayer:_captureVideoPreviewLayer];
-	
-	[_session addInput:_captureDeviceInput];
-	[_session addOutput:_stillImageOutput];
-	
-	[_session startRunning];
-	
-	[self createTakeBtnAddToQrView];
+    NSDictionary *outputSettings = [[NSDictionary alloc] initWithObjectsAndKeys:AVVideoCodecJPEG, AVVideoCodecKey, nil];
+    [_stillImageOutput setOutputSettings:outputSettings];
+    
+    _captureDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+    
+    NSError *error = nil;
+    _captureDeviceInput = [AVCaptureDeviceInput deviceInputWithDevice:_captureDevice error:&error];
+    
+    [viewLayer addSublayer:_captureVideoPreviewLayer];
+    
+    [_session addInput:_captureDeviceInput];
+    [_session addOutput:_stillImageOutput];
+    
+    [_session startRunning];
+    
+    [self createTakeBtnAddToQrView];
     [self createClosePickerBtnAndAddToQrView];
 }
 
@@ -903,6 +917,16 @@
     [UIView animateWithDuration:0.2 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
         [self.view layoutIfNeeded];
     } completion:nil];
+}
+
+- (void)checkCameraAuthorization {
+    AVAuthorizationStatus authStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
+    
+    if (authStatus == AVAuthorizationStatusDenied || authStatus == AVAuthorizationStatusRestricted) {
+        isCameraAvailable = NO;
+    } else {
+        isCameraAvailable = YES;
+    }
 }
 
 @end
