@@ -656,16 +656,16 @@
 																				   multiplier:1.0
 																					 constant:10];
 	
-	NSLayoutConstraint *savePhotoBtnCenterXConstraint = [NSLayoutConstraint constraintWithItem:savePhotoBtn
+	NSLayoutConstraint *savePhotoBtnTrailingConstraint = [NSLayoutConstraint constraintWithItem:_qrView
 																					 attribute:NSLayoutAttributeTrailing
 																					 relatedBy:NSLayoutRelationEqual
-																						toItem:_qrView
+																						toItem:savePhotoBtn
 																					 attribute:NSLayoutAttributeTrailing
 																					multiplier:1.0
-																					  constant:-20];
+																					  constant:20];
 	
 	[_qrView addConstraint:savePhotoBtnBottomConstraint];
-	[_qrView addConstraint:savePhotoBtnCenterXConstraint];
+	[_qrView addConstraint:savePhotoBtnTrailingConstraint];
 }
 
 - (void) savePhoto {
