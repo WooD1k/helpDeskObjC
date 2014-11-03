@@ -755,8 +755,10 @@
     
     [_session addInput:_captureDeviceInput];
     [_session addOutput:_stillImageOutput];
-    
-    [_session startRunning];
+
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+        [_session startRunning];
+    });
     
     [self createTakeBtnAddToQrView];
     [self createClosePickerBtnAndAddToQrView];
