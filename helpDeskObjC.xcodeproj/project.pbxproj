@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		CB0C65D219DDACC50046837A /* SWRevealViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CB0C65D019DDACC50046837A /* SWRevealViewController.m */; };
 		CB0C65D819DEA49D0046837A /* LeftMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CB0C65D719DEA49D0046837A /* LeftMenuViewController.m */; };
-		CB14E73119E9908B00546F1A /* libscanditsdk-iphone-4.2.1.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CB14E73019E9908B00546F1A /* libscanditsdk-iphone-4.2.1.a */; };
 		CB243F2519DC2C1000E73DF4 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB243F2419DC2C1000E73DF4 /* CFNetwork.framework */; };
 		CB243F2719DC2C2000E73DF4 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB243F2619DC2C2000E73DF4 /* MobileCoreServices.framework */; };
 		CB243FA419DC4A0900E73DF4 /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB243FA119DC4A0900E73DF4 /* Parse.framework */; };
@@ -61,6 +60,7 @@
 		CB7D390419DABB20006182EC /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB7D390319DABB20006182EC /* CoreLocation.framework */; };
 		CB7D390619DABB2A006182EC /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB7D390519DABB2A006182EC /* SystemConfiguration.framework */; };
 		CB8823EB19DD464C00E41F21 /* IssuesListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CB8823EA19DD464C00E41F21 /* IssuesListViewController.m */; };
+		CB9453ED1A0777F9007551F9 /* libscanditsdk-iphone-4.2.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CB9453EC1A0777F9007551F9 /* libscanditsdk-iphone-4.2.2.a */; };
 		F95A7ACF19EBC114000A019A /* HDButton.m in Sources */ = {isa = PBXBuildFile; fileRef = F95A7ACE19EBC114000A019A /* HDButton.m */; };
 /* End PBXBuildFile section */
 
@@ -79,7 +79,6 @@
 		CB0C65D119DDACC50046837A /* SWRevealViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SWRevealViewController.h; sourceTree = "<group>"; };
 		CB0C65D619DEA49D0046837A /* LeftMenuViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LeftMenuViewController.h; sourceTree = "<group>"; };
 		CB0C65D719DEA49D0046837A /* LeftMenuViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LeftMenuViewController.m; sourceTree = "<group>"; };
-		CB14E73019E9908B00546F1A /* libscanditsdk-iphone-4.2.1.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "libscanditsdk-iphone-4.2.1.a"; sourceTree = "<group>"; };
 		CB243F2419DC2C1000E73DF4 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		CB243F2619DC2C2000E73DF4 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		CB243FA019DC4A0900E73DF4 /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Bolts.framework; sourceTree = "<group>"; };
@@ -143,6 +142,7 @@
 		CB7D390519DABB2A006182EC /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		CB8823E919DD464C00E41F21 /* IssuesListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IssuesListViewController.h; sourceTree = "<group>"; };
 		CB8823EA19DD464C00E41F21 /* IssuesListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IssuesListViewController.m; sourceTree = "<group>"; };
+		CB9453EC1A0777F9007551F9 /* libscanditsdk-iphone-4.2.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "libscanditsdk-iphone-4.2.2.a"; sourceTree = "<group>"; };
 		F95A7ACD19EBC114000A019A /* HDButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HDButton.h; sourceTree = "<group>"; };
 		F95A7ACE19EBC114000A019A /* HDButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HDButton.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -162,7 +162,6 @@
 				CB7D38FC19DABAFA006182EC /* libz.dylib in Frameworks */,
 				CB7D390419DABB20006182EC /* CoreLocation.framework in Frameworks */,
 				CB7D38F819DABAE3006182EC /* CoreGraphics.framework in Frameworks */,
-				CB14E73119E9908B00546F1A /* libscanditsdk-iphone-4.2.1.a in Frameworks */,
 				CB243F2519DC2C1000E73DF4 /* CFNetwork.framework in Frameworks */,
 				CB7D38FA19DABAEB006182EC /* AudioToolbox.framework in Frameworks */,
 				CB7D390019DABB10006182EC /* CoreMedia.framework in Frameworks */,
@@ -173,6 +172,7 @@
 				CB243FA419DC4A0900E73DF4 /* Parse.framework in Frameworks */,
 				CB7D38F019DABAC6006182EC /* libiconv.dylib in Frameworks */,
 				CB7D38EE19DABABC006182EC /* libc++.dylib in Frameworks */,
+				CB9453ED1A0777F9007551F9 /* libscanditsdk-iphone-4.2.2.a in Frameworks */,
 				CB243FAB19DC4CDE00E73DF4 /* ParseFacebookUtils.framework in Frameworks */,
 				CB243FB519DC4EAF00E73DF4 /* FacebookSDK.framework in Frameworks */,
 			);
@@ -317,6 +317,7 @@
 		CB7D38C019DABA58006182EC /* ScanditSDK */ = {
 			isa = PBXGroup;
 			children = (
+				CB9453EC1A0777F9007551F9 /* libscanditsdk-iphone-4.2.2.a */,
 				CB7D38C119DABA58006182EC /* beep.wav */,
 				CB7D38C219DABA58006182EC /* camera-swap-icon-pressed.png */,
 				CB7D38C319DABA58006182EC /* camera-swap-icon-pressed@2x.png */,
@@ -324,7 +325,6 @@
 				CB7D38C519DABA58006182EC /* camera-swap-icon@2x.png */,
 				CB7D38C619DABA58006182EC /* CHANGELOG.txt */,
 				CB7D38C719DABA58006182EC /* scanditsdk.strings */,
-				CB14E73019E9908B00546F1A /* libscanditsdk-iphone-4.2.1.a */,
 				CB7D38C919DABA58006182EC /* empty.cpp */,
 				CB7D38CB19DABA58006182EC /* flashlight-turn-off-icon-pressed.png */,
 				CB7D38CC19DABA58006182EC /* flashlight-turn-off-icon-pressed@2x.png */,
