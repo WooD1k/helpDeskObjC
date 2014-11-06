@@ -49,6 +49,7 @@
 #pragma mark - view lifecycle
 - (void)viewDidLoad {
 	[super viewDidLoad];
+    
 	// Do any additional setup after loading the view, typically from a nib.
 	
 	[[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
@@ -70,7 +71,8 @@
     self.takePhotoTestButton.touchCanceledBlock = ^(void){[weakSelf updateConstraints];};
     self.takePhotoTestButton.actionBlock = ^(void){
         if (isCameraAvailable) {
-            [weakSelf setupCameraView];
+            [_session removeOutput:_metadataOutput];
+            
             [weakSelf performSelector:@selector(slideOutAnimation) withObject:nil afterDelay:0.2];
         } else {
             [self showAlertWithTitle:@"Oops!" text:@"Reporter doesn't have permission to use Camera, please change privacy settings!"];
@@ -85,7 +87,11 @@
 //    self.qrCodeTestButton.touchDownBlock = ^(void){};
 //    self.qrCodeTestButton.touchUpBlock = ^(void){};
 //    self.qrCodeTestButton.touchCanceledBlock = ^(void){};
-    self.qrCodeTestButton.actionBlock = ^(void){[weakSelf prepareQrScanerPicker]; [weakSelf performSelector:@selector(slideOutAnimation) withObject:nil afterDelay:0.2];};
+    self.qrCodeTestButton.actionBlock = ^(void){
+        [weakSelf setupQrScanner];
+        
+        [weakSelf slideOutAnimation];
+    };
     
 //    self.descriptionTestButton.touchDownBlock = ^(void){};
 //    self.descriptionTestButton.touchUpBlock = ^(void){};
@@ -312,22 +318,12 @@
 }
 
 #pragma mark - QR scanner functionality
-- (IBAction)prepareQrScanerPicker {
-	if (_session) {
-		[self resetCameraView];
-	}
-	
-	if (!_scanditPicker) {
-		_scanditPicker = [[ScanditSDKBarcodePicker alloc] initWithAppKey:@"mHbeTgp5EeSKsmLJfKEh7Cg56poI/nKQw2Hb8HRrI/U"];
-	}
-	
-	[_scanditPicker.overlayController setTorchEnabled:false];
-    _scanditPicker.view.frame = self.qrView.bounds;
-	[_qrView addSubview:_scanditPicker.view];
-	
-	_scanditPicker.overlayController.delegate = self;
-	
-	[self createClosePickerBtnAndAddToQrView];
+- (void)setupQrScanner {
+    if ([_session canAddOutput:_metadataOutput]) {
+        [_session addOutput:_metadataOutput];
+        [_metadataOutput setMetadataObjectsDelegate:self queue:dispatch_get_main_queue()];
+        [_metadataOutput setMetadataObjectTypes:@[AVMetadataObjectTypeQRCode]];
+    }
 }
 
 -(void)createClosePickerBtnAndAddToQrView {
@@ -433,18 +429,7 @@
 	[UIView animateWithDuration:0.4 animations:^{
         [self updateConstraints];
 		[self.view layoutIfNeeded];
-	} completion:^(BOOL finished) {
-		if (_scanditPicker) {
-			[_scanditPicker stopScanning];
-			
-			[_closePickerButton removeFromSuperview];
-			[_scanditPicker.view removeFromSuperview];
-		} else if (_session) {
-			[self resetCameraView];
-            [_closePickerButton removeFromSuperview];
-            [savePhotoBtn removeFromSuperview];
-		}
-	}];
+	} completion:nil];
 }
 
 -(void)slideOutAnimation {
@@ -463,10 +448,6 @@
 	[UIView animateWithDuration:0.4 delay:0 options:UIViewAnimationOptionCurveEaseIn animations:^{
 		[_mainView layoutIfNeeded];
 	} completion:^(BOOL finished) {
-		if (_scanditPicker) {
-			[_scanditPicker startScanning];
-		}
-        
         [_scrollView setHidden:YES];
 	}];
     
@@ -719,20 +700,14 @@
 		[_takePhotoTestButton setPhoto:croppedImage];
         _takePhotoHeightConstraint.constant = _takePhotoTestButton.heightConstraint.constant;
         [_mainView layoutIfNeeded];
-        
-//		[UIView animateKeyframesWithDuration:1 delay:0 options:UIViewKeyframeAnimationOptionBeginFromCurrentState animations:^{
-//			[_mainView layoutIfNeeded];
-//		} completion:nil];
 		
 		[self slideInAnimation];
 	}];
 }
 
 - (void)setupCameraView {
-    if (_scanditPicker) {
-        _scanditPicker = nil;
-    }
-        
+    _metadataOutput = [[AVCaptureMetadataOutput alloc] init];
+    
     CALayer *viewLayer = _qrView.layer;
     
     _session = [[AVCaptureSession alloc] init];
@@ -755,13 +730,25 @@
     
     [_session addInput:_captureDeviceInput];
     [_session addOutput:_stillImageOutput];
-
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
-        [_session startRunning];
-    });
+    
+    [self startRunning];
     
     [self createTakeBtnAddToQrView];
     [self createClosePickerBtnAndAddToQrView];
+}
+
+#pragma mark AVCaptureMetadataOutputObjectsDelegate
+
+- (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputMetadataObjects:(NSArray *)metadataObjects fromConnection:(AVCaptureConnection *)connection
+{
+    for(AVMetadataObject *metadataObject in metadataObjects)
+    {
+        AVMetadataMachineReadableCodeObject *readableObject = (AVMetadataMachineReadableCodeObject *)metadataObject;
+        if([metadataObject.type isEqualToString:AVMetadataObjectTypeQRCode])
+        {
+            NSLog(@"QR Code = %@", readableObject.stringValue);
+        }
+    }
 }
 
 - (void)resetCameraView {
@@ -919,6 +906,18 @@
     } else {
         isCameraAvailable = YES;
     }
+}
+
+- (void)startRunning {
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+       [_session startRunning];
+    });
+}
+
+- (void)stopRunning {
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+        [_session stopRunning];
+    });
 }
 
 @end

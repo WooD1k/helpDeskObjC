@@ -223,7 +223,7 @@
                                                                 <rect key="frame" x="0.0" y="0.0" width="250" height="45"/>
                                                                 <subviews>
                                                                     <imageView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="location_pin" translatesAutoresizingMaskIntoConstraints="NO" id="jA3-0T-pfe">
-                                                                        <rect key="frame" x="28" y="7.5" width="15" height="30"/>
+                                                                        <rect key="frame" x="28" y="7" width="15" height="30"/>
                                                                         <constraints>
                                                                             <constraint firstAttribute="width" constant="15" id="1ai-pG-ihB"/>
                                                                             <constraint firstAttribute="width" constant="15" id="6bQ-dk-kNt"/>

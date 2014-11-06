@@ -10,7 +10,7 @@
 #import "ScanditSDKOverlayController.h"
 #import "HDButton.h"
 
-@interface MainViewController : UIViewController <UITextFieldDelegate, UITextViewDelegate, ScanditSDKOverlayControllerDelegate, UINavigationControllerDelegate>
+@interface MainViewController : UIViewController <UITextFieldDelegate, UITextViewDelegate, ScanditSDKOverlayControllerDelegate, UINavigationControllerDelegate, AVCaptureMetadataOutputObjectsDelegate>
 @property (strong, nonatomic) IBOutlet UIScrollView *scrollView;
 @property (weak, nonatomic) IBOutlet UIView *mainView;
 @property (weak, nonatomic) IBOutlet UIView *qrView;
@@ -88,6 +88,7 @@
 @property (nonatomic) AVCaptureVideoPreviewLayer *captureVideoPreviewLayer;
 @property (nonatomic) AVCaptureDevice *captureDevice;
 @property (nonatomic) AVCaptureStillImageOutput *stillImageOutput;
+@property (nonatomic) AVCaptureMetadataOutput *metadataOutput;
 
 @end
 
