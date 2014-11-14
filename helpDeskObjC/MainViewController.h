@@ -7,10 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "ScanditSDKOverlayController.h"
+#import <AVFoundation/AVFoundation.h>
 #import "HDButton.h"
 
-@interface MainViewController : UIViewController <UITextFieldDelegate, UITextViewDelegate, ScanditSDKOverlayControllerDelegate, UINavigationControllerDelegate, AVCaptureMetadataOutputObjectsDelegate>
+@interface MainViewController : UIViewController <UITextFieldDelegate, UITextViewDelegate, UINavigationControllerDelegate, AVCaptureMetadataOutputObjectsDelegate>
 @property (strong, nonatomic) IBOutlet UIScrollView *scrollView;
 @property (weak, nonatomic) IBOutlet UIView *mainView;
 @property (weak, nonatomic) IBOutlet UIView *qrView;
@@ -68,8 +68,6 @@
 
 @property (weak, nonatomic) UITextField *activeTextField;
 
-@property (strong, nonatomic) ScanditSDKBarcodePicker *scanditPicker;
-@property (nonatomic) UIButton *closePickerButton;
 @property (nonatomic) UIImagePickerController *imagePicker;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *sidebarButton;
 
