@@ -8,7 +8,7 @@
 
 #import "HDButton.h"
 
-#define SCALE_DELDA 6
+#define SCALE_DELTA 6
 #define SCALE 0.9
 #define NORMAL_HEIGHT 96
 
@@ -177,7 +177,7 @@
     
     if (!normalHeight) {
         normalHeight = self.heightConstraint.constant;
-        scaledHeight = normalHeight - SCALE_DELDA;
+        scaledHeight = normalHeight - SCALE_DELTA;
     }
     
     if (_scalableBackground) {
@@ -228,7 +228,7 @@
 - (void)setPhoto:(UIImage *)photo {
 	_heightConstraint.constant = MAX_HDBUTTON_SIZE;
     normalHeight = MAX_HDBUTTON_SIZE;
-    scaledHeight = normalHeight - SCALE_DELDA;
+    scaledHeight = normalHeight - SCALE_DELTA;
     
 	_photoImageView.image = photo;
 	
@@ -248,7 +248,7 @@
 - (void)resetConstraints {
 	 _heightConstraint.constant = NORMAL_HEIGHT;
     normalHeight = NORMAL_HEIGHT;
-	scaledHeight = normalHeight - SCALE_DELDA;
+	scaledHeight = normalHeight - SCALE_DELTA;
     
 	[_takePhotoLbl setHidden:NO];
 	[_retakePhotoLbl setHidden:YES];
