@@ -67,10 +67,10 @@
     
     [self checkCameraAuthorization];
     
-    self.takePhotoTestButton.touchDownBlock = ^(void){[weakSelf compressConstraints];};
-    self.takePhotoTestButton.touchUpBlock = ^(void){[weakSelf updateConstraints];};
-    self.takePhotoTestButton.touchCanceledBlock = ^(void){[weakSelf updateConstraints];};
-    self.takePhotoTestButton.actionBlock = ^(void){
+    _takePhotoButton.touchDownBlock = ^(void){[weakSelf compressConstraints];};
+    _takePhotoButton.touchUpBlock = ^(void){[weakSelf updateConstraints];};
+    _takePhotoButton.touchCanceledBlock = ^(void){[weakSelf updateConstraints];};
+    _takePhotoButton.actionBlock = ^(void){
         if (isCameraAvailable) {
             [_session removeOutput:_metadataOutput];
             
@@ -84,36 +84,36 @@
         }
     };
     
-    self.locationTestButton.actionBlock = ^(void){[weakSelf animateLocationOnDown];};
+    _locationButton.actionBlock = ^(void){[weakSelf animateLocationOnDown];};
     
-    self.qrCodeTestButton.actionBlock = ^(void){
+    _qrCodeButton.actionBlock = ^(void){
         [weakSelf setupQrScanner];
         
         [weakSelf slideOutAnimation];
     };
     
-    self.descriptionTestButton.actionBlock = ^(void){[weakSelf animateDescriptionOnDown];};
+    _descriptionButton.actionBlock = ^(void){[weakSelf animateDescriptionOnDown];};
     
-    _sendTestButton.actionBlock = ^(void){[weakSelf sendReportTouchUpInside];};
+    _sendButton.actionBlock = ^(void){[weakSelf sendReportTouchUpInside];};
     
-    _takePhotoTestButton.shadowImage = [UIImage imageNamed:@"button_yellow_shadow"];
-    _takePhotoTestButton.normalImage = [UIImage imageNamed:@"button_yellow"];
-    _takePhotoTestButton.selectedImage = [UIImage imageNamed:@"button_yellow_selected"];
+    _takePhotoButton.shadowImage = [UIImage imageNamed:@"button_yellow_shadow"];
+    _takePhotoButton.normalImage = [UIImage imageNamed:@"button_yellow"];
+    _takePhotoButton.selectedImage = [UIImage imageNamed:@"button_yellow_selected"];
     
-    _locationTestButton.selectedImage = [UIImage imageNamed:@"button_orange_selected_field"];
-    _locationTestButton.scalableBackground = NO;
+    _locationButton.selectedImage = [UIImage imageNamed:@"button_orange_selected_field"];
+    _locationButton.scalableBackground = NO;
     
-    _qrCodeTestButton.selectedImage = [UIImage imageNamed:@"button_orange_selected_qr"];
-    _qrCodeTestButton.scalableBackground = NO;
+    _qrCodeButton.selectedImage = [UIImage imageNamed:@"button_orange_selected_qr"];
+    _qrCodeButton.scalableBackground = NO;
     
-    _descriptionTestButton.shadowImage = [UIImage imageNamed:@"button_red_shadow"];
-    _descriptionTestButton.normalImage = [UIImage imageNamed:@"button_red"];
-    _descriptionTestButton.selectedImage = [UIImage imageNamed:@"button_red_selected"];
-    _descriptionTestButton.scalableBackground = NO;
+    _descriptionButton.shadowImage = [UIImage imageNamed:@"button_red_shadow"];
+    _descriptionButton.normalImage = [UIImage imageNamed:@"button_red"];
+    _descriptionButton.selectedImage = [UIImage imageNamed:@"button_red_selected"];
+    _descriptionButton.scalableBackground = NO;
     
-    _sendTestButton.shadowImage = [UIImage imageNamed:@"button_green_shadow"];
-    _sendTestButton.normalImage = [UIImage imageNamed:@"button_green"];
-    _sendTestButton.selectedImage = [UIImage imageNamed:@"button_green_selected"];
+    _sendButton.shadowImage = [UIImage imageNamed:@"button_green_shadow"];
+    _sendButton.normalImage = [UIImage imageNamed:@"button_green"];
+    _sendButton.selectedImage = [UIImage imageNamed:@"button_green_selected"];
     
     UIImage *cameraSmallImage = [UIImage imageNamed:@"camera_small"];
     UIImageView *cameraSmallImageView = [[UIImageView alloc] initWithImage:cameraSmallImage];
@@ -272,12 +272,12 @@
         CGRect requiredHeight = [string boundingRectWithSize:constrainedSize options:NSStringDrawingUsesLineFragmentOrigin context:nil];
         
         _descContainerHeightConstraint.constant = (int)MAX(45, MIN(requiredHeight.size.height+7+7, 100));
-        _descriptionTestButton.heightConstraint.constant = _descContainerHeightConstraint.constant;
+        _descriptionButton.heightConstraint.constant = _descContainerHeightConstraint.constant;
         
-        [_descriptionTestButton setNeedsUpdateConstraints];
-        [_descriptionTestButton updateConstraintsIfNeeded];
+        [_descriptionButton setNeedsUpdateConstraints];
+        [_descriptionButton updateConstraintsIfNeeded];
         
-        [_descriptionTestButton layoutIfNeeded];
+        [_descriptionButton layoutIfNeeded];
         [_descContainerView layoutIfNeeded];
         
     } completion:^(BOOL finished) {
@@ -289,10 +289,10 @@
     CGSize contentSize = [textView sizeThatFits:textView.frame.size];
     
     _descContainerHeightConstraint.constant = MAX(45, MIN(contentSize.height, 100));
-    _descriptionTestButton.heightConstraint.constant = _descContainerHeightConstraint.constant;
-    [_descriptionTestButton setNeedsUpdateConstraints];
-    [_descriptionTestButton updateConstraintsIfNeeded];
-    [_descriptionTestButton layoutIfNeeded];
+    _descriptionButton.heightConstraint.constant = _descContainerHeightConstraint.constant;
+    [_descriptionButton setNeedsUpdateConstraints];
+    [_descriptionButton updateConstraintsIfNeeded];
+    [_descriptionButton layoutIfNeeded];
     [_descContainerView layoutIfNeeded];
     
     [self updateConstraints];
@@ -434,14 +434,14 @@
     _addDescLbl.text = @"Add description";
     _addDescTextView.text = @"";
     
-    [_takePhotoTestButton resetConstraints];
-    _takePhotoHeightConstraint.constant = _takePhotoTestButton.heightConstraint.constant;
+    [_takePhotoButton resetConstraints];
+    _takePhotoHeightConstraint.constant = _takePhotoButton.heightConstraint.constant;
     
     _descContainerHeightConstraint.constant = 45;
-    _descriptionTestButton.heightConstraint.constant = _descContainerHeightConstraint.constant;
-    [_descriptionTestButton setNeedsUpdateConstraints];
-    [_descriptionTestButton updateConstraintsIfNeeded];
-    [_descriptionTestButton layoutIfNeeded];
+    _descriptionButton.heightConstraint.constant = _descContainerHeightConstraint.constant;
+    [_descriptionButton setNeedsUpdateConstraints];
+    [_descriptionButton updateConstraintsIfNeeded];
+    [_descriptionButton layoutIfNeeded];
     [_descContainerView layoutIfNeeded];
     
     [self updateConstraints];
@@ -656,8 +656,8 @@
         // clean up
         UIGraphicsEndImageContext();
         
-        [_takePhotoTestButton setPhoto:croppedImage];
-        _takePhotoHeightConstraint.constant = _takePhotoTestButton.heightConstraint.constant;
+        [_takePhotoButton setPhoto:croppedImage];
+        _takePhotoHeightConstraint.constant = _takePhotoButton.heightConstraint.constant;
         [_mainView layoutIfNeeded];
         
         [self slideInAnimation];
@@ -665,6 +665,7 @@
 }
 
 - (void)setupCameraView {
+    return;
     _metadataOutput = [[AVCaptureMetadataOutput alloc] init];
     
     CALayer *viewLayer = _qrView.layer;

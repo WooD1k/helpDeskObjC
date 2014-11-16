@@ -703,31 +703,31 @@
                         <outlet property="descContainerView" destination="SDy-xq-rw8" id="JyB-EO-508"/>
                         <outlet property="descMarkerImageView" destination="aSD-S1-hdz" id="jX0-bD-IEx"/>
                         <outlet property="descMarkerImageViewLeadingConstraint" destination="9yc-VC-V8m" id="aGE-Mg-BeT"/>
-                        <outlet property="descriptionTestButton" destination="cCd-Z1-y7t" id="vpv-VY-uZ3"/>
+                        <outlet property="descriptionButton" destination="cCd-Z1-y7t" id="Q66-KA-Eg1"/>
                         <outlet property="descriptionTopConstraint" destination="ed1-eE-ARG" id="vip-Zl-MAN"/>
+                        <outlet property="locationButton" destination="Rdw-am-7dt" id="7AG-Xe-CLm"/>
                         <outlet property="locationContainerView" destination="EM6-nN-pUA" id="Tsk-cd-9ey"/>
                         <outlet property="locationHeightConstraint" destination="Ffi-WG-u64" id="hEk-79-Cxf"/>
                         <outlet property="locationLabel" destination="TGz-UQ-6Sg" id="Xqo-mY-juS"/>
                         <outlet property="locationLblLeadingConstraint" destination="RS7-y5-Cw0" id="hSU-WV-hNF"/>
                         <outlet property="locationPinImageView" destination="jA3-0T-pfe" id="N87-Nv-iEi"/>
                         <outlet property="locationPinImageViewLeadingConstraint" destination="6DL-NL-z27" id="3DL-gb-juL"/>
-                        <outlet property="locationTestButton" destination="Rdw-am-7dt" id="pl7-uX-LmH"/>
                         <outlet property="locationTextField" destination="bny-Ke-fkS" id="QCd-Ub-Raw"/>
                         <outlet property="locationTopConstraint" destination="Wyn-W6-96C" id="rrk-Ap-91R"/>
                         <outlet property="mainView" destination="NQ0-HM-6oe" id="gPY-EO-enA"/>
                         <outlet property="photoImageView" destination="oaz-Io-q9K" id="Dqj-Xv-Tva"/>
-                        <outlet property="qrCodeTestButton" destination="otn-NH-di2" id="tSw-h9-hdH"/>
+                        <outlet property="qrCodeButton" destination="otn-NH-di2" id="xVB-5k-nk1"/>
                         <outlet property="qrView" destination="OOB-Na-5B3" id="pKJ-1S-IVi"/>
                         <outlet property="reportSentLbl" destination="0mi-Kq-uW6" id="Sb4-gm-qTH"/>
                         <outlet property="scanQrImageViewCenterXConstraint" destination="9qD-Yp-9gy" id="5BA-Mr-5CS"/>
                         <outlet property="scrollView" destination="oRY-WM-AaM" id="k1Q-J4-TDS"/>
+                        <outlet property="sendButton" destination="ZkV-zI-B6n" id="ofQ-VA-fEd"/>
                         <outlet property="sendHeightConstraint" destination="AIV-aC-1vR" id="vUo-bk-Mqb"/>
                         <outlet property="sendReportLbl" destination="A96-qA-zZT" id="2mf-zO-Ry0"/>
-                        <outlet property="sendTestButton" destination="ZkV-zI-B6n" id="zbT-IT-U2Y"/>
                         <outlet property="sendTopConstraint" destination="1dP-9E-ue1" id="q1j-dD-IVy"/>
                         <outlet property="sidebarButton" destination="j7U-wj-rb5" id="lcU-Cj-oX2"/>
+                        <outlet property="takePhotoButton" destination="MOx-kg-4HU" id="UlQ-qW-XAf"/>
                         <outlet property="takePhotoHeightConstraint" destination="82h-hd-4Ru" id="qmK-3J-NA3"/>
-                        <outlet property="takePhotoTestButton" destination="MOx-kg-4HU" id="ijg-2p-FMJ"/>
                         <outlet property="takePhotoTopConstraint" destination="lUJ-dv-sZK" id="VWD-hI-28T"/>
                         <outlet property="topBackgroundHeightConstraint" destination="qUx-Ne-RvU" id="Q2s-GA-AQK"/>
                         <outlet property="topBackgroundTopConstraint" destination="fgj-F5-y3v" id="2dQ-6l-APp"/>

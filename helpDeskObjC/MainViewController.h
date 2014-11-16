@@ -17,11 +17,11 @@
 
 @property (nonatomic) BOOL isSendingData;
 
-@property (weak, nonatomic) IBOutlet HDButton *takePhotoTestButton;
-@property (weak, nonatomic) IBOutlet HDButton *locationTestButton;
-@property (weak, nonatomic) IBOutlet HDButton *qrCodeTestButton;
-@property (weak, nonatomic) IBOutlet HDButton *descriptionTestButton;
-@property (weak, nonatomic) IBOutlet HDButton *sendTestButton;
+@property (weak, nonatomic) IBOutlet HDButton *takePhotoButton;
+@property (weak, nonatomic) IBOutlet HDButton *locationButton;
+@property (weak, nonatomic) IBOutlet HDButton *qrCodeButton;
+@property (weak, nonatomic) IBOutlet HDButton *descriptionButton;
+@property (weak, nonatomic) IBOutlet HDButton *sendButton;
 
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *takePhotoTopConstraint;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *locationTopConstraint;
