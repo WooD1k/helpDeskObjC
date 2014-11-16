@@ -77,9 +77,6 @@
 
 - (IBAction)hideKeyboard:(id)sender;
 
-#pragma mark - send report animation
-- (void)moveElementsOffscreen;
-
 #pragma mark - AVFoundation
 @property (nonatomic) AVCaptureSession *session;
 @property (nonatomic) AVCaptureDeviceInput *captureDeviceInput;

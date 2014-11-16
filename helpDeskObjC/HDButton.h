@@ -34,12 +34,24 @@
 
 @property (assign, nonatomic, getter=isScalableBackground) BOOL scalableBackground;
 
+/**
+ *  Blocks for touchDown, touchUp, touchCanceled, action states
+ */
 @property (copy, nonatomic) void (^touchDownBlock)(void);
 @property (copy, nonatomic) void (^touchUpBlock)(void);
 @property (copy, nonatomic) void (^touchCanceledBlock)(void);
 @property (copy, nonatomic) void (^actionBlock)(void);
 
+/**
+ *  Method to set photo whe photo was taken
+ *
+ *  @param photo UIImage to set as photo
+ */
 - (void)setPhoto:(UIImage *)photo;
+
+/**
+ *  Method to reset constraints to default values
+ */
 - (void)resetConstraints;
 
 @end

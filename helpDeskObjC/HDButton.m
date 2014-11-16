@@ -66,6 +66,8 @@
     [self insertSubview:internalContentView belowSubview:_contentView];
 }
 
+#pragma mark setup button images
+// set normal\default image
 - (void)setNormalImage:(UIImage *)normalImage {
     _normalImage = normalImage;
     _normalImageView = [[UIImageView alloc] initWithImage:normalImage];
@@ -78,6 +80,7 @@
     [internalContentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_normalImageView]|" options:0 metrics:nil views:dict]];
 }
 
+// set selected image
 - (void)setSelectedImage:(UIImage *)selectedImage {
     _selectedImage = selectedImage;
     _selectedImageView = [[UIImageView alloc] initWithImage:selectedImage];
@@ -91,6 +94,7 @@
     [internalContentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_selectedImageView]|" options:0 metrics:nil views:dict]];
 }
 
+// set shadow image
 - (void)setShadowImage:(UIImage *)shadowImage {
     _shadowImage = shadowImage;
     _shadowImageView = [[UIImageView alloc] initWithImage:shadowImage];
@@ -107,6 +111,7 @@
     [_shadowImageView addConstraint:[NSLayoutConstraint constraintWithItem:_shadowImageView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:_shadowImageView.frame.size.height]];
 }
 
+// perform touch down block
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     isTouchDown = NO;
     isTouchUp = NO;
@@ -118,6 +123,7 @@
     [self selectedState:YES];
 }
 
+// perform touch cancel block
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
     isTouchUp = YES;
     
@@ -132,6 +138,7 @@
     }
 }
 
+// perform touch end block
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
     isTouchUp = YES;
     
@@ -168,10 +175,12 @@
     }
 }
 
+// execute touch up animation w/o executing action block
 - (void)resetState {
     [self upAnimation:NO];
 }
 
+// touch down animation
 - (void)downAnimation {
     [self layoutSubviews];
     
@@ -203,6 +212,11 @@
     }];
 }
 
+/**
+ *  touch up animation
+ *
+ *  @param shouldCallActionBlock path TRUE if you need to execute action block after up animation
+ */
 - (void)upAnimation:(BOOL)shouldCallActionBlock {
     if (!isTouchUp || !isTouchDown) return;
     
@@ -245,14 +259,15 @@
     [_contentView layoutIfNeeded];
 }
 
+// reset constraint to default values
 - (void)resetConstraints {
-	 _heightConstraint.constant = NORMAL_HEIGHT;
+    _heightConstraint.constant = NORMAL_HEIGHT;
     normalHeight = NORMAL_HEIGHT;
 	scaledHeight = normalHeight - SCALE_DELTA;
     
 	[_takePhotoLbl setHidden:NO];
-	[_retakePhotoLbl setHidden:YES];
-	_photoImageView.image = nil;
+    [_retakePhotoLbl setHidden:YES];
+    _photoImageView.image = nil;
     [_photoCameraImageView setHidden:NO];
     [_photoImageView setHidden:YES];
 	

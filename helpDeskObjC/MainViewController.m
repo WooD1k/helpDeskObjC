@@ -41,8 +41,8 @@
     CGFloat defaultReportSentLblTrailingConstraint;
     CGFloat defaultSendReportLblLeadingConstraint;
     
-    UIButton *closePickerBtn;
-    UIButton *savePhotoBtn;
+    UIButton *closePickerButton;
+    UIButton *savePhotoButton;
     
     BOOL isCameraAvailable;
 }
@@ -79,8 +79,8 @@
             [self showAlertWithTitle:@"Oops!" text:@"Reporter doesn't have permission to use Camera, please change privacy settings!"];
         }
         
-        if (savePhotoBtn) {
-            savePhotoBtn.hidden = false;
+        if (savePhotoButton) {
+            savePhotoButton.hidden = false;
         }
     };
     
@@ -168,6 +168,7 @@
     return true;
 }
 
+// on down animation for location element
 - (IBAction)animateLocationOnDown {
     defaulLocationPinImageViewLeadingConstraintConstant = _locationPinImageViewLeadingConstraint.constant;
     defaulLocationLblLeadingConstraintConstant = _locationLblLeadingConstraint.constant;
@@ -195,6 +196,7 @@
     }];
 }
 
+// on down animation for description  element
 - (IBAction)animateDescriptionOnDown {
     defaultDescMarkerImageViewLeadingConstraint = _descMarkerImageViewLeadingConstraint.constant;
     defaultAddDescLblLeadingConstraint = _addDescLblLeadingConstraint.constant;
@@ -221,7 +223,7 @@
     }];
 }
 
-
+// animation for location  element for did end event
 - (IBAction)addLocationManuallyDidEnd {
     _locationPinImageViewLeadingConstraint.constant = defaulLocationPinImageViewLeadingConstraintConstant;
     _locationLblLeadingConstraint.constant = defaulLocationLblLeadingConstraintConstant;
@@ -244,6 +246,7 @@
         _locationTextField.hidden = YES;
     }];
 }
+
 
 - (void)textViewDidEndEditing:(UITextView *)textView{
     _addDescLbl.alpha = 1.0;
@@ -313,6 +316,7 @@
 }
 
 #pragma mark - QR scanner functionality
+// add QR _metadataOutput to camera view
 - (void)setupQrScanner {
     if ([_session canAddOutput:_metadataOutput]) {
         [_session addOutput:_metadataOutput];
@@ -320,28 +324,29 @@
         [_metadataOutput setMetadataObjectTypes:@[AVMetadataObjectTypeQRCode]];
     }
     
-    savePhotoBtn.hidden = true;
+    savePhotoButton.hidden = true;
 }
 
--(void)createClosePickerBtnAndAddToQrView {
-    if (!closePickerBtn) {
-        closePickerBtn = [[UIButton alloc] init];
-        [closePickerBtn setTitle:@"Cancel" forState:UIControlStateNormal];
+// create and add close button to camera view
+-(void)createclosePickerButtonAndAddToQrView {
+    if (!closePickerButton) {
+        closePickerButton = [[UIButton alloc] init];
+        [closePickerButton setTitle:@"Cancel" forState:UIControlStateNormal];
         
-        [closePickerBtn setTranslatesAutoresizingMaskIntoConstraints:false];
+        [closePickerButton setTranslatesAutoresizingMaskIntoConstraints:false];
         
-        [closePickerBtn addTarget:self
+        [closePickerButton addTarget:self
                                action:@selector(slideInAnimation)
                      forControlEvents:UIControlEventTouchUpInside];
         
-        [closePickerBtn addConstraint:[NSLayoutConstraint constraintWithItem:closePickerBtn
+        [closePickerButton addConstraint:[NSLayoutConstraint constraintWithItem:closePickerButton
                                                                        attribute:NSLayoutAttributeWidth
                                                                        relatedBy:NSLayoutRelationEqual
                                                                           toItem:nil
                                                                        attribute:NSLayoutAttributeNotAnAttribute
                                                                       multiplier:1.0
                                                                         constant:100]];
-        [closePickerBtn addConstraint:[NSLayoutConstraint constraintWithItem:closePickerBtn
+        [closePickerButton addConstraint:[NSLayoutConstraint constraintWithItem:closePickerButton
                                                                        attribute:NSLayoutAttributeHeight
                                                                        relatedBy:NSLayoutRelationEqual
                                                                           toItem:nil
@@ -350,17 +355,17 @@
                                                                         constant:50]];
     }
     
-    [_qrView addSubview:closePickerBtn];
+    [_qrView addSubview:closePickerButton];
     
     NSLayoutConstraint *closeBtnTrailingSpace = [NSLayoutConstraint constraintWithItem:_qrView
                                                                              attribute:NSLayoutAttributeLeading
                                                                              relatedBy:NSLayoutRelationEqual
-                                                                                toItem:closePickerBtn
+                                                                                toItem:closePickerButton
                                                                              attribute:NSLayoutAttributeLeading
                                                                             multiplier:1.0
                                                                               constant:-20];
     
-    NSLayoutConstraint *closeBtnTopSpace = [NSLayoutConstraint constraintWithItem:closePickerBtn
+    NSLayoutConstraint *closeBtnTopSpace = [NSLayoutConstraint constraintWithItem:closePickerButton
                                                                         attribute:NSLayoutAttributeBottom
                                                                         relatedBy:NSLayoutRelationEqual
                                                                            toItem:_qrView
@@ -371,30 +376,8 @@
     [_qrView addConstraint:closeBtnTopSpace];
 }
 
-#pragma mark - animation helpers
-- (void)moveShadow:(UIImageView *) shadowToMove up:(BOOL)isMoveUp {
-    [UIView animateWithDuration:0.3 animations:^{
-        if (isMoveUp) {
-            shadowToMove.center = CGPointMake(shadowToMove.center.x, shadowToMove.center.y - shadowToMove.frame.size.height);
-        } else {
-            shadowToMove.center = CGPointMake(shadowToMove.center.x, shadowToMove.center.y + shadowToMove.frame.size.height);
-        }
-    }];
-}
-
-- (void)setMainImage:(UIImageView *) imageView invisible:(BOOL) isSetInvisible {
-    if (isSetInvisible) {
-        [UIView animateWithDuration:0.2 animations:^{
-            [imageView setAlpha:0.0];
-        }];
-    } else {
-        [UIView animateWithDuration:0.2 animations:^{
-            [imageView setAlpha:1.0];
-        }];
-    }
-}
-
 #pragma mark - slideIn\slideOut\resetMainView animations
+// slide in animation for camera and QR actions
 - (void)slideInAnimation {
     [_scrollView setHidden:NO];
     
@@ -409,6 +392,7 @@
     } completion:nil];
 }
 
+// slide out animation for camera and QR actions
 -(void)slideOutAnimation {
     [self hideNavigationAndStatusBar];
     [self hideKeyboard];
@@ -429,6 +413,7 @@
     }];
 }
 
+// reset view to default state
 -(void)resetMainView {
     _locationLabel.text = @"Add place";
     _addDescLbl.text = @"Add description";
@@ -447,7 +432,7 @@
     [self updateConstraints];
 }
 
-#pragma mark - hide system UI elements
+#pragma mark - hide\show system UI elements
 - (void)hideKeyboard {
     if (_activeTextField) {
         [_activeTextField resignFirstResponder];
@@ -470,6 +455,7 @@
 }
 
 #pragma mark - show alert methods
+// show alert with custom title and text
 - (void)showAlertWithTitle:(NSString *)title text:(NSString *)text {
     UIAlertView *alertView = [[UIAlertView alloc] init];
     alertView.title = title;
@@ -479,6 +465,7 @@
     [alertView show];
 }
 
+// show alert with default title
 - (void)showAlertWithText:(NSString *)text {
     [self showAlertWithTitle:@"Oops" text:text];
 }
@@ -536,6 +523,7 @@
     }
 }
 
+// slide out animation during sending info to parse
 -(void)slideOutSendAnimation {
     [self hideKeyboard];
     
@@ -554,22 +542,22 @@
 
 #pragma mark take photo functionality
 - (void)createTakeBtnAddToQrView {
-    savePhotoBtn = [[UIButton alloc] init];
-    [savePhotoBtn setTitle:@"Take Photo" forState:UIControlStateNormal];
-    savePhotoBtn.translatesAutoresizingMaskIntoConstraints = false;
+    savePhotoButton = [[UIButton alloc] init];
+    [savePhotoButton setTitle:@"Take Photo" forState:UIControlStateNormal];
+    savePhotoButton.translatesAutoresizingMaskIntoConstraints = false;
     
-    [savePhotoBtn addTarget:self action:@selector(savePhoto) forControlEvents:UIControlEventTouchUpInside];
+    [savePhotoButton addTarget:self action:@selector(savePhoto) forControlEvents:UIControlEventTouchUpInside];
     
-    [_qrView addSubview:savePhotoBtn];
+    [_qrView addSubview:savePhotoButton];
     
-    [savePhotoBtn addConstraint:[NSLayoutConstraint constraintWithItem:savePhotoBtn
+    [savePhotoButton addConstraint:[NSLayoutConstraint constraintWithItem:savePhotoButton
                                                              attribute:NSLayoutAttributeWidth
                                                              relatedBy:NSLayoutRelationEqual
                                                                 toItem:nil
                                                              attribute:NSLayoutAttributeNotAnAttribute
                                                             multiplier:1.0
                                                               constant:100]];
-    [savePhotoBtn addConstraint:[NSLayoutConstraint constraintWithItem:savePhotoBtn
+    [savePhotoButton addConstraint:[NSLayoutConstraint constraintWithItem:savePhotoButton
                                                              attribute:NSLayoutAttributeHeight
                                                              relatedBy:NSLayoutRelationEqual
                                                                 toItem:nil
@@ -578,24 +566,24 @@
                                                               constant:50]];
     
     
-    NSLayoutConstraint *savePhotoBtnBottomConstraint = [NSLayoutConstraint constraintWithItem:_qrView
+    NSLayoutConstraint *savePhotoButtonBottomConstraint = [NSLayoutConstraint constraintWithItem:_qrView
                                                                                     attribute:NSLayoutAttributeBottom
                                                                                     relatedBy:NSLayoutRelationEqual
-                                                                                       toItem:savePhotoBtn
+                                                                                       toItem:savePhotoButton
                                                                                     attribute:NSLayoutAttributeBottom
                                                                                    multiplier:1.0
                                                                                      constant:10];
     
-    NSLayoutConstraint *savePhotoBtnTrailingConstraint = [NSLayoutConstraint constraintWithItem:_qrView
+    NSLayoutConstraint *savePhotoButtonTrailingConstraint = [NSLayoutConstraint constraintWithItem:_qrView
                                                                                       attribute:NSLayoutAttributeTrailing
                                                                                       relatedBy:NSLayoutRelationEqual
-                                                                                         toItem:savePhotoBtn
+                                                                                         toItem:savePhotoButton
                                                                                       attribute:NSLayoutAttributeTrailing
                                                                                      multiplier:1.0
                                                                                        constant:20];
     
-    [_qrView addConstraint:savePhotoBtnBottomConstraint];
-    [_qrView addConstraint:savePhotoBtnTrailingConstraint];
+    [_qrView addConstraint:savePhotoButtonBottomConstraint];
+    [_qrView addConstraint:savePhotoButtonTrailingConstraint];
 }
 
 - (void) savePhoto {
@@ -665,7 +653,6 @@
 }
 
 - (void)setupCameraView {
-    return;
     _metadataOutput = [[AVCaptureMetadataOutput alloc] init];
     
     CALayer *viewLayer = _qrView.layer;
@@ -694,7 +681,7 @@
     [self startRunning];
     
     [self createTakeBtnAddToQrView];
-    [self createClosePickerBtnAndAddToQrView];
+    [self createclosePickerButtonAndAddToQrView];
 }
 
 #pragma mark AVCaptureMetadataOutputObjectsDelegate
@@ -707,13 +694,6 @@
             NSLog(@"QR Code = %@", readableObject.stringValue);
         }
     }
-}
-
-- (void)resetCameraView {
-    _session = nil;
-    _captureDeviceInput = nil;
-    _captureVideoPreviewLayer = nil;
-    _captureDevice = nil;
 }
 
 #pragma mark - show\hide keyboard notifications
@@ -781,6 +761,7 @@
     } completion:nil];
 }
 
+// Calculate distance between elements
 - (void)updateScroll {
     CGFloat kbHeight = _scrollView.contentInset.bottom;
     CGRect aRect = self.view.frame;
@@ -804,6 +785,7 @@
     } completion:nil];
 }
 
+// update constraints after compressConstraints
 - (void)updateConstraints {
     CGFloat totalSubviewsHeight = _takePhotoHeightConstraint.constant + _locationHeightConstraint.constant + _descContainerHeightConstraint.constant + _sendHeightConstraint.constant;
     CGFloat height = self.view.bounds.size.height - 64;
@@ -850,12 +832,14 @@
     }
 }
 
+// start running camera session
 - (void)startRunning {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
         [_session startRunning];
     });
 }
 
+// stop running camera session
 - (void)stopRunning {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
         [_session stopRunning];
