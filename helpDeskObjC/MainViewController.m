@@ -13,6 +13,7 @@
 #import <CoreMedia/CoreMedia.h>
 #import <CoreVideo/CoreVideo.h>
 #import <ImageIO/ImageIO.h>
+#import <QuartzCore/QuartzCore.h>
 
 @interface MainViewController ()
 @end
@@ -43,6 +44,8 @@
     
     UIButton *closePickerButton;
     UIButton *savePhotoButton;
+    
+    UIView *qrScannerAreaView;
     
     BOOL isCameraAvailable;
 }
@@ -319,12 +322,67 @@
 // add QR _metadataOutput to camera view
 - (void)setupQrScanner {
     if ([_session canAddOutput:_metadataOutput]) {
+        [self createScannerAreaView];
+        
         [_session addOutput:_metadataOutput];
+        
         [_metadataOutput setMetadataObjectsDelegate:self queue:dispatch_get_main_queue()];
         [_metadataOutput setMetadataObjectTypes:@[AVMetadataObjectTypeQRCode]];
+        
+        _metadataOutput.rectOfInterest = [_captureVideoPreviewLayer metadataOutputRectOfInterestForRect:qrScannerAreaView.frame];
     }
     
     savePhotoButton.hidden = true;
+}
+
+- (void)createScannerAreaView {
+    if (!qrScannerAreaView) {
+        qrScannerAreaView = [[UIView alloc] init];
+        
+        qrScannerAreaView.layer.borderColor = [UIColor whiteColor].CGColor;
+        qrScannerAreaView.layer.cornerRadius = 20.0f;
+        qrScannerAreaView.layer.borderWidth = 2;
+        
+        [qrScannerAreaView setTranslatesAutoresizingMaskIntoConstraints:false];
+        
+        [qrScannerAreaView addConstraint:[NSLayoutConstraint constraintWithItem:qrScannerAreaView
+                                                                      attribute:NSLayoutAttributeWidth
+                                                                      relatedBy:NSLayoutRelationEqual
+                                                                         toItem:nil
+                                                                      attribute:NSLayoutAttributeNotAnAttribute
+                                                                     multiplier:1.0
+                                                                       constant:150]];
+        
+        [qrScannerAreaView addConstraint:[NSLayoutConstraint constraintWithItem:qrScannerAreaView
+                                                                      attribute:NSLayoutAttributeHeight
+                                                                      relatedBy:NSLayoutRelationEqual
+                                                                         toItem:nil
+                                                                      attribute:NSLayoutAttributeNotAnAttribute
+                                                                     multiplier:1.0
+                                                                       constant:150]];
+        
+        [_qrView addSubview:qrScannerAreaView];
+        
+        NSLayoutConstraint *qrScannerAreaViewCenterX = [NSLayoutConstraint constraintWithItem:qrScannerAreaView
+                                                                                 attribute:NSLayoutAttributeCenterX
+                                                                                 relatedBy:NSLayoutRelationEqual
+                                                                                    toItem:_qrView
+                                                                                 attribute:NSLayoutAttributeCenterX
+                                                                                multiplier:1.0
+                                                                                  constant:0];
+        
+        NSLayoutConstraint *qrScannerAreaViewCenterY = [NSLayoutConstraint constraintWithItem:qrScannerAreaView
+                                                                            attribute:NSLayoutAttributeCenterY
+                                                                            relatedBy:NSLayoutRelationEqual
+                                                                               toItem:_qrView
+                                                                            attribute:NSLayoutAttributeCenterY
+                                                                           multiplier:1.0
+                                                                             constant:0];
+        [_qrView addConstraint:qrScannerAreaViewCenterX];
+        [_qrView addConstraint:qrScannerAreaViewCenterY];
+        
+        [_qrView layoutIfNeeded];
+    }
 }
 
 // create and add close button to camera view
@@ -379,6 +437,10 @@
 #pragma mark - slideIn\slideOut\resetMainView animations
 // slide in animation for camera and QR actions
 - (void)slideInAnimation {
+    [self slideInAnimationWithComplitionBlock:^{}];
+}
+
+- (void)slideInAnimationWithComplitionBlock:(void (^)(void))complitionBlock {
     [_scrollView setHidden:NO];
     
     [self showNavigationAndStatusBar];
@@ -389,7 +451,11 @@
     [UIView animateWithDuration:0.4 animations:^{
         [self updateConstraints];
         [self.view layoutIfNeeded];
-    } completion:nil];
+    } completion:^(BOOL finished) {
+        if (finished) {
+            complitionBlock();
+        }
+    }];
 }
 
 // slide out animation for camera and QR actions
@@ -691,7 +757,13 @@
         AVMetadataMachineReadableCodeObject *readableObject = (AVMetadataMachineReadableCodeObject *)metadataObject;
         if([metadataObject.type isEqualToString:AVMetadataObjectTypeQRCode])
         {
-            NSLog(@"QR Code = %@", readableObject.stringValue);
+            _locationLabel.text = readableObject.stringValue;
+            _locationTextField.text = _locationLabel.text;
+            
+            [self slideInAnimationWithComplitionBlock:^{
+                [_metadataOutput setMetadataObjectsDelegate:nil queue:dispatch_get_main_queue()];
+                [_session removeOutput:_metadataOutput];
+            }];
         }
     }
 }
@@ -822,6 +894,7 @@
     } completion:nil];
 }
 
+#pragma mark camera helpers
 - (void)checkCameraAuthorization {
     AVAuthorizationStatus authStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
     
